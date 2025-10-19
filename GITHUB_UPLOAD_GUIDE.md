@@ -46,7 +46,7 @@ MONGODB_URI=mongodb+srv://testuser:testpassword123@sps-cluster.epkt9c1.mongodb.n
 ```
 
 ```
-SENDGRID_API_KEY=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
+SENDGRID_API_KEY=SG.your-sendgrid-api-key-here
 ```
 
 ```
