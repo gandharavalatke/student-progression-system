@@ -936,7 +936,7 @@
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
             
             // Fetch dashboard data and render
-            fetch('http://127.0.0.1:5001/api/dashboard-summary')
+            fetch('https://student-progression-system-production.up.railway.app/api/dashboard-summary')
                 .then(r => r.json())
                 .then(data => {
                     chartData = data?.semesters || [];
