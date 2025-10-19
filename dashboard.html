@@ -549,6 +549,22 @@
         }
         
         /* Mobile Responsive Styles */
+        @media (max-width: 1024px) {
+            /* iPad and tablet styles */
+            .main-content {
+                padding: 1.5rem !important;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1.5rem !important;
+            }
+            
+            .chart-container {
+                padding: 1.5rem !important;
+            }
+        }
+        
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed !important;
@@ -567,6 +583,7 @@
             .main-content {
                 margin-left: 0 !important;
                 padding: 1rem !important;
+                margin-top: 0 !important;
             }
             
             .mobile-menu-btn {
@@ -575,21 +592,31 @@
                 top: 1rem !important;
                 left: 1rem !important;
                 z-index: 60 !important;
-                background: rgba(15, 23, 42, 0.9) !important;
+                background: rgba(15, 23, 42, 0.95) !important;
                 backdrop-filter: blur(10px) !important;
-                border: 1px solid rgba(148, 163, 184, 0.2) !important;
+                border: 1px solid rgba(148, 163, 184, 0.3) !important;
                 color: white !important;
                 padding: 0.75rem !important;
                 border-radius: 0.5rem !important;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+                cursor: pointer !important;
+                transition: all 0.3s ease !important;
+            }
+            
+            .mobile-menu-btn:hover {
+                background: rgba(15, 23, 42, 1) !important;
+                transform: scale(1.05) !important;
             }
             
             .kpi-grid {
                 grid-template-columns: 1fr !important;
                 gap: 1rem !important;
+                margin-top: 4rem !important;
             }
             
             .chart-container {
                 padding: 1rem !important;
+                margin-top: 1rem !important;
             }
             
             .chart-container canvas {
@@ -599,6 +626,7 @@
             
             .glass-card {
                 padding: 1rem !important;
+                margin-bottom: 1rem !important;
             }
             
             .nav-link {
@@ -612,6 +640,17 @@
             
             .logo-subtitle {
                 font-size: 0.7rem !important;
+            }
+            
+            /* Ensure proper spacing for mobile */
+            .page-header {
+                margin-top: 4rem !important;
+                padding: 1rem !important;
+            }
+            
+            .page-title {
+                font-size: 1.5rem !important;
+                margin-bottom: 1rem !important;
             }
         }
         
@@ -633,6 +672,12 @@
             }
             
             .chart-container {
+                padding: 0.5rem !important;
+            }
+            
+            .mobile-menu-btn {
+                top: 0.75rem !important;
+                left: 0.75rem !important;
                 padding: 0.5rem !important;
             }
         }
