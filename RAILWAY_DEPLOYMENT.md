@@ -34,7 +34,7 @@ Your app will automatically create these collections:
 
 ### Step 1: SendGrid Configuration
 Your SendGrid is already configured with:
-- **API Key**: `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`
+- **API Key**: `SG.your-sendgrid-api-key-here`
 - **From Email**: `gandharvacjc@gmail.com`
 - **From Name**: `SPS Admin - GIT`
 
