@@ -34,6 +34,15 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', 'SG.your-sendgrid-api-key-here'
 FROM_EMAIL = os.getenv('FROM_EMAIL', 'gandharvacjc@gmail.com') # This MUST be a "Verified Sender" in your SendGrid account
 FROM_NAME = 'SPS Admin - GIT'
 
+# --- Health Check Endpoints for Railway ---
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
+
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
+
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
     print("CRITICAL ERROR: The SendGrid API key is still a placeholder. Update it in app.py before running.")
