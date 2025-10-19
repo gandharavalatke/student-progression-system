@@ -933,12 +933,80 @@
             bottom: 0 !important;
             z-index: 9999 !important;
         }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed !important;
+                left: -100% !important;
+                top: 0 !important;
+                height: 100vh !important;
+                width: 280px !important;
+                z-index: 50 !important;
+                transition: left 0.3s ease !important;
+            }
+            
+            .sidebar.open {
+                left: 0 !important;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1rem !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block !important;
+                position: fixed !important;
+                top: 1rem !important;
+                left: 1rem !important;
+                z-index: 60 !important;
+                background: rgba(15, 23, 42, 0.9) !important;
+                backdrop-filter: blur(10px) !important;
+                border: 1px solid rgba(148, 163, 184, 0.2) !important;
+                color: white !important;
+                padding: 0.75rem !important;
+                border-radius: 0.5rem !important;
+            }
+            
+            .glass-card {
+                padding: 1rem !important;
+            }
+            
+            .nav-link {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem !important;
+            }
+            
+            .logo-subtitle {
+                font-size: 0.7rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.5rem !important;
+            }
+            
+            .glass-card {
+                padding: 0.75rem !important;
+            }
+        }
     </style>
 </head>
 <body class="text-white">
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-btn" class="mobile-menu-btn hidden">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
+        <aside id="sidebar" class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col sidebar">
             <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
                  <img src="GIT Logo.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
@@ -1770,6 +1838,23 @@
             // Initialize
             loadFiles();
         });
+        
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        
+        if (mobileMenuBtn && sidebar) {
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+            });
+            
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        }
     </script>
 </body>
 </html>
