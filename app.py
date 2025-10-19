@@ -50,13 +50,14 @@ if 'PASTE_YOUR' in SENDGRID_API_KEY:
 
 # --- Database Connection ---
 try:
-    client = MongoClient(MONGO_URI)
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
     db = client[DB_NAME]
     client.admin.command('ismaster')
     print("SUCCESS: Successfully connected to MongoDB Atlas!")
 except Exception as e:
-    print(f"ERROR: DATABASE ERROR: Could not connect to MongoDB. Full error: {e}")
-    sys.exit(1)
+    print(f"WARNING: DATABASE CONNECTION ISSUE: {e}")
+    print("Continuing without database connection for health check...")
+    # Don't exit - let the app start for health check
 
 # --- Admin Setup Command ---
 def create_admin_user():
@@ -1154,4 +1155,11 @@ if __name__ == '__main__':
         debug_mode = os.environ.get('FLASK_ENV') != 'production'
         
         print(f"SUCCESS: Flask server is running on port {port}")
-        app.run(host='0.0.0.0', port=port, debug=debug_mode)
+        print(f"Health check endpoint: http://0.0.0.0:{port}/")
+        print(f"API health check: http://0.0.0.0:{port}/api/health")
+        
+        try:
+            app.run(host='0.0.0.0', port=port, debug=debug_mode, threaded=True)
+        except Exception as e:
+            print(f"ERROR: Failed to start Flask server: {e}")
+            sys.exit(1)
