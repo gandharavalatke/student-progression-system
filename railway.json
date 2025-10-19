@@ -1,6 +1,7 @@
 {
   "build": {
-    "builder": "NIXPACKS"
+    "builder": "NIXPACKS",
+    "buildTimeout": 1800
   },
   "deploy": {
     "startCommand": "python app.py",
