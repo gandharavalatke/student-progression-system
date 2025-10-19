@@ -583,7 +583,8 @@
             .main-content {
                 margin-left: 0 !important;
                 padding: 1rem !important;
-                margin-top: 0 !important;
+                margin-top: 4rem !important;
+                width: 100% !important;
             }
             
             .mobile-menu-btn {
@@ -601,6 +602,11 @@
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
                 cursor: pointer !important;
                 transition: all 0.3s ease !important;
+                width: 3rem !important;
+                height: 3rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
             
             .mobile-menu-btn:hover {
@@ -611,7 +617,7 @@
             .kpi-grid {
                 grid-template-columns: 1fr !important;
                 gap: 1rem !important;
-                margin-top: 4rem !important;
+                margin-top: 0 !important;
             }
             
             .chart-container {
@@ -644,12 +650,22 @@
             
             /* Ensure proper spacing for mobile */
             .page-header {
-                margin-top: 4rem !important;
+                margin-top: 0 !important;
                 padding: 1rem !important;
             }
             
             .page-title {
                 font-size: 1.5rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            /* Fix content alignment */
+            .main-content > div:first-child {
+                margin-top: 0 !important;
+            }
+            
+            /* Ensure KPI cards are properly spaced */
+            .kpi-card {
                 margin-bottom: 1rem !important;
             }
         }
