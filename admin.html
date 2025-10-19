@@ -104,7 +104,7 @@
                 e.preventDefault();
                 authErr.textContent = '';
                 try {
-                    const res = await fetch('https://student-progression-system-production.up.railway.app/api/admin/login', {
+                    const res = await fetch('https://student-progression-system-production-02da.up.railway.app/api/admin/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ password: pwd.value })
@@ -134,7 +134,7 @@
                 const formData = new FormData();
                 formData.append('file', input.files[0]);
                 try {
-                    const res = await fetch('https://student-progression-system-production.up.railway.app/api/upload-faculty', {
+                    const res = await fetch('https://student-progression-system-production-02da.up.railway.app/api/upload-faculty', {
                         method: 'POST',
                         body: formData
                     });
