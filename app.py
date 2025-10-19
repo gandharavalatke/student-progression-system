@@ -15,11 +15,8 @@ from bson import ObjectId
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from io import BytesIO
-from dotenv import load_dotenv
-
-load_dotenv()
 # --- Flask App Initialization ---
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 # A more robust CORS configuration
 # Ensure TLS verification uses an up-to-date CA bundle (fixes SSL errors on some Windows setups)
 os.environ.setdefault('SSL_CERT_FILE', certifi.where())
@@ -35,13 +32,38 @@ FROM_EMAIL = os.getenv('FROM_EMAIL', 'gandharvacjc@gmail.com') # This MUST be a 
 FROM_NAME = 'SPS Admin - GIT'
 
 # --- Health Check Endpoints for Railway ---
-@app.route('/', methods=['GET'])
-def root():
-    return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
-
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
+
+# --- Serve Static HTML Files ---
+@app.route('/', methods=['GET'])
+def serve_index():
+    return app.send_static_file('index.html')
+
+@app.route('/dashboard', methods=['GET'])
+def serve_dashboard():
+    return app.send_static_file('dashboard.html')
+
+@app.route('/settings', methods=['GET'])
+def serve_settings():
+    return app.send_static_file('settings.html')
+
+@app.route('/studentprogression', methods=['GET'])
+def serve_studentprogression():
+    return app.send_static_file('studentprogression.html')
+
+@app.route('/newuser', methods=['GET'])
+def serve_newuser():
+    return app.send_static_file('newuser.html')
+
+@app.route('/forgot-password', methods=['GET'])
+def serve_forgot_password():
+    return app.send_static_file('forgot_password.html')
+
+@app.route('/admin', methods=['GET'])
+def serve_admin():
+    return app.send_static_file('admin.html')
 
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
