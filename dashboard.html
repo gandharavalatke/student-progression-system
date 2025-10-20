@@ -745,7 +745,7 @@
                 <a href="dashboard.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
-                <a href="studentprogression.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/academic-3r6t5w" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
                 <a href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
@@ -759,7 +759,7 @@
                 </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
-                 <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="/settings-4p8q1n" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
                  <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
@@ -783,12 +783,12 @@
             <div class="mobile-nav-content">
                 <!-- First Row - 4 options -->
                 <div class="mobile-nav-row">
-                    <a href="dashboard.html" class="mobile-nav-item">
-                        <i class="fa-solid fa-chart-pie"></i>
-                    </a>
-                    <a href="studentprogression.html" class="mobile-nav-item">
-                        <i class="fa-solid fa-arrow-trend-up"></i>
-                    </a>
+                <a href="/dash-7x9k2m" class="mobile-nav-item">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </a>
+                <a href="/academic-3r6t5w" class="mobile-nav-item">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </a>
                     <a href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </a>
@@ -801,7 +801,7 @@
                     <a href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-file-alt"></i>
                     </a>
-                    <a href="settings.html" class="mobile-nav-item">
+                    <a href="/settings-4p8q1n" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
                     <a id="mobile-logout" href="index.html" class="mobile-nav-item">
@@ -1407,8 +1407,22 @@
             updateHeaderTitle();
         }
 
-        // Call loadSavedSelections when page loads
-        document.addEventListener('DOMContentLoaded', loadSavedSelections);
+        // Authentication check
+        function checkAuthentication() {
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                window.location.href = '/';
+                return false;
+            }
+            return true;
+        }
+
+        // Call authentication check and loadSavedSelections when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuthentication()) {
+                loadSavedSelections();
+            }
+        });
         }
     </script>
 </body>
