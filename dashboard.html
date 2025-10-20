@@ -749,13 +749,13 @@
                 <a href="/academic-3r6t5w" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/placement-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/extracurricular-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="/reports-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
@@ -1490,6 +1490,21 @@
             const settingsLink = document.querySelector('aside nav a[href*="settings"]');
             if (settingsLink && ids.settings) {
                 settingsLink.href = `/${ids.settings}`;
+            }
+            
+            const placementLink = document.querySelector('aside nav a[href*="placement"]');
+            if (placementLink && ids.placement) {
+                placementLink.href = `/${ids.placement}`;
+            }
+            
+            const extracurricularLink = document.querySelector('aside nav a[href*="extracurricular"]');
+            if (extracurricularLink && ids.extracurricular) {
+                extracurricularLink.href = `/${ids.extracurricular}`;
+            }
+            
+            const reportsLink = document.querySelector('aside nav a[href*="reports"]');
+            if (reportsLink && ids.reports) {
+                reportsLink.href = `/${ids.reports}`;
             }
             
             // Update mobile navigation links
