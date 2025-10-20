@@ -790,16 +790,16 @@
                 <a href="/academic-3r6t5w" class="mobile-nav-item">
                     <i class="fa-solid fa-arrow-trend-up"></i>
                 </a>
-                    <a href="placement.html" class="mobile-nav-item">
+                    <a href="/placement-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </a>
-                    <a href="extracurricular.html" class="mobile-nav-item">
+                    <a href="/extracurricular-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-trophy"></i>
                     </a>
                 </div>
                 <!-- Second Row - 3 options -->
                 <div class="mobile-nav-row">
-                    <a href="reports.html" class="mobile-nav-item">
+                    <a href="/reports-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-file-alt"></i>
                     </a>
                     <a href="/settings-4p8q1n" class="mobile-nav-item">
@@ -1506,6 +1506,21 @@
             const mobileSettingsLink = document.querySelector('.mobile-nav-item[href*="settings"]');
             if (mobileSettingsLink && ids.settings) {
                 mobileSettingsLink.href = `/${ids.settings}`;
+            }
+            
+            const mobilePlacementLink = document.querySelector('.mobile-nav-item[href*="placement"]');
+            if (mobilePlacementLink && ids.placement) {
+                mobilePlacementLink.href = `/${ids.placement}`;
+            }
+            
+            const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href*="extracurricular"]');
+            if (mobileExtracurricularLink && ids.extracurricular) {
+                mobileExtracurricularLink.href = `/${ids.extracurricular}`;
+            }
+            
+            const mobileReportsLink = document.querySelector('.mobile-nav-item[href*="reports"]');
+            if (mobileReportsLink && ids.reports) {
+                mobileReportsLink.href = `/${ids.reports}`;
             }
         }
 
