@@ -150,6 +150,23 @@ def serve_admin():
 def serve_logo():
     return app.send_static_file('gitlogosite.jpg')
 
+# --- Explicit routes for static HTML pages to avoid dynamic_id catching them ---
+@app.route('/index.html', methods=['GET'])
+def serve_index_html():
+    return app.send_static_file('index.html')
+
+@app.route('/placement.html', methods=['GET'])
+def serve_placement_html():
+    return app.send_static_file('placement.html')
+
+@app.route('/extracurricular.html', methods=['GET'])
+def serve_extracurricular_html():
+    return app.send_static_file('extracurricular.html')
+
+@app.route('/reports.html', methods=['GET'])
+def serve_reports_html():
+    return app.send_static_file('reports.html')
+
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
     print("CRITICAL ERROR: The SendGrid API key is still a placeholder. Update it in app.py before running.")
