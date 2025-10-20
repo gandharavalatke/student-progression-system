@@ -163,6 +163,10 @@ def serve_index_redirect():
 @app.route('/<page_name>.html', methods=['GET'])
 def redirect_html_to_dynamic(page_name):
     """Redirect direct .html access to dynamic ID system"""
+    # Handle index.html specially - redirect to root domain
+    if page_name == 'index':
+        return redirect('/')
+    
     page_mapping = {
         'dashboard': 'dash',
         'studentprogression': 'academic', 
@@ -248,10 +252,7 @@ def serve_favicon():
     # Use jpg logo as favicon source
     return app.send_static_file('git-logo.jpg')
 
-# --- Index page (login) - only accessible directly ---
-@app.route('/index.html', methods=['GET'])
-def serve_index_html():
-    return app.send_static_file('index.html')
+# --- Index page (login) - only accessible through root domain ---
 
 def _redirect_to_dynamic(page_type_key: str):
     # always generate a fresh dynamic id on each visit
