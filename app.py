@@ -186,17 +186,17 @@ def serve_dynamic_page(dynamic_id):
 @app.route('/newuser', methods=['GET'])
 @app.route('/newuser.html', methods=['GET'])
 def serve_newuser():
-    return _redirect_to_dynamic('newuser')
+    return app.send_static_file('newuser.html')
 
 @app.route('/forgot-password', methods=['GET'])
 @app.route('/forgot_password.html', methods=['GET'])
 def serve_forgot_password():
-    return _redirect_to_dynamic('forgot')
+    return app.send_static_file('forgot_password.html')
 
 @app.route('/admin', methods=['GET'])
 @app.route('/admin.html', methods=['GET'])
 def serve_admin():
-    return _redirect_to_dynamic('admin')
+    return app.send_static_file('admin.html')
 
 @app.route('/gitlogosite.jpg', methods=['GET'])
 def serve_logo():

@@ -40,8 +40,8 @@
             <div id="password-section">
                 <form id="admin-login-form" class="space-y-4">
                     <div class="relative">
-                        <i class="fa-solid fa-shield-halved absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
-                        <input type="password" id="admin-password" placeholder="Admin Password" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        <i class="fa-solid fa-shield-halved absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none z-10" style="font-size: 1rem; filter: none; -webkit-filter: none;"></i>
+                        <input type="password" id="admin-password" placeholder="Admin Password" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm" autocomplete="current-password">
                     </div>
                     <button type="submit" id="admin-login-btn" class="w-full h-12 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 flex items-center justify-center shadow-lg transition-all transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-500/20">
                         <span id="auth-btn-text">Authenticate</span>
