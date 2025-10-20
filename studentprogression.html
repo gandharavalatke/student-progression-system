@@ -1151,13 +1151,13 @@
                 <a href="/academic-3r6t5w" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/placement-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/extracurricular-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="/reports-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
@@ -1192,16 +1192,16 @@
                 <a href="/academic-3r6t5w" class="mobile-nav-item">
                     <i class="fa-solid fa-arrow-trend-up"></i>
                 </a>
-                    <a href="placement.html" class="mobile-nav-item">
+                    <a href="/placement-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </a>
-                    <a href="extracurricular.html" class="mobile-nav-item">
+                    <a href="/extracurricular-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-trophy"></i>
                     </a>
                 </div>
                 <!-- Second Row - 3 options -->
                 <div class="mobile-nav-row">
-                    <a href="reports.html" class="mobile-nav-item">
+                    <a href="/reports-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-file-alt"></i>
                     </a>
                     <a href="/settings-4p8q1n" class="mobile-nav-item">
@@ -2171,6 +2171,37 @@
                 const mobileSettingsLink = document.querySelector('.mobile-nav-item[href*="settings"]');
                 if (mobileSettingsLink && ids.settings) {
                     mobileSettingsLink.href = `/${ids.settings}`;
+                }
+                
+                // Update desktop sidebar links
+                const placementLink = document.querySelector('aside nav a[href*="placement"]');
+                if (placementLink && ids.placement) {
+                    placementLink.href = `/${ids.placement}`;
+                }
+                
+                const extracurricularLink = document.querySelector('aside nav a[href*="extracurricular"]');
+                if (extracurricularLink && ids.extracurricular) {
+                    extracurricularLink.href = `/${ids.extracurricular}`;
+                }
+                
+                const reportsLink = document.querySelector('aside nav a[href*="reports"]');
+                if (reportsLink && ids.reports) {
+                    reportsLink.href = `/${ids.reports}`;
+                }
+                
+                const mobilePlacementLink = document.querySelector('.mobile-nav-item[href*="placement"]');
+                if (mobilePlacementLink && ids.placement) {
+                    mobilePlacementLink.href = `/${ids.placement}`;
+                }
+                
+                const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href*="extracurricular"]');
+                if (mobileExtracurricularLink && ids.extracurricular) {
+                    mobileExtracurricularLink.href = `/${ids.extracurricular}`;
+                }
+                
+                const mobileReportsLink = document.querySelector('.mobile-nav-item[href*="reports"]');
+                if (mobileReportsLink && ids.reports) {
+                    mobileReportsLink.href = `/${ids.reports}`;
                 }
             }
 
