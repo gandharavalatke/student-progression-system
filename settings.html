@@ -856,12 +856,6 @@
             const newPasswordCancelBtn = document.getElementById('new-password-cancel-btn');
             const newPasswordSaveBtn = document.getElementById('new-password-save-btn');
             
-            // Password visibility toggle elements
-            const toggleNewPasswordVisibility = document.getElementById('toggle-new-password-visibility');
-            const toggleConfirmPasswordVisibility = document.getElementById('toggle-confirm-password-visibility');
-            const newPasswordEyeIcon = document.getElementById('new-password-eye-icon');
-            const confirmPasswordEyeIcon = document.getElementById('confirm-password-eye-icon');
-            
             // Logout Elements
             const logoutOverlay = document.getElementById('logout-overlay');
             const logoutCancel = document.getElementById('logout-cancel');
@@ -1126,6 +1120,11 @@
             });
 
             // Password visibility toggle functionality
+            const toggleNewPasswordVisibility = document.getElementById('toggle-new-password-visibility');
+            const toggleConfirmPasswordVisibility = document.getElementById('toggle-confirm-password-visibility');
+            const newPasswordEyeIcon = document.getElementById('new-password-eye-icon');
+            const confirmPasswordEyeIcon = document.getElementById('confirm-password-eye-icon');
+
             toggleNewPasswordVisibility.addEventListener('click', () => {
                 const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 newPasswordInput.setAttribute('type', type);
