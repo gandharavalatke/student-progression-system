@@ -933,6 +933,120 @@
             bottom: 0 !important;
             z-index: 9999 !important;
         }
+
+        /* Mobile Navigation Styles */
+        .mobile-nav-buttons {
+            display: none;
+        }
+
+        .mobile-nav-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .mobile-nav-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+        }
+
+        .mobile-nav-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 200px;
+        }
+
+        .mobile-nav-item {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .mobile-nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .mobile-nav-item:last-child {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .mobile-nav-item:last-child:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .mobile-nav-buttons {
+                display: block !important;
+            }
+
+            .mobile-title-center {
+                text-align: center !important;
+                width: 100% !important;
+                font-size: 16px !important;
+            }
+
+            header {
+                flex-direction: column !important;
+                height: auto !important;
+                padding: 10px !important;
+                gap: 10px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-nav-content {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+
+            .mobile-nav-item {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 16px !important;
+            }
+
+            .mobile-title-center {
+                font-size: 14px !important;
+            }
+        }
     </style>
 </head>
 <body class="text-white">
@@ -969,10 +1083,47 @@
             </div>
         </aside>
 
+        <!-- Mobile Navigation Buttons -->
+        <div class="mobile-nav-buttons fixed top-4 right-4 z-50 hidden">
+            <button id="mobile-nav-up" class="mobile-nav-btn mb-2">
+                <i class="fa-solid fa-chevron-up"></i>
+            </button>
+            <button id="mobile-nav-down" class="mobile-nav-btn">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Popup -->
+        <div id="mobile-nav-popup" class="mobile-nav-popup hidden">
+            <div class="mobile-nav-content">
+                <a href="dashboard.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </a>
+                <a href="studentprogression.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <i class="fa-solid fa-trophy"></i>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <i class="fa-solid fa-file-alt"></i>
+                </a>
+                <a href="settings.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-cog"></i>
+                </a>
+                <a id="mobile-logout" href="index.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+
         <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
             <header class="h-16 bg-slate-800/90 backdrop-blur-sm shadow-md flex items-center justify-between px-6 border-b border-slate-600">
-                <h2 class="text-lg font-semibold text-white">Upload Student Progression Data</h2>
+                <h2 class="text-lg font-semibold text-white mobile-title-center">Upload Student Progression Data</h2>
             </header>
             <div class="p-8">
                 <h3 class="text-2xl font-bold text-white mb-2">Upload Semester Result</h3>
@@ -1769,6 +1920,41 @@
             
             // Initialize
             loadFiles();
+
+            // Mobile Navigation Functionality
+            const mobileNavUp = document.getElementById('mobile-nav-up');
+            const mobileNavDown = document.getElementById('mobile-nav-down');
+            const mobileNavPopup = document.getElementById('mobile-nav-popup');
+            const mobileLogout = document.getElementById('mobile-logout');
+
+            if (mobileNavUp && mobileNavDown && mobileNavPopup) {
+                mobileNavUp.addEventListener('click', () => {
+                    mobileNavPopup.classList.remove('hidden');
+                });
+
+                mobileNavDown.addEventListener('click', () => {
+                    mobileNavPopup.classList.remove('hidden');
+                });
+
+                // Close popup when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!mobileNavPopup.contains(e.target) && 
+                        !mobileNavUp.contains(e.target) && 
+                        !mobileNavDown.contains(e.target)) {
+                        mobileNavPopup.classList.add('hidden');
+                    }
+                });
+
+                // Handle mobile logout
+                if (mobileLogout) {
+                    mobileLogout.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        logoutOverlay.classList.remove('hidden');
+                        logoutOverlay.classList.add('flex');
+                        mobileNavPopup.classList.add('hidden');
+                    });
+                }
+            }
         });
     </script>
 </body>

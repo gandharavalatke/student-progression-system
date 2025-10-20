@@ -547,6 +547,135 @@
             bottom: 0 !important;
             z-index: 9999 !important;
         }
+
+        /* Mobile Navigation Styles */
+        .mobile-nav-buttons {
+            display: none;
+        }
+
+        .mobile-nav-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .mobile-nav-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+        }
+
+        .mobile-nav-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 200px;
+        }
+
+        .mobile-nav-item {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .mobile-nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .mobile-nav-item:last-child {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .mobile-nav-item:last-child:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .mobile-nav-buttons {
+                display: block !important;
+            }
+
+            .mobile-title-center {
+                text-align: center !important;
+                width: 100% !important;
+                font-size: 16px !important;
+            }
+
+            .mobile-header-controls {
+                display: none !important;
+            }
+
+            header {
+                flex-direction: column !important;
+                height: auto !important;
+                padding: 10px !important;
+                gap: 10px !important;
+            }
+
+            .mobile-header-controls {
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+                margin-top: 10px !important;
+            }
+
+            .mobile-header-controls .relative {
+                margin: 0 5px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-nav-content {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+
+            .mobile-nav-item {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 16px !important;
+            }
+
+            .mobile-title-center {
+                font-size: 14px !important;
+            }
+        }
     </style>
 </head>
 <body class="text-white">
@@ -583,30 +712,74 @@
             </div>
         </aside>
 
+        <!-- Mobile Navigation Buttons -->
+        <div class="mobile-nav-buttons fixed top-4 right-4 z-50 hidden">
+            <button id="mobile-nav-up" class="mobile-nav-btn mb-2">
+                <i class="fa-solid fa-chevron-up"></i>
+            </button>
+            <button id="mobile-nav-down" class="mobile-nav-btn">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Popup -->
+        <div id="mobile-nav-popup" class="mobile-nav-popup hidden">
+            <div class="mobile-nav-content">
+                <a href="dashboard.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </a>
+                <a href="studentprogression.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <i class="fa-solid fa-trophy"></i>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <i class="fa-solid fa-file-alt"></i>
+                </a>
+                <a href="settings.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-cog"></i>
+                </a>
+                <a id="mobile-logout" href="index.html" class="mobile-nav-item">
+                    <i class="fa-solid fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+
         <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
             <header class="h-16 glass-card shadow-md flex items-center justify-between px-6 sticky top-0 z-10 border-b border-slate-600">
-                <h2 id="header-title" class="text-lg font-semibold text-white">CSE(AIML) Dept - Academic Year</h2>
+                <h2 id="header-title" class="text-lg font-semibold text-white mobile-title-center">CSE(AIML) Dept - Academic Year</h2>
                 
-                <div class="flex items-center space-x-4">
-                    <!-- Department Label (Static) -->
-                    <div class="flex items-center w-48 h-10 px-4 text-slate-300 text-sm">
-                        <i class="fa-solid fa-building text-blue-400 mr-2"></i>
-                        CSE(AIML)
+                <div class="flex items-center space-x-4 mobile-header-controls">
+                    <!-- Department Dropdown -->
+                    <div class="relative">
+                        <button id="dept-button" class="flex items-center justify-between w-32 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
+                            <i class="fa-solid fa-building text-blue-400 mr-2"></i>
+                            <span id="dept-selected" class="truncate text-xs">CSE(AIML)</span>
+                            <i id="dept-chevron" class="fa-solid fa-chevron-down ml-auto flex-shrink-0 transition-transform text-xs"></i>
+                        </button>
+                        <div id="dept-panel" class="dropdown-panel hidden absolute mt-2 w-32 glass-card rounded-md shadow-lg z-30 right-0 py-1">
+                            <a href="#" class="dept-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">CSE(AIML)</a>
+                            <a href="#" class="dept-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">CSE</a>
+                        </div>
                     </div>
 
                     <!-- Year Dropdown -->
                     <div class="relative">
-                        <button id="year-button" class="flex items-center justify-between w-40 h-10 px-4 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
+                        <button id="year-button" class="flex items-center justify-between w-28 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
                             <i class="fa-solid fa-calendar-alt text-blue-400 mr-2"></i>
-                            <span id="year-selected" class="truncate">Academic Year</span>
-                            <i id="year-chevron" class="fa-solid fa-chevron-down ml-auto flex-shrink-0 transition-transform text-sm"></i>
+                            <span id="year-selected" class="truncate text-xs">2024-25</span>
+                            <i id="year-chevron" class="fa-solid fa-chevron-down ml-auto flex-shrink-0 transition-transform text-xs"></i>
                         </button>
-                        <div id="year-panel" class="dropdown-panel hidden absolute mt-2 w-40 glass-card rounded-md shadow-lg z-30 right-0 py-1">
-                            <a href="#" class="year-option block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700/50">2022-23</a>
-                            <a href="#" class="year-option block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700/50">2023-24</a>
-                            <a href="#" class="year-option block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700/50">2024-25</a>
-                            <a href="#" class="year-option block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700/50">2025-26</a>
+                        <div id="year-panel" class="dropdown-panel hidden absolute mt-2 w-28 glass-card rounded-md shadow-lg z-30 right-0 py-1">
+                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2022-23</a>
+                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2023-24</a>
+                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2024-25</a>
+                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2025-26</a>
                         </div>
                     </div>
                 </div>
@@ -1056,6 +1229,81 @@
             },
             options: { plugins: { legend: { labels: { color: '#e2e8f0' } }, zoom: { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }, pan: { enabled: true, mode: 'xy' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { beginAtZero: true, ticks: { color: '#94a3b8' } } } }
         });
+
+        // Mobile Navigation Functionality
+        const mobileNavUp = document.getElementById('mobile-nav-up');
+        const mobileNavDown = document.getElementById('mobile-nav-down');
+        const mobileNavPopup = document.getElementById('mobile-nav-popup');
+        const mobileLogout = document.getElementById('mobile-logout');
+
+        if (mobileNavUp && mobileNavDown && mobileNavPopup) {
+            mobileNavUp.addEventListener('click', () => {
+                mobileNavPopup.classList.remove('hidden');
+            });
+
+            mobileNavDown.addEventListener('click', () => {
+                mobileNavPopup.classList.remove('hidden');
+            });
+
+            // Close popup when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileNavPopup.contains(e.target) && 
+                    !mobileNavUp.contains(e.target) && 
+                    !mobileNavDown.contains(e.target)) {
+                    mobileNavPopup.classList.add('hidden');
+                }
+            });
+
+            // Handle mobile logout
+            if (mobileLogout) {
+                mobileLogout.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logoutOverlay.classList.remove('hidden');
+                    logoutOverlay.classList.add('flex');
+                    mobileNavPopup.classList.add('hidden');
+                });
+            }
+        }
+
+        // Department dropdown functionality
+        const deptButton = document.getElementById('dept-button');
+        const deptPanel = document.getElementById('dept-panel');
+        const deptSelected = document.getElementById('dept-selected');
+        const deptChevron = document.getElementById('dept-chevron');
+
+        if (deptButton && deptPanel) {
+            deptButton.addEventListener('click', () => {
+                deptPanel.classList.toggle('hidden');
+                deptChevron.classList.toggle('rotate-180');
+            });
+
+            // Close department dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!deptButton.contains(e.target) && !deptPanel.contains(e.target)) {
+                    deptPanel.classList.add('hidden');
+                    deptChevron.classList.remove('rotate-180');
+                }
+            });
+
+            // Handle department selection
+            const deptOptions = document.querySelectorAll('.dept-option');
+            deptOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    deptSelected.textContent = option.textContent;
+                    deptPanel.classList.add('hidden');
+                    deptChevron.classList.remove('rotate-180');
+                    updateHeaderTitle();
+                });
+            });
+        }
+
+        // Update header title function
+        function updateHeaderTitle() {
+            const dept = deptSelected ? deptSelected.textContent : 'CSE(AIML)';
+            const year = yearSelected ? yearSelected.textContent : 'Academic Year';
+            headerTitle.textContent = `${dept} Dept - ${year}`;
+        }
         }
     </script>
 </body>
