@@ -849,6 +849,37 @@
         .light p, .light span, .light div {
             color: inherit !important;
         }
+
+        /* Mobile alignment fixes for Uploaded Files */
+        @media (max-width: 768px) {
+            /* Prevent overlap with bottom mobile menu */
+            #files-list { padding-bottom: 96px !important; }
+
+            /* Stack file card content vertically on mobile */
+            .file-item { 
+                display: grid !important; 
+                grid-template-columns: 1fr !important; 
+                row-gap: 10px !important; 
+                padding: 14px !important;
+            }
+            /* Left section (icon + text) */
+            .file-item > .flex.items-center.space-x-4 {
+                margin-right: 0 !important;
+            }
+            /* Right section (buttons) */
+            .file-item > .flex.space-x-2 {
+                width: 100% !important;
+                justify-content: stretch !important;
+                gap: 10px !important;
+            }
+            .file-item > .flex.space-x-2 button { 
+                flex: 1 1 0% !important; 
+                width: 100% !important; 
+                padding-top: 10px !important; 
+                padding-bottom: 10px !important; 
+                border-radius: 10px !important;
+            }
+        }
         
         /* Light mode for specific upload area text */
         .light #upload-area h5 {
