@@ -155,28 +155,41 @@ def serve_index():
     return app.send_static_file('index.html')
 
 @app.route('/<dynamic_id>', methods=['GET'])
-@require_auth
 def serve_dynamic_page(dynamic_id):
     """Serve pages with dynamic IDs - validates ID format and serves appropriate page"""
     try:
-        # Extract page type from dynamic ID
-        if dynamic_id.startswith('dash-'):
-            return app.send_static_file('dashboard.html')
-        elif dynamic_id.startswith('settings-'):
-            return app.send_static_file('settings.html')
-        elif dynamic_id.startswith('academic-'):
-            return app.send_static_file('studentprogression.html')
-        elif dynamic_id.startswith('newuser-'):
+        # Public pages (no authentication required)
+        if dynamic_id.startswith('newuser-'):
             return app.send_static_file('newuser.html')
         elif dynamic_id.startswith('forgot-'):
             return app.send_static_file('forgot_password.html')
         elif dynamic_id.startswith('admin-'):
             return app.send_static_file('admin.html')
+        # Protected pages (require authentication)
+        elif dynamic_id.startswith('dash-'):
+            # Check authentication for protected pages
+            if 'user_id' not in session:
+                return redirect('/')
+            return app.send_static_file('dashboard.html')
+        elif dynamic_id.startswith('settings-'):
+            if 'user_id' not in session:
+                return redirect('/')
+            return app.send_static_file('settings.html')
+        elif dynamic_id.startswith('academic-'):
+            if 'user_id' not in session:
+                return redirect('/')
+            return app.send_static_file('studentprogression.html')
         elif dynamic_id.startswith('placement-'):
+            if 'user_id' not in session:
+                return redirect('/')
             return app.send_static_file('placement.html')
         elif dynamic_id.startswith('extracurricular-'):
+            if 'user_id' not in session:
+                return redirect('/')
             return app.send_static_file('extracurricular.html')
         elif dynamic_id.startswith('reports-'):
+            if 'user_id' not in session:
+                return redirect('/')
             return app.send_static_file('reports.html')
         else:
             return "Page not found", 404
@@ -186,17 +199,17 @@ def serve_dynamic_page(dynamic_id):
 @app.route('/newuser', methods=['GET'])
 @app.route('/newuser.html', methods=['GET'])
 def serve_newuser():
-    return app.send_static_file('newuser.html')
+    return _redirect_to_dynamic('newuser')
 
 @app.route('/forgot-password', methods=['GET'])
 @app.route('/forgot_password.html', methods=['GET'])
 def serve_forgot_password():
-    return app.send_static_file('forgot_password.html')
+    return _redirect_to_dynamic('forgot')
 
 @app.route('/admin', methods=['GET'])
 @app.route('/admin.html', methods=['GET'])
 def serve_admin():
-    return app.send_static_file('admin.html')
+    return _redirect_to_dynamic('admin')
 
 @app.route('/gitlogosite.jpg', methods=['GET'])
 def serve_logo():

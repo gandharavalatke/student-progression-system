@@ -59,10 +59,24 @@
         /* Toggle transitions */
         .theme-toggle {
             transition: all 0.3s ease !important;
+            position: relative;
+            overflow: hidden;
         }
         
         .theme-toggle:hover {
             transform: scale(1.05) !important;
+        }
+        
+        .theme-toggle-slider {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transform: translateX(0);
+        }
+        
+        .theme-toggle.light .theme-toggle-slider {
+            transform: translateX(20px);
         }
         .sidebar-glass {
             background: rgba(15, 23, 42, 0.9);
@@ -560,8 +574,8 @@
                             <p class="text-slate-400 text-sm">Choose your preferred theme</p>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <button id="theme-toggle" class="relative inline-flex h-6 w-11 items-center justify-end rounded-full bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                <span id="theme-toggle-slider" class="inline-block h-4 w-4 rounded-full bg-white transition-all"></span>
+                            <button id="theme-toggle" class="theme-toggle relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <span id="theme-toggle-slider" class="theme-toggle-slider inline-block h-4 w-4 rounded-full bg-white"></span>
                             </button>
                             <span id="theme-label" class="text-slate-300 text-sm">Dark</span>
                         </div>
@@ -806,16 +820,14 @@
                 if (theme === 'light') {
                     html.classList.remove('dark');
                     html.classList.add('light');
-                    themeToggle.classList.remove('justify-end');
-                    themeToggle.classList.add('justify-start');
+                    themeToggle.classList.add('light');
                     themeToggle.style.backgroundColor = '#e5e7eb';
                     themeLabel.textContent = 'Light';
                     console.log('Light theme applied, classes:', html.className);
                 } else {
                     html.classList.remove('light');
                     html.classList.add('dark');
-                    themeToggle.classList.remove('justify-start');
-                    themeToggle.classList.add('justify-end');
+                    themeToggle.classList.remove('light');
                     themeToggle.style.backgroundColor = '#2563eb';
                     themeLabel.textContent = 'Dark';
                     console.log('Dark theme applied, classes:', html.className);
