@@ -10,7 +10,7 @@ import hashlib
 import time
 import uuid
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify, session, redirect
+from flask import Flask, request, jsonify, session, redirect, g
 from flask_cors import CORS
 from pymongo import MongoClient
 from gridfs import GridFS
@@ -33,7 +33,46 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    return response 
+    return response
+
+# Session timeout configuration (15 minutes)
+SESSION_TIMEOUT = 15 * 60  # 15 minutes in seconds
+
+# Authentication decorator
+def require_auth(f):
+    def decorated_function(*args, **kwargs):
+        # Check if user is authenticated
+        if 'user_id' not in session:
+            return redirect('/')
+        
+        # Check session timeout
+        if 'last_activity' in session:
+            last_activity = session['last_activity']
+            if isinstance(last_activity, str):
+                try:
+                    last_activity = datetime.fromisoformat(last_activity.replace('Z', '+00:00'))
+                except:
+                    session.clear()
+                    return redirect('/')
+            
+            if isinstance(last_activity, datetime) and last_activity.tzinfo is None:
+                last_activity = last_activity.replace(tzinfo=timezone.utc)
+            
+            if isinstance(last_activity, datetime) and datetime.now(timezone.utc) - last_activity > timedelta(seconds=SESSION_TIMEOUT):
+                session.clear()
+                return redirect('/')
+        
+        # Update last activity
+        session['last_activity'] = datetime.now(timezone.utc).isoformat()
+        return f(*args, **kwargs)
+    decorated_function.__name__ = f.__name__
+    return decorated_function
+
+# Update session activity for authenticated requests
+@app.before_request
+def update_session_activity():
+    if 'user_id' in session:
+        session['last_activity'] = datetime.now(timezone.utc).isoformat() 
 
 # --- CRITICAL CONFIGURATION ---
 # Use environment variables for Railway deployment, fallback to local values
@@ -116,6 +155,7 @@ def serve_index():
     return app.send_static_file('index.html')
 
 @app.route('/<dynamic_id>', methods=['GET'])
+@require_auth
 def serve_dynamic_page(dynamic_id):
     """Serve pages with dynamic IDs - validates ID format and serves appropriate page"""
     try:
@@ -210,6 +250,31 @@ def logout():
     finally:
         return redirect('/', code=302)
 
+# Add authentication check endpoint
+@app.route('/api/check-auth', methods=['GET'])
+def check_auth():
+    if 'user_id' not in session:
+        return jsonify({"authenticated": False}), 401
+    
+    # Check session timeout
+    if 'last_activity' in session:
+        last_activity = session['last_activity']
+        if isinstance(last_activity, str):
+            try:
+                last_activity = datetime.fromisoformat(last_activity.replace('Z', '+00:00'))
+            except:
+                session.clear()
+                return jsonify({"authenticated": False}), 401
+        
+        if isinstance(last_activity, datetime) and last_activity.tzinfo is None:
+            last_activity = last_activity.replace(tzinfo=timezone.utc)
+        
+        if isinstance(last_activity, datetime) and datetime.now(timezone.utc) - last_activity > timedelta(seconds=SESSION_TIMEOUT):
+            session.clear()
+            return jsonify({"authenticated": False}), 401
+    
+    return jsonify({"authenticated": True, "username": session.get('username')}), 200
+
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
     print("CRITICAL ERROR: The SendGrid API key is still a placeholder. Update it in app.py before running.")
@@ -287,6 +352,10 @@ def login_user():
     data = request.get_json()
     user = db.users.find_one({"username": data.get('username')})
     if user and 'password' in user and bcrypt.checkpw(data.get('password').encode('utf-8'), user['password']):
+        # Create server-side session
+        session['user_id'] = str(user['_id'])
+        session['username'] = user['username']
+        session['last_activity'] = datetime.now(timezone.utc).isoformat()
         return jsonify({"message": "Login successful!"}), 200
     return jsonify({"message": "Invalid username or password"}), 401
 

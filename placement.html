@@ -119,6 +119,75 @@
         const popup=document.getElementById('mobile-nav-popup');
         if(up&&down&&popup){up.addEventListener('click',()=>{popup.classList.remove('hidden');up.classList.add('hidden');down.classList.remove('hidden');});down.addEventListener('click',()=>{popup.classList.add('hidden');down.classList.add('hidden');up.classList.remove('hidden');});}
 
+        // Enhanced authentication check with server verification
+        async function checkAuthentication() {
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                window.location.href = '/';
+                return false;
+            }
+            
+            // Verify with server-side session
+            try {
+                const response = await fetch('/api/check-auth');
+                const authData = await response.json();
+                if (!authData.authenticated) {
+                    // Clear client-side storage if server session is invalid
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                // On error, redirect to login for security
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = '/';
+                return false;
+            }
+        }
+
+        // Auto-logout for inactivity (15 minutes)
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                // Show logout confirmation
+                if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                } else {
+                    // Reset timer if user cancels
+                    resetInactivityTimer();
+                }
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Track user activity
+        function trackActivity() {
+            resetInactivityTimer();
+        }
+
+        // Initialize page with authentication check
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!(await checkAuthentication())) {
+                return;
+            }
+            
+            // Start inactivity tracking
+            resetInactivityTimer();
+            
+            // Add event listeners for activity tracking
+            ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+                document.addEventListener(event, trackActivity, true);
+            });
+        });
+
         // Logout modal wiring
         const logoutLink=document.getElementById('logout-link');
         const mobileLogout=document.getElementById('mobile-logout');
