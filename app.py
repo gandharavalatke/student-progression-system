@@ -146,6 +146,10 @@ def serve_forgot_password():
 def serve_admin():
     return app.send_static_file('admin.html')
 
+@app.route('/gitlogosite.jpg', methods=['GET'])
+def serve_logo():
+    return app.send_static_file('gitlogosite.jpg')
+
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
     print("CRITICAL ERROR: The SendGrid API key is still a placeholder. Update it in app.py before running.")
