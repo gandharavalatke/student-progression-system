@@ -154,6 +154,32 @@ def get_current_ids():
 def serve_index():
     return app.send_static_file('index.html')
 
+# --- Handle direct access to domain root ---
+@app.route('/index', methods=['GET'])
+def serve_index_redirect():
+    return redirect('/')
+
+# --- Catch-all for direct .html access - redirect to dynamic IDs ---
+@app.route('/<page_name>.html', methods=['GET'])
+def redirect_html_to_dynamic(page_name):
+    """Redirect direct .html access to dynamic ID system"""
+    page_mapping = {
+        'dashboard': 'dash',
+        'studentprogression': 'academic', 
+        'settings': 'settings',
+        'placement': 'placement',
+        'extracurricular': 'extracurricular',
+        'reports': 'reports',
+        'newuser': 'newuser',
+        'forgot_password': 'forgot',
+        'admin': 'admin'
+    }
+    
+    if page_name in page_mapping:
+        return _redirect_to_dynamic(page_mapping[page_name])
+    else:
+        return "Page not found", 404
+
 @app.route('/<dynamic_id>', methods=['GET'])
 def serve_dynamic_page(dynamic_id):
     """Serve pages with dynamic IDs - validates ID format and serves appropriate page"""
@@ -197,17 +223,14 @@ def serve_dynamic_page(dynamic_id):
         return f"Error serving page: {str(e)}", 500
 
 @app.route('/newuser', methods=['GET'])
-@app.route('/newuser.html', methods=['GET'])
 def serve_newuser():
     return _redirect_to_dynamic('newuser')
 
 @app.route('/forgot-password', methods=['GET'])
-@app.route('/forgot_password.html', methods=['GET'])
 def serve_forgot_password():
     return _redirect_to_dynamic('forgot')
 
 @app.route('/admin', methods=['GET'])
-@app.route('/admin.html', methods=['GET'])
 def serve_admin():
     return _redirect_to_dynamic('admin')
 
@@ -225,7 +248,7 @@ def serve_favicon():
     # Use jpg logo as favicon source
     return app.send_static_file('git-logo.jpg')
 
-# --- Explicit routes for static HTML pages to avoid dynamic_id catching them ---
+# --- Index page (login) - only accessible directly ---
 @app.route('/index.html', methods=['GET'])
 def serve_index_html():
     return app.send_static_file('index.html')
@@ -241,17 +264,14 @@ def _redirect_to_dynamic(page_type_key: str):
     return redirect(f"/{new_id}", code=302)
 
 @app.route('/placement', methods=['GET'])
-@app.route('/placement.html', methods=['GET'])
 def serve_placement_html():
     return _redirect_to_dynamic('placement')
 
 @app.route('/extracurricular', methods=['GET'])
-@app.route('/extracurricular.html', methods=['GET'])
 def serve_extracurricular_html():
     return _redirect_to_dynamic('extracurricular')
 
 @app.route('/reports', methods=['GET'])
-@app.route('/reports.html', methods=['GET'])
 def serve_reports_html():
     return _redirect_to_dynamic('reports')
 
