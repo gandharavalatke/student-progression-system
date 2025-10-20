@@ -144,16 +144,19 @@ def serve_dynamic_page(dynamic_id):
         return f"Error serving page: {str(e)}", 500
 
 @app.route('/newuser', methods=['GET'])
+@app.route('/newuser.html', methods=['GET'])
 def serve_newuser():
-    return app.send_static_file('newuser.html')
+    return _redirect_to_dynamic('newuser')
 
 @app.route('/forgot-password', methods=['GET'])
+@app.route('/forgot_password.html', methods=['GET'])
 def serve_forgot_password():
-    return app.send_static_file('forgot_password.html')
+    return _redirect_to_dynamic('forgot')
 
 @app.route('/admin', methods=['GET'])
+@app.route('/admin.html', methods=['GET'])
 def serve_admin():
-    return app.send_static_file('admin.html')
+    return _redirect_to_dynamic('admin')
 
 @app.route('/gitlogosite.jpg', methods=['GET'])
 def serve_logo():
