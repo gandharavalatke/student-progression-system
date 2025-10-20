@@ -159,6 +159,16 @@ def serve_admin():
 def serve_logo():
     return app.send_static_file('gitlogosite.jpg')
 
+# Serve favicon and logo consistently
+@app.route('/git-logo.jpg', methods=['GET'])
+def serve_git_logo():
+    return app.send_static_file('git-logo.jpg')
+
+@app.route('/favicon.ico', methods=['GET'])
+def serve_favicon():
+    # Use jpg logo as favicon source
+    return app.send_static_file('git-logo.jpg')
+
 # --- Explicit routes for static HTML pages to avoid dynamic_id catching them ---
 @app.route('/index.html', methods=['GET'])
 def serve_index_html():
