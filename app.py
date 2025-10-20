@@ -49,15 +49,15 @@ def health_check():
 def serve_index():
     return app.send_static_file('index.html')
 
-@app.route('/dashboard', methods=['GET'])
+@app.route('/dash-7x9k2m', methods=['GET'])
 def serve_dashboard():
     return app.send_static_file('dashboard.html')
 
-@app.route('/settings', methods=['GET'])
+@app.route('/settings-4p8q1n', methods=['GET'])
 def serve_settings():
     return app.send_static_file('settings.html')
 
-@app.route('/studentprogression', methods=['GET'])
+@app.route('/academic-3r6t5w', methods=['GET'])
 def serve_studentprogression():
     return app.send_static_file('studentprogression.html')
 
