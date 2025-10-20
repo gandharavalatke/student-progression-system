@@ -576,16 +576,48 @@
 
         .mobile-nav-popup {
             position: fixed;
-            top: 50%;
+            bottom: 100px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 20px;
+            border-radius: 20px 20px 0 0;
             padding: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(59, 130, 246, 0.2);
             backdrop-filter: blur(20px);
             z-index: 1000;
+            max-width: 90vw;
+            width: 300px;
+        }
+
+        .mobile-nav-popup.show-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .mobile-nav-popup.show-down {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
         }
 
         .mobile-nav-content {
@@ -627,6 +659,17 @@
 
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
+            /* Hide sidebar on mobile */
+            aside {
+                display: none !important;
+            }
+
+            /* Make main content full width */
+            main {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+
             .mobile-nav-buttons {
                 display: block !important;
             }
@@ -713,7 +756,7 @@
         </aside>
 
         <!-- Mobile Navigation Buttons -->
-        <div class="mobile-nav-buttons fixed top-4 right-4 z-50 hidden">
+        <div class="mobile-nav-buttons fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 hidden">
             <button id="mobile-nav-up" class="mobile-nav-btn mb-2">
                 <i class="fa-solid fa-chevron-up"></i>
             </button>
@@ -1239,10 +1282,14 @@
         if (mobileNavUp && mobileNavDown && mobileNavPopup) {
             mobileNavUp.addEventListener('click', () => {
                 mobileNavPopup.classList.remove('hidden');
+                mobileNavPopup.classList.add('show-up');
+                mobileNavPopup.classList.remove('show-down');
             });
 
             mobileNavDown.addEventListener('click', () => {
                 mobileNavPopup.classList.remove('hidden');
+                mobileNavPopup.classList.add('show-down');
+                mobileNavPopup.classList.remove('show-up');
             });
 
             // Close popup when clicking outside
@@ -1251,6 +1298,7 @@
                     !mobileNavUp.contains(e.target) && 
                     !mobileNavDown.contains(e.target)) {
                     mobileNavPopup.classList.add('hidden');
+                    mobileNavPopup.classList.remove('show-up', 'show-down');
                 }
             });
 
@@ -1261,6 +1309,7 @@
                     logoutOverlay.classList.remove('hidden');
                     logoutOverlay.classList.add('flex');
                     mobileNavPopup.classList.add('hidden');
+                    mobileNavPopup.classList.remove('show-up', 'show-down');
                 });
             }
         }
