@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - Student Progression System</title>
-    <link rel="icon" type="image/png" href="git-logo.jpg">
+    <link rel="icon" href="/git-logo.jpg">
+    <link rel="shortcut icon" href="/git-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -492,7 +493,7 @@
                  <a href="/settings-4p8q1n" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -534,7 +535,7 @@
                     <a href="/settings-4p8q1n" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
-                    <a id="mobile-logout" href="index.html" class="mobile-nav-item">
+                    <a id="mobile-logout" href="/logout" class="mobile-nav-item">
                         <i class="fa-solid fa-sign-out-alt"></i>
                     </a>
                 </div>
@@ -559,8 +560,8 @@
                             <p class="text-slate-400 text-sm">Choose your preferred theme</p>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <button id="theme-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                <span id="theme-toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+                            <button id="theme-toggle" class="relative inline-flex h-6 w-11 items-center justify-end rounded-full bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <span id="theme-toggle-slider" class="inline-block h-4 w-4 rounded-full bg-white transition-all"></span>
                             </button>
                             <span id="theme-label" class="text-slate-300 text-sm">Dark</span>
                         </div>
@@ -727,11 +728,9 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if user is logged in
-            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
-            if (!loggedInUser) {
-                window.location.href = 'index.html';
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if user is logged in with server verification
+            if (!(await checkAuthentication())) {
                 return;
             }
             
@@ -807,15 +806,16 @@
                 if (theme === 'light') {
                     html.classList.remove('dark');
                     html.classList.add('light');
-                    themeToggleSlider.style.transform = 'translateX(0)';
+                    themeToggle.classList.remove('justify-end');
+                    themeToggle.classList.add('justify-start');
                     themeToggle.style.backgroundColor = '#e5e7eb';
                     themeLabel.textContent = 'Light';
                     console.log('Light theme applied, classes:', html.className);
                 } else {
                     html.classList.remove('light');
                     html.classList.add('dark');
-                    // Move knob to the right within 44px track with 16px knob
-                    themeToggleSlider.style.transform = 'translateX(1.25rem)';
+                    themeToggle.classList.remove('justify-start');
+                    themeToggle.classList.add('justify-end');
                     themeToggle.style.backgroundColor = '#2563eb';
                     themeLabel.textContent = 'Dark';
                     console.log('Dark theme applied, classes:', html.className);
@@ -1109,14 +1109,58 @@
                 };
             }
 
-            // Authentication check
-            function checkAuthentication() {
+            // Enhanced authentication check with server verification
+            async function checkAuthentication() {
                 const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
                 if (!loggedInUser) {
                     window.location.href = '/';
                     return false;
                 }
-                return true;
+                
+                // Verify with server-side session
+                try {
+                    const response = await fetch('/api/check-auth');
+                    const authData = await response.json();
+                    if (!authData.authenticated) {
+                        // Clear client-side storage if server session is invalid
+                        localStorage.removeItem('loggedInUser');
+                        sessionStorage.removeItem('loggedInUser');
+                        window.location.href = '/';
+                        return false;
+                    }
+                    return true;
+                } catch (error) {
+                    console.error('Authentication check failed:', error);
+                    // On error, redirect to login for security
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                    return false;
+                }
+            }
+
+            // Auto-logout for inactivity (15 minutes)
+            let inactivityTimer;
+            const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+            function resetInactivityTimer() {
+                clearTimeout(inactivityTimer);
+                inactivityTimer = setTimeout(() => {
+                    // Show logout confirmation
+                    if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
+                        localStorage.removeItem('loggedInUser');
+                        sessionStorage.removeItem('loggedInUser');
+                        window.location.href = '/';
+                    } else {
+                        // Reset timer if user cancels
+                        resetInactivityTimer();
+                    }
+                }, INACTIVITY_TIMEOUT);
+            }
+
+            // Track user activity
+            function trackActivity() {
+                resetInactivityTimer();
             }
 
             // Load dynamic IDs and update navigation links
@@ -1167,12 +1211,16 @@
             }
 
             // Check authentication on page load
-            if (!checkAuthentication()) {
-                return;
-            }
-
             // Load dynamic IDs and update navigation
-            loadDynamicIds();
+            await loadDynamicIds();
+            
+            // Start inactivity tracking
+            resetInactivityTimer();
+            
+            // Add event listeners for activity tracking
+            ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+                document.addEventListener(event, trackActivity, true);
+            });
 
             // Mobile Navigation Functionality
             const mobileNavUp = document.getElementById('mobile-nav-up');

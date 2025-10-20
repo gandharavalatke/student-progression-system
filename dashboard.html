@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Student Progression System</title>
-     <link rel="icon" type="image/jpeg" href="git-logo.jpg">
+     <link rel="icon" href="/git-logo.jpg">
+     <link rel="shortcut icon" href="/git-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -762,7 +763,7 @@
                  <a href="/settings-4p8q1n" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -804,7 +805,7 @@
                     <a href="/settings-4p8q1n" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
-                    <a id="mobile-logout" href="index.html" class="mobile-nav-item">
+                    <a id="mobile-logout" href="/logout" class="mobile-nav-item">
                         <i class="fa-solid fa-sign-out-alt"></i>
                     </a>
                 </div>
@@ -1141,7 +1142,7 @@
             document.getElementById('logout-success-ok').addEventListener('click', () => {
                 localStorage.removeItem('loggedInUser');
                 sessionStorage.removeItem('sps_user');
-                window.location.href = 'index.html';
+                window.location.href = '/';
             });
 
             // Close dropdowns if clicking anywhere else
@@ -1407,14 +1408,58 @@
             updateHeaderTitle();
         }
 
-        // Authentication check
-        function checkAuthentication() {
+        // Enhanced authentication check with server verification
+        async function checkAuthentication() {
             const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
             if (!loggedInUser) {
                 window.location.href = '/';
                 return false;
             }
-            return true;
+            
+            // Verify with server-side session
+            try {
+                const response = await fetch('/api/check-auth');
+                const authData = await response.json();
+                if (!authData.authenticated) {
+                    // Clear client-side storage if server session is invalid
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                // On error, redirect to login for security
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = '/';
+                return false;
+            }
+        }
+
+        // Auto-logout for inactivity (15 minutes)
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                // Show logout confirmation
+                if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                } else {
+                    // Reset timer if user cancels
+                    resetInactivityTimer();
+                }
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Track user activity
+        function trackActivity() {
+            resetInactivityTimer();
         }
 
         // Load dynamic IDs and update navigation links
@@ -1466,9 +1511,17 @@
 
         // Call authentication check, load dynamic IDs, and loadSavedSelections when page loads
         document.addEventListener('DOMContentLoaded', async () => {
-            if (checkAuthentication()) {
+            if (await checkAuthentication()) {
                 await loadDynamicIds();
                 loadSavedSelections();
+                
+                // Start inactivity tracking
+                resetInactivityTimer();
+                
+                // Add event listeners for activity tracking
+                ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+                    document.addEventListener(event, trackActivity, true);
+                });
             }
         });
         }

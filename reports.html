@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports - Student Progression System</title>
-    <link rel="icon" type="image/png" href="git-logo.jpg">
+    <link rel="icon" href="/git-logo.jpg">
+    <link rel="shortcut icon" href="/git-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -38,7 +39,7 @@
             </nav>
             <div class="p-4 border-t border-slate-600">
                 <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings</a>
-                <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout</a>
+                <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout</a>
             </div>
         </aside>
 
@@ -57,7 +58,7 @@
                 <div class="mobile-nav-row">
                     <a href="reports.html" class="mobile-nav-item"><i class="fa-solid fa-file-alt"></i></a>
                     <a href="settings.html" class="mobile-nav-item"><i class="fa-solid fa-cog"></i></a>
-                    <a id="mobile-logout" href="index.html" class="mobile-nav-item"><i class="fa-solid fa-sign-out-alt"></i></a>
+                    <a id="mobile-logout" href="/logout" class="mobile-nav-item"><i class="fa-solid fa-sign-out-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -77,11 +78,126 @@
             </div>
         </main>
     </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-sign-out-alt text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Logout</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to logout?</p>
+            <div class="space-x-3">
+                <button id="logout-cancel" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">Cancel</button>
+                <button id="logout-confirm" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Success Modal -->
+    <div id="logout-success-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3">
+                <i class="fa-solid fa-check text-green-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Logout Successful</h3>
+            <p class="text-slate-300 mb-5">You have been logged out successfully.</p>
+            <div class="space-x-3">
+                <button id="logout-success-ok" class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-colors">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const up=document.getElementById('mobile-nav-up');
         const down=document.getElementById('mobile-nav-down');
         const popup=document.getElementById('mobile-nav-popup');
         if(up&&down&&popup){up.addEventListener('click',()=>{popup.classList.remove('hidden');up.classList.add('hidden');down.classList.remove('hidden');});down.addEventListener('click',()=>{popup.classList.add('hidden');down.classList.add('hidden');up.classList.remove('hidden');});}
+
+        // Enhanced authentication check with server verification
+        async function checkAuthentication() {
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                window.location.href = '/';
+                return false;
+            }
+            
+            // Verify with server-side session
+            try {
+                const response = await fetch('/api/check-auth');
+                const authData = await response.json();
+                if (!authData.authenticated) {
+                    // Clear client-side storage if server session is invalid
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                // On error, redirect to login for security
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = '/';
+                return false;
+            }
+        }
+
+        // Auto-logout for inactivity (15 minutes)
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                // Show logout confirmation
+                if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                } else {
+                    // Reset timer if user cancels
+                    resetInactivityTimer();
+                }
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Track user activity
+        function trackActivity() {
+            resetInactivityTimer();
+        }
+
+        // Initialize page with authentication check
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!(await checkAuthentication())) {
+                return;
+            }
+            
+            // Start inactivity tracking
+            resetInactivityTimer();
+            
+            // Add event listeners for activity tracking
+            ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+                document.addEventListener(event, trackActivity, true);
+            });
+        });
+
+        // Logout modal wiring
+        const logoutLink=document.getElementById('logout-link');
+        const mobileLogout=document.getElementById('mobile-logout');
+        const logoutOverlay=document.getElementById('logout-overlay');
+        const logoutCancel=document.getElementById('logout-cancel');
+        const logoutConfirm=document.getElementById('logout-confirm');
+        const logoutSuccess=document.getElementById('logout-success-overlay');
+        const logoutOk=document.getElementById('logout-success-ok');
+
+        function openLogout(){logoutOverlay.classList.remove('hidden');logoutOverlay.classList.add('flex');}
+        if(logoutLink){logoutLink.addEventListener('click',e=>{e.preventDefault();openLogout();});}
+        if(mobileLogout){mobileLogout.addEventListener('click',e=>{e.preventDefault();openLogout();});}
+        if(logoutCancel){logoutCancel.addEventListener('click',()=>{logoutOverlay.classList.add('hidden');logoutOverlay.classList.remove('flex');});}
+        if(logoutConfirm){logoutConfirm.addEventListener('click',()=>{logoutOverlay.classList.add('hidden');logoutSuccess.classList.remove('hidden');logoutSuccess.classList.add('flex');});}
+        if(logoutOk){logoutOk.addEventListener('click',()=>{localStorage.removeItem('loggedInUser');sessionStorage.removeItem('sps_user');window.location.href='/';});}
     </script>
 </body>
 </html>

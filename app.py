@@ -10,7 +10,7 @@ import hashlib
 import time
 import uuid
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, redirect, g
 from flask_cors import CORS
 from pymongo import MongoClient
 from gridfs import GridFS
@@ -33,7 +33,46 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    return response 
+    return response
+
+# Session timeout configuration (15 minutes)
+SESSION_TIMEOUT = 15 * 60  # 15 minutes in seconds
+
+# Authentication decorator
+def require_auth(f):
+    def decorated_function(*args, **kwargs):
+        # Check if user is authenticated
+        if 'user_id' not in session:
+            return redirect('/')
+        
+        # Check session timeout
+        if 'last_activity' in session:
+            last_activity = session['last_activity']
+            if isinstance(last_activity, str):
+                try:
+                    last_activity = datetime.fromisoformat(last_activity.replace('Z', '+00:00'))
+                except:
+                    session.clear()
+                    return redirect('/')
+            
+            if isinstance(last_activity, datetime) and last_activity.tzinfo is None:
+                last_activity = last_activity.replace(tzinfo=timezone.utc)
+            
+            if isinstance(last_activity, datetime) and datetime.now(timezone.utc) - last_activity > timedelta(seconds=SESSION_TIMEOUT):
+                session.clear()
+                return redirect('/')
+        
+        # Update last activity
+        session['last_activity'] = datetime.now(timezone.utc).isoformat()
+        return f(*args, **kwargs)
+    decorated_function.__name__ = f.__name__
+    return decorated_function
+
+# Update session activity for authenticated requests
+@app.before_request
+def update_session_activity():
+    if 'user_id' in session:
+        session['last_activity'] = datetime.now(timezone.utc).isoformat() 
 
 # --- CRITICAL CONFIGURATION ---
 # Use environment variables for Railway deployment, fallback to local values
@@ -66,7 +105,10 @@ PAGE_TYPES = {
     'academic': 'academic',
     'newuser': 'newuser',
     'forgot': 'forgot',
-    'admin': 'admin'
+    'admin': 'admin',
+    'placement': 'placement',
+    'extracurricular': 'extracurricular',
+    'reports': 'reports'
 }
 
 # --- Health Check Endpoints for Railway ---
@@ -113,6 +155,7 @@ def serve_index():
     return app.send_static_file('index.html')
 
 @app.route('/<dynamic_id>', methods=['GET'])
+@require_auth
 def serve_dynamic_page(dynamic_id):
     """Serve pages with dynamic IDs - validates ID format and serves appropriate page"""
     try:
@@ -129,43 +172,108 @@ def serve_dynamic_page(dynamic_id):
             return app.send_static_file('forgot_password.html')
         elif dynamic_id.startswith('admin-'):
             return app.send_static_file('admin.html')
+        elif dynamic_id.startswith('placement-'):
+            return app.send_static_file('placement.html')
+        elif dynamic_id.startswith('extracurricular-'):
+            return app.send_static_file('extracurricular.html')
+        elif dynamic_id.startswith('reports-'):
+            return app.send_static_file('reports.html')
         else:
             return "Page not found", 404
     except Exception as e:
         return f"Error serving page: {str(e)}", 500
 
 @app.route('/newuser', methods=['GET'])
+@app.route('/newuser.html', methods=['GET'])
 def serve_newuser():
-    return app.send_static_file('newuser.html')
+    return _redirect_to_dynamic('newuser')
 
 @app.route('/forgot-password', methods=['GET'])
+@app.route('/forgot_password.html', methods=['GET'])
 def serve_forgot_password():
-    return app.send_static_file('forgot_password.html')
+    return _redirect_to_dynamic('forgot')
 
 @app.route('/admin', methods=['GET'])
+@app.route('/admin.html', methods=['GET'])
 def serve_admin():
-    return app.send_static_file('admin.html')
+    return _redirect_to_dynamic('admin')
 
 @app.route('/gitlogosite.jpg', methods=['GET'])
 def serve_logo():
     return app.send_static_file('gitlogosite.jpg')
+
+# Serve favicon and logo consistently
+@app.route('/git-logo.jpg', methods=['GET'])
+def serve_git_logo():
+    return app.send_static_file('git-logo.jpg')
+
+@app.route('/favicon.ico', methods=['GET'])
+def serve_favicon():
+    # Use jpg logo as favicon source
+    return app.send_static_file('git-logo.jpg')
 
 # --- Explicit routes for static HTML pages to avoid dynamic_id catching them ---
 @app.route('/index.html', methods=['GET'])
 def serve_index_html():
     return app.send_static_file('index.html')
 
+def _redirect_to_dynamic(page_type_key: str):
+    # always generate a fresh dynamic id on each visit
+    page_prefix = PAGE_TYPES.get(page_type_key)
+    if not page_prefix:
+        return "Page not found", 404
+    new_id = generate_dynamic_id(page_prefix)
+    # store in session for reference if needed
+    session[f"{page_type_key}_id"] = new_id
+    return redirect(f"/{new_id}", code=302)
+
+@app.route('/placement', methods=['GET'])
 @app.route('/placement.html', methods=['GET'])
 def serve_placement_html():
-    return app.send_static_file('placement.html')
+    return _redirect_to_dynamic('placement')
 
+@app.route('/extracurricular', methods=['GET'])
 @app.route('/extracurricular.html', methods=['GET'])
 def serve_extracurricular_html():
-    return app.send_static_file('extracurricular.html')
+    return _redirect_to_dynamic('extracurricular')
 
+@app.route('/reports', methods=['GET'])
 @app.route('/reports.html', methods=['GET'])
 def serve_reports_html():
-    return app.send_static_file('reports.html')
+    return _redirect_to_dynamic('reports')
+
+# --- Logout ---
+@app.route('/logout', methods=['GET'])
+def logout():
+    try:
+        session.clear()
+    finally:
+        return redirect('/', code=302)
+
+# Add authentication check endpoint
+@app.route('/api/check-auth', methods=['GET'])
+def check_auth():
+    if 'user_id' not in session:
+        return jsonify({"authenticated": False}), 401
+    
+    # Check session timeout
+    if 'last_activity' in session:
+        last_activity = session['last_activity']
+        if isinstance(last_activity, str):
+            try:
+                last_activity = datetime.fromisoformat(last_activity.replace('Z', '+00:00'))
+            except:
+                session.clear()
+                return jsonify({"authenticated": False}), 401
+        
+        if isinstance(last_activity, datetime) and last_activity.tzinfo is None:
+            last_activity = last_activity.replace(tzinfo=timezone.utc)
+        
+        if isinstance(last_activity, datetime) and datetime.now(timezone.utc) - last_activity > timedelta(seconds=SESSION_TIMEOUT):
+            session.clear()
+            return jsonify({"authenticated": False}), 401
+    
+    return jsonify({"authenticated": True, "username": session.get('username')}), 200
 
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
@@ -244,6 +352,10 @@ def login_user():
     data = request.get_json()
     user = db.users.find_one({"username": data.get('username')})
     if user and 'password' in user and bcrypt.checkpw(data.get('password').encode('utf-8'), user['password']):
+        # Create server-side session
+        session['user_id'] = str(user['_id'])
+        session['username'] = user['username']
+        session['last_activity'] = datetime.now(timezone.utc).isoformat()
         return jsonify({"message": "Login successful!"}), 200
     return jsonify({"message": "Invalid username or password"}), 401
 
