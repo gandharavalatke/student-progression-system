@@ -262,7 +262,7 @@
                 error.textContent = '';
                 setLoading(true);
                 try {
-                    const res = await fetch('https://student-progression-system-production-02da.up.railway.app/api/login', {
+                    const res = await fetch('https://sps.up.railway.app/api/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ username: username.value, password: password.value })
