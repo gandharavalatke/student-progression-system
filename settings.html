@@ -560,7 +560,7 @@
                         </div>
                         <div class="flex items-center space-x-3">
                             <button id="theme-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                <span id="theme-toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
+                                <span id="theme-toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
                             </button>
                             <span id="theme-label" class="text-slate-300 text-sm">Dark</span>
                         </div>
@@ -814,7 +814,8 @@
                 } else {
                     html.classList.remove('light');
                     html.classList.add('dark');
-                    themeToggleSlider.style.transform = 'translateX(1.5rem)';
+                    // Move knob to the right within 44px track with 16px knob
+                    themeToggleSlider.style.transform = 'translateX(1.25rem)';
                     themeToggle.style.backgroundColor = '#2563eb';
                     themeLabel.textContent = 'Dark';
                     console.log('Dark theme applied, classes:', html.className);
