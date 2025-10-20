@@ -20,7 +20,15 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 # A more robust CORS configuration
 # Ensure TLS verification uses an up-to-date CA bundle (fixes SSL errors on some Windows setups)
 os.environ.setdefault('SSL_CERT_FILE', certifi.where())
-CORS(app, resources={r"/api/*": {"origins": "*"}}) 
+CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+
+# Add global CORS headers for all routes
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response 
 
 # --- CRITICAL CONFIGURATION ---
 # Use environment variables for Railway deployment, fallback to local values
