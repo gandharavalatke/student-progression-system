@@ -1118,10 +1118,60 @@
                 return true;
             }
 
+            // Load dynamic IDs and update navigation links
+            async function loadDynamicIds() {
+                try {
+                    const response = await fetch('/api/get-current-ids');
+                    const ids = await response.json();
+                    
+                    // Update all navigation links with dynamic IDs
+                    updateNavigationLinks(ids);
+                } catch (error) {
+                    console.error('Failed to load dynamic IDs:', error);
+                }
+            }
+
+            function updateNavigationLinks(ids) {
+                // Update sidebar links
+                const dashboardLink = document.querySelector('aside nav a[href*="dash"]');
+                if (dashboardLink && ids.dashboard) {
+                    dashboardLink.href = `/${ids.dashboard}`;
+                }
+                
+                const academicLink = document.querySelector('aside nav a[href*="academic"]');
+                if (academicLink && ids.academic) {
+                    academicLink.href = `/${ids.academic}`;
+                }
+                
+                const settingsLink = document.querySelector('aside nav a[href*="settings"]');
+                if (settingsLink && ids.settings) {
+                    settingsLink.href = `/${ids.settings}`;
+                }
+                
+                // Update mobile navigation links
+                const mobileDashboardLink = document.querySelector('.mobile-nav-item[href*="dash"]');
+                if (mobileDashboardLink && ids.dashboard) {
+                    mobileDashboardLink.href = `/${ids.dashboard}`;
+                }
+                
+                const mobileAcademicLink = document.querySelector('.mobile-nav-item[href*="academic"]');
+                if (mobileAcademicLink && ids.academic) {
+                    mobileAcademicLink.href = `/${ids.academic}`;
+                }
+                
+                const mobileSettingsLink = document.querySelector('.mobile-nav-item[href*="settings"]');
+                if (mobileSettingsLink && ids.settings) {
+                    mobileSettingsLink.href = `/${ids.settings}`;
+                }
+            }
+
             // Check authentication on page load
             if (!checkAuthentication()) {
                 return;
             }
+
+            // Load dynamic IDs and update navigation
+            loadDynamicIds();
 
             // Mobile Navigation Functionality
             const mobileNavUp = document.getElementById('mobile-nav-up');

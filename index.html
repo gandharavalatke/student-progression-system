@@ -272,7 +272,15 @@
                     // Persist logged in user for other pages (e.g., settings)
                     sessionStorage.setItem('sps_user', username.value);
                     localStorage.setItem('loggedInUser', username.value);
-                    window.location.href = '/dash-7x9k2m';
+                    // Get dynamic dashboard ID
+                    try {
+                        const response = await fetch('/api/generate-id/dashboard');
+                        const data = await response.json();
+                        window.location.href = `/${data.id}`;
+                    } catch (error) {
+                        console.error('Failed to get dynamic ID:', error);
+                        window.location.href = '/dashboard.html'; // fallback
+                    }
                 } catch (err) {
                     error.textContent = err.message;
                 } finally {

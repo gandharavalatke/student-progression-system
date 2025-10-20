@@ -6,8 +6,11 @@ import random
 import secrets
 import string
 import sys
+import hashlib
+import time
+import uuid
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from pymongo import MongoClient
 from gridfs import GridFS
@@ -17,6 +20,8 @@ from sendgrid.helpers.mail import Mail
 from io import BytesIO
 # --- Flask App Initialization ---
 app = Flask(__name__, static_folder='.', static_url_path='')
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
+
 # A more robust CORS configuration
 # Ensure TLS verification uses an up-to-date CA bundle (fixes SSL errors on some Windows setups)
 os.environ.setdefault('SSL_CERT_FILE', certifi.where())
@@ -39,27 +44,95 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', 'SG.your-sendgrid-api-key-here'
 FROM_EMAIL = os.getenv('FROM_EMAIL', 'gandharvacjc@gmail.com') # This MUST be a "Verified Sender" in your SendGrid account
 FROM_NAME = 'SPS Admin - GIT'
 
+# --- DYNAMIC ID GENERATION SYSTEM ---
+def generate_dynamic_id(page_type):
+    """Generate a unique, time-based ID for each page access"""
+    timestamp = str(int(time.time() * 1000))  # milliseconds
+    random_part = secrets.token_hex(8)
+    page_hash = hashlib.md5(page_type.encode()).hexdigest()[:8]
+    return f"{page_type}-{timestamp}-{random_part}-{page_hash}"
+
+def get_or_create_page_id(page_type):
+    """Get existing page ID from session or create new one"""
+    session_key = f"{page_type}_id"
+    if session_key not in session:
+        session[session_key] = generate_dynamic_id(page_type)
+    return session[session_key]
+
+# Page type mappings
+PAGE_TYPES = {
+    'dashboard': 'dash',
+    'settings': 'settings', 
+    'academic': 'academic',
+    'newuser': 'newuser',
+    'forgot': 'forgot',
+    'admin': 'admin'
+}
+
 # --- Health Check Endpoints for Railway ---
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
+
+# --- Dynamic ID Generation API ---
+@app.route('/api/generate-id/<page_type>', methods=['GET'])
+def generate_page_id(page_type):
+    """Generate a new dynamic ID for a specific page type"""
+    if page_type not in PAGE_TYPES:
+        return jsonify({"error": "Invalid page type"}), 400
+    
+    # Generate new ID for this session
+    new_id = generate_dynamic_id(PAGE_TYPES[page_type])
+    session[f"{page_type}_id"] = new_id
+    
+    return jsonify({
+        "id": new_id,
+        "page_type": page_type,
+        "url": f"/{new_id}"
+    }), 200
+
+@app.route('/api/get-current-ids', methods=['GET'])
+def get_current_ids():
+    """Get all current page IDs for this session"""
+    current_ids = {}
+    for page_type in PAGE_TYPES:
+        session_key = f"{page_type}_id"
+        if session_key in session:
+            current_ids[page_type] = session[session_key]
+        else:
+            # Generate new ID if not exists
+            new_id = generate_dynamic_id(PAGE_TYPES[page_type])
+            session[session_key] = new_id
+            current_ids[page_type] = new_id
+    
+    return jsonify(current_ids), 200
 
 # --- Serve Static HTML Files ---
 @app.route('/', methods=['GET'])
 def serve_index():
     return app.send_static_file('index.html')
 
-@app.route('/dash-7x9k2m', methods=['GET'])
-def serve_dashboard():
-    return app.send_static_file('dashboard.html')
-
-@app.route('/settings-4p8q1n', methods=['GET'])
-def serve_settings():
-    return app.send_static_file('settings.html')
-
-@app.route('/academic-3r6t5w', methods=['GET'])
-def serve_studentprogression():
-    return app.send_static_file('studentprogression.html')
+@app.route('/<dynamic_id>', methods=['GET'])
+def serve_dynamic_page(dynamic_id):
+    """Serve pages with dynamic IDs - validates ID format and serves appropriate page"""
+    try:
+        # Extract page type from dynamic ID
+        if dynamic_id.startswith('dash-'):
+            return app.send_static_file('dashboard.html')
+        elif dynamic_id.startswith('settings-'):
+            return app.send_static_file('settings.html')
+        elif dynamic_id.startswith('academic-'):
+            return app.send_static_file('studentprogression.html')
+        elif dynamic_id.startswith('newuser-'):
+            return app.send_static_file('newuser.html')
+        elif dynamic_id.startswith('forgot-'):
+            return app.send_static_file('forgot_password.html')
+        elif dynamic_id.startswith('admin-'):
+            return app.send_static_file('admin.html')
+        else:
+            return "Page not found", 404
+    except Exception as e:
+        return f"Error serving page: {str(e)}", 500
 
 @app.route('/newuser', methods=['GET'])
 def serve_newuser():
