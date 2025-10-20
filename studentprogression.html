@@ -1007,10 +1007,23 @@
         }
 
         .mobile-nav-content {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 15px;
-            max-width: 200px;
+            max-width: 280px;
+        }
+
+        .mobile-nav-row {
+            display: grid;
+            gap: 15px;
+        }
+
+        .mobile-nav-row:first-child {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .mobile-nav-row:last-child {
+            grid-template-columns: repeat(3, 1fr);
         }
 
         .mobile-nav-item {
@@ -1128,10 +1141,10 @@
 
         <!-- Mobile Navigation Buttons -->
         <div class="mobile-nav-buttons fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 hidden">
-            <button id="mobile-nav-up" class="mobile-nav-btn mb-2">
+            <button id="mobile-nav-up" class="mobile-nav-btn">
                 <i class="fa-solid fa-chevron-up"></i>
             </button>
-            <button id="mobile-nav-down" class="mobile-nav-btn">
+            <button id="mobile-nav-down" class="mobile-nav-btn hidden">
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
         </div>
@@ -1139,27 +1152,33 @@
         <!-- Mobile Navigation Popup -->
         <div id="mobile-nav-popup" class="mobile-nav-popup hidden">
             <div class="mobile-nav-content">
-                <a href="dashboard.html" class="mobile-nav-item">
-                    <i class="fa-solid fa-chart-pie"></i>
-                </a>
-                <a href="studentprogression.html" class="mobile-nav-item">
-                    <i class="fa-solid fa-arrow-trend-up"></i>
-                </a>
-                <a href="#" class="mobile-nav-item">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </a>
-                <a href="#" class="mobile-nav-item">
-                    <i class="fa-solid fa-trophy"></i>
-                </a>
-                <a href="#" class="mobile-nav-item">
-                    <i class="fa-solid fa-file-alt"></i>
-                </a>
-                <a href="settings.html" class="mobile-nav-item">
-                    <i class="fa-solid fa-cog"></i>
-                </a>
-                <a id="mobile-logout" href="index.html" class="mobile-nav-item">
-                    <i class="fa-solid fa-sign-out-alt"></i>
-                </a>
+                <!-- First Row - 4 options -->
+                <div class="mobile-nav-row">
+                    <a href="dashboard.html" class="mobile-nav-item">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </a>
+                    <a href="studentprogression.html" class="mobile-nav-item">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                    </a>
+                    <a href="#" class="mobile-nav-item">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </a>
+                    <a href="#" class="mobile-nav-item">
+                        <i class="fa-solid fa-trophy"></i>
+                    </a>
+                </div>
+                <!-- Second Row - 3 options -->
+                <div class="mobile-nav-row">
+                    <a href="#" class="mobile-nav-item">
+                        <i class="fa-solid fa-file-alt"></i>
+                    </a>
+                    <a href="settings.html" class="mobile-nav-item">
+                        <i class="fa-solid fa-cog"></i>
+                    </a>
+                    <a id="mobile-logout" href="index.html" class="mobile-nav-item">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -1975,12 +1994,19 @@
                     mobileNavPopup.classList.remove('hidden');
                     mobileNavPopup.classList.add('show-up');
                     mobileNavPopup.classList.remove('show-down');
+                    
+                    // Hide up arrow, show down arrow
+                    mobileNavUp.classList.add('hidden');
+                    mobileNavDown.classList.remove('hidden');
                 });
 
                 mobileNavDown.addEventListener('click', () => {
-                    mobileNavPopup.classList.remove('hidden');
-                    mobileNavPopup.classList.add('show-down');
-                    mobileNavPopup.classList.remove('show-up');
+                    mobileNavPopup.classList.add('hidden');
+                    mobileNavPopup.classList.remove('show-up', 'show-down');
+                    
+                    // Show up arrow, hide down arrow
+                    mobileNavUp.classList.remove('hidden');
+                    mobileNavDown.classList.add('hidden');
                 });
 
                 // Close popup when clicking outside
@@ -1990,6 +2016,10 @@
                         !mobileNavDown.contains(e.target)) {
                         mobileNavPopup.classList.add('hidden');
                         mobileNavPopup.classList.remove('show-up', 'show-down');
+                        
+                        // Show up arrow, hide down arrow
+                        mobileNavUp.classList.remove('hidden');
+                        mobileNavDown.classList.add('hidden');
                     }
                 });
 
@@ -2001,6 +2031,10 @@
                         logoutOverlay.classList.add('flex');
                         mobileNavPopup.classList.add('hidden');
                         mobileNavPopup.classList.remove('show-up', 'show-down');
+                        
+                        // Show up arrow, hide down arrow
+                        mobileNavUp.classList.remove('hidden');
+                        mobileNavDown.classList.add('hidden');
                     });
                 }
             }
