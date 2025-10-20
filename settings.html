@@ -492,7 +492,7 @@
                  <a href="/settings-4p8q1n" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -534,7 +534,7 @@
                     <a href="/settings-4p8q1n" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
-                    <a id="mobile-logout" href="index.html" class="mobile-nav-item">
+                    <a id="mobile-logout" href="/logout" class="mobile-nav-item">
                         <i class="fa-solid fa-sign-out-alt"></i>
                     </a>
                 </div>
@@ -731,7 +731,7 @@
             // Check if user is logged in
             const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
             if (!loggedInUser) {
-                window.location.href = 'index.html';
+                window.location.href = '/';
                 return;
             }
             

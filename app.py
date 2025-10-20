@@ -10,7 +10,7 @@ import hashlib
 import time
 import uuid
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, redirect
 from flask_cors import CORS
 from pymongo import MongoClient
 from gridfs import GridFS
@@ -66,7 +66,10 @@ PAGE_TYPES = {
     'academic': 'academic',
     'newuser': 'newuser',
     'forgot': 'forgot',
-    'admin': 'admin'
+    'admin': 'admin',
+    'placement': 'placement',
+    'extracurricular': 'extracurricular',
+    'reports': 'reports'
 }
 
 # --- Health Check Endpoints for Railway ---
@@ -129,6 +132,12 @@ def serve_dynamic_page(dynamic_id):
             return app.send_static_file('forgot_password.html')
         elif dynamic_id.startswith('admin-'):
             return app.send_static_file('admin.html')
+        elif dynamic_id.startswith('placement-'):
+            return app.send_static_file('placement.html')
+        elif dynamic_id.startswith('extracurricular-'):
+            return app.send_static_file('extracurricular.html')
+        elif dynamic_id.startswith('reports-'):
+            return app.send_static_file('reports.html')
         else:
             return "Page not found", 404
     except Exception as e:
@@ -149,6 +158,44 @@ def serve_admin():
 @app.route('/gitlogosite.jpg', methods=['GET'])
 def serve_logo():
     return app.send_static_file('gitlogosite.jpg')
+
+# --- Explicit routes for static HTML pages to avoid dynamic_id catching them ---
+@app.route('/index.html', methods=['GET'])
+def serve_index_html():
+    return app.send_static_file('index.html')
+
+def _redirect_to_dynamic(page_type_key: str):
+    # always generate a fresh dynamic id on each visit
+    page_prefix = PAGE_TYPES.get(page_type_key)
+    if not page_prefix:
+        return "Page not found", 404
+    new_id = generate_dynamic_id(page_prefix)
+    # store in session for reference if needed
+    session[f"{page_type_key}_id"] = new_id
+    return redirect(f"/{new_id}", code=302)
+
+@app.route('/placement', methods=['GET'])
+@app.route('/placement.html', methods=['GET'])
+def serve_placement_html():
+    return _redirect_to_dynamic('placement')
+
+@app.route('/extracurricular', methods=['GET'])
+@app.route('/extracurricular.html', methods=['GET'])
+def serve_extracurricular_html():
+    return _redirect_to_dynamic('extracurricular')
+
+@app.route('/reports', methods=['GET'])
+@app.route('/reports.html', methods=['GET'])
+def serve_reports_html():
+    return _redirect_to_dynamic('reports')
+
+# --- Logout ---
+@app.route('/logout', methods=['GET'])
+def logout():
+    try:
+        session.clear()
+    finally:
+        return redirect('/', code=302)
 
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
