@@ -670,6 +670,16 @@
         .mobile-nav-item:last-child:hover {
             box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
         }
+        
+        /* Ensure extracurricular icon is blue */
+        .mobile-nav-item[href*="extracurricular"] {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        .mobile-nav-item[href*="extracurricular"]:hover {
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4) !important;
+        }
 
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
