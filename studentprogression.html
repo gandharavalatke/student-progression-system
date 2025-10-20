@@ -1766,13 +1766,30 @@
             // Load and display uploaded files
             async function loadFiles() {
                 try {
+                    console.log('Loading files...');
                     const selectedSemester = viewSemesterSelect.value;
+                    console.log('Selected semester:', selectedSemester);
+                    
                     const response = await fetch(`https://sps.up.railway.app/api/get-result-files?semester=${selectedSemester || ''}`);
+                    console.log('Result files response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
                     const files = await response.json();
+                    console.log('Result files:', files);
                     
                     // Also load intake files
                     const intakeResponse = await fetch('https://sps.up.railway.app/api/get-intake-files');
+                    console.log('Intake files response status:', intakeResponse.status);
+                    
+                    if (!intakeResponse.ok) {
+                        throw new Error(`HTTP error! status: ${intakeResponse.status}`);
+                    }
+                    
                     const intakeFiles = await intakeResponse.json();
+                    console.log('Intake files:', intakeFiles);
                     
                     if (files.length === 0 && intakeFiles.length === 0) {
                         filesList.innerHTML = `
@@ -1834,7 +1851,8 @@
                     filesList.innerHTML = `
                         <div class="text-center text-red-400 py-8">
                             <i class="fa-solid fa-exclamation-triangle text-4xl mb-2"></i>
-                            <p>Error loading files</p>
+                            <p>Error loading files: ${error.message}</p>
+                            <p class="text-sm text-slate-400 mt-2">Please check your connection and try again</p>
                         </div>
                     `;
                 }
@@ -2015,22 +2033,29 @@
             // Enhanced authentication check with server verification
             async function checkAuthentication() {
                 const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
+                console.log('Logged in user:', loggedInUser);
                 if (!loggedInUser) {
+                    console.log('No logged in user found, redirecting to login');
                     window.location.href = '/';
                     return false;
                 }
                 
                 // Verify with server-side session
                 try {
+                    console.log('Checking server-side authentication...');
                     const response = await fetch('/api/check-auth');
+                    console.log('Auth response status:', response.status);
                     const authData = await response.json();
+                    console.log('Auth data:', authData);
                     if (!authData.authenticated) {
+                        console.log('Server authentication failed, clearing storage and redirecting');
                         // Clear client-side storage if server session is invalid
                         localStorage.removeItem('loggedInUser');
                         sessionStorage.removeItem('loggedInUser');
                         window.location.href = '/';
                         return false;
                     }
+                    console.log('Authentication successful');
                     return true;
                 } catch (error) {
                     console.error('Authentication check failed:', error);
@@ -2114,9 +2139,12 @@
             }
 
             // Check authentication on page load
+            console.log('Checking authentication...');
             if (!(await checkAuthentication())) {
+                console.log('Authentication failed, redirecting to login');
                 return;
             }
+            console.log('Authentication successful');
 
             // Load dynamic IDs and update navigation
             await loadDynamicIds();
