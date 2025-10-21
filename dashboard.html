@@ -1179,6 +1179,134 @@
             if (mobileSettingsLink) mobileSettingsLink.href = generateNavUrl('settings');
         }
 
+        // Function to load dashboard data
+        function loadDashboardData() {
+            console.log('loadDashboardData function called');
+            // Optimized dashboard data fetching with caching
+            const cacheKey = 'dashboard_data_cache';
+            const cacheExpiry = 5 * 60 * 1000; // 5 minutes cache
+            const now = Date.now();
+            console.log('Cache key:', cacheKey, 'Cache expiry:', cacheExpiry, 'Now:', now);
+            
+            // Check if we have cached data that's still valid
+            const cachedData = localStorage.getItem(cacheKey);
+            const cacheTimestamp = localStorage.getItem(cacheKey + '_timestamp');
+            
+            if (cachedData && cacheTimestamp && (now - parseInt(cacheTimestamp)) < cacheExpiry) {
+                // Use cached data for faster loading
+                try {
+                    const data = JSON.parse(cachedData);
+                    chartData = data?.semesters || [];
+                    renderKpis(data?.kpis || {});
+                    renderCharts(chartData);
+                    console.log('Dashboard data loaded from cache');
+                } catch (e) {
+                    console.log('Cache corrupted, fetching fresh data');
+                    fetchFreshData();
+                }
+            } else {
+                // Fetch fresh data
+                fetchFreshData();
+            }
+            
+            function fetchFreshData() {
+                // Show loading indicator
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.id = 'loading-indicator';
+                loadingIndicator.innerHTML = '<div class="text-center p-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-slate-600">Loading dashboard data...</p></div>';
+                document.body.appendChild(loadingIndicator);
+                
+                // Fetch with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                fetch('https://sps.up.railway.app/api/dashboard-summary', {
+                    signal: controller.signal,
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                })
+                .then(r => {
+                    clearTimeout(timeoutId);
+                    if (!r.ok) throw new Error('Network response was not ok');
+                    return r.json();
+                })
+                .then(data => {
+                    console.log('API Response:', data);
+                    console.log('KPIs data:', data?.kpis);
+                    console.log('Semesters data:', data?.semesters);
+                    
+                    // Cache the data
+                    localStorage.setItem(cacheKey, JSON.stringify(data));
+                    localStorage.setItem(cacheKey + '_timestamp', now.toString());
+                    
+                    chartData = data?.semesters || [];
+                    renderKpis(data?.kpis || {});
+                    renderCharts(chartData);
+                    
+                    // Remove loading indicator
+                    const loadingEl = document.getElementById('loading-indicator');
+                    if (loadingEl) loadingEl.remove();
+                    
+                    console.log('Dashboard data fetched and cached');
+                })
+                .catch(error => {
+                    clearTimeout(timeoutId);
+                    console.error('Dashboard fetch error:', error);
+                    
+                    // Remove loading indicator
+                    const loadingEl = document.getElementById('loading-indicator');
+                    if (loadingEl) loadingEl.remove();
+                    
+                    // Try to load from cache as fallback
+                    try {
+                        const cachedData = localStorage.getItem(cacheKey);
+                        if (cachedData) {
+                            const data = JSON.parse(cachedData);
+                            console.log('Loading from cache as fallback:', data);
+                            chartData = data?.semesters || [];
+                            renderKpis(data?.kpis || {});
+                            renderCharts(chartData);
+                            return;
+                        }
+                    } catch (e) {
+                        console.log('Cache also failed:', e);
+                    }
+                    
+                    // Show error message and try with mock data
+                    console.log('API failed, trying with mock data for testing');
+                    
+                    // Mock data for testing
+                    const mockData = {
+                        kpis: {
+                            sanctioned_intake: 60,
+                            total_admitted: 58,
+                            dse: 2,
+                            successfully_completed: 45,
+                            placed_percentage: 78,
+                            higher_ed_percentage: 15
+                        },
+                        semesters: [
+                            { semester: 'SEM1', pass_percentage: 85, avg_cgpa: 7.2 },
+                            { semester: 'SEM2', pass_percentage: 88, avg_cgpa: 7.5 },
+                            { semester: 'SEM3', pass_percentage: 82, avg_cgpa: 7.1 },
+                            { semester: 'SEM4', pass_percentage: 90, avg_cgpa: 7.8 }
+                        ]
+                    };
+                    
+                    chartData = mockData.semesters || [];
+                    renderKpis(mockData.kpis || {});
+                    renderCharts(chartData);
+                    
+                    showAlert('Using demo data. API connection failed.', () => {
+                        // Retry after 3 seconds
+                        setTimeout(fetchFreshData, 3000);
+                    });
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -1199,135 +1327,8 @@
             
             // Load dashboard data
             console.log('About to call loadDashboardData');
+            console.log('loadDashboardData function exists:', typeof loadDashboardData);
             loadDashboardData();
-            
-            // Function to load dashboard data
-            function loadDashboardData() {
-                console.log('loadDashboardData function called');
-                // Optimized dashboard data fetching with caching
-                const cacheKey = 'dashboard_data_cache';
-                const cacheExpiry = 5 * 60 * 1000; // 5 minutes cache
-                const now = Date.now();
-                console.log('Cache key:', cacheKey, 'Cache expiry:', cacheExpiry, 'Now:', now);
-                
-                // Check if we have cached data that's still valid
-                const cachedData = localStorage.getItem(cacheKey);
-                const cacheTimestamp = localStorage.getItem(cacheKey + '_timestamp');
-                
-                if (cachedData && cacheTimestamp && (now - parseInt(cacheTimestamp)) < cacheExpiry) {
-                    // Use cached data for faster loading
-                    try {
-                        const data = JSON.parse(cachedData);
-                        chartData = data?.semesters || [];
-                        renderKpis(data?.kpis || {});
-                        renderCharts(chartData);
-                        console.log('Dashboard data loaded from cache');
-                    } catch (e) {
-                        console.log('Cache corrupted, fetching fresh data');
-                        fetchFreshData();
-                    }
-                } else {
-                    // Fetch fresh data
-                    fetchFreshData();
-                }
-                
-                function fetchFreshData() {
-                    // Show loading indicator
-                    const loadingIndicator = document.createElement('div');
-                    loadingIndicator.id = 'loading-indicator';
-                    loadingIndicator.innerHTML = '<div class="text-center p-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-slate-600">Loading dashboard data...</p></div>';
-                    document.body.appendChild(loadingIndicator);
-                    
-                    // Fetch with timeout
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-                    
-                    fetch('https://sps.up.railway.app/api/dashboard-summary', {
-                        signal: controller.signal,
-                        headers: {
-                            'Cache-Control': 'no-cache',
-                            'Pragma': 'no-cache'
-                        }
-                    })
-                    .then(r => {
-                        clearTimeout(timeoutId);
-                        if (!r.ok) throw new Error('Network response was not ok');
-                        return r.json();
-                    })
-                    .then(data => {
-                        console.log('API Response:', data);
-                        console.log('KPIs data:', data?.kpis);
-                        console.log('Semesters data:', data?.semesters);
-                        
-                        // Cache the data
-                        localStorage.setItem(cacheKey, JSON.stringify(data));
-                        localStorage.setItem(cacheKey + '_timestamp', now.toString());
-                        
-                        chartData = data?.semesters || [];
-                        renderKpis(data?.kpis || {});
-                        renderCharts(chartData);
-                        
-                        // Remove loading indicator
-                        const loadingEl = document.getElementById('loading-indicator');
-                        if (loadingEl) loadingEl.remove();
-                        
-                        console.log('Dashboard data fetched and cached');
-                    })
-                    .catch(error => {
-                        clearTimeout(timeoutId);
-                        console.error('Dashboard fetch error:', error);
-                        
-                        // Remove loading indicator
-                        const loadingEl = document.getElementById('loading-indicator');
-                        if (loadingEl) loadingEl.remove();
-                        
-                        // Try to load from cache as fallback
-                        try {
-                            const cachedData = localStorage.getItem(cacheKey);
-                            if (cachedData) {
-                                const data = JSON.parse(cachedData);
-                                console.log('Loading from cache as fallback:', data);
-                                chartData = data?.semesters || [];
-                                renderKpis(data?.kpis || {});
-                                renderCharts(chartData);
-                                return;
-                            }
-                        } catch (e) {
-                            console.log('Cache also failed:', e);
-                        }
-                        
-                        // Show error message and try with mock data
-                        console.log('API failed, trying with mock data for testing');
-                        
-                        // Mock data for testing
-                        const mockData = {
-                            kpis: {
-                                sanctioned_intake: 60,
-                                total_admitted: 58,
-                                dse: 2,
-                                successfully_completed: 45,
-                                placed_percentage: 78,
-                                higher_ed_percentage: 15
-                            },
-                            semesters: [
-                                { semester: 'SEM1', pass_percentage: 85, avg_cgpa: 7.2 },
-                                { semester: 'SEM2', pass_percentage: 88, avg_cgpa: 7.5 },
-                                { semester: 'SEM3', pass_percentage: 82, avg_cgpa: 7.1 },
-                                { semester: 'SEM4', pass_percentage: 90, avg_cgpa: 7.8 }
-                            ]
-                        };
-                        
-                        chartData = mockData.semesters || [];
-                        renderKpis(mockData.kpis || {});
-                        renderCharts(chartData);
-                        
-                        showAlert('Using demo data. API connection failed.', () => {
-                            // Retry after 3 seconds
-                            setTimeout(fetchFreshData, 3000);
-                        });
-                    });
-                }
-            }
             
             const headerTitle = document.getElementById('header-title');
             
@@ -1544,6 +1545,9 @@
 
         function renderKpis(kpis) {
             console.log('renderKpis called with:', kpis);
+            console.log('renderKpis kpis type:', typeof kpis);
+            console.log('renderKpis kpis keys:', Object.keys(kpis || {}));
+            
             const elS = document.getElementById('kpi-sanctioned');
             const elA = document.getElementById('kpi-admitted');
             const elD = document.getElementById('kpi-dse');
@@ -1847,7 +1851,7 @@
 
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            inactivityTimer = setTimeout(() => {
+            inactivityTimer = setTimeout(async () => {
                 // Show logout confirmation
                 if (await showConfirmModal('You have been inactive for 15 minutes. You will be logged out for security.', 'Session Timeout')) {
                     localStorage.removeItem('loggedInUser');
@@ -1957,7 +1961,6 @@
                 });
             }
         });
-        }
     </script>
 </body>
 </html>
