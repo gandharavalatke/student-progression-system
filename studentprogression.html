@@ -2270,7 +2270,19 @@
                 currentPageLink.classList.add('active');
             }
 
+            // Check if menu should be open from previous page
+            const menuWasOpen = localStorage.getItem('mobileMenuOpen') === 'true';
+            
             if (mobileNavUp && mobileNavDown && mobileNavPopup) {
+                // Initialize menu state based on localStorage
+                if (menuWasOpen) {
+                    mobileNavPopup.classList.remove('hidden');
+                    mobileNavPopup.classList.add('show-up');
+                    mobileNavPopup.classList.remove('show-down');
+                    mobileNavUp.classList.add('hidden');
+                    mobileNavDown.classList.remove('hidden');
+                }
+                
                 mobileNavUp.addEventListener('click', () => {
                     mobileNavPopup.classList.remove('hidden');
                     mobileNavPopup.classList.add('show-up');
@@ -2279,6 +2291,8 @@
                     // Hide up arrow, show down arrow
                     mobileNavUp.classList.add('hidden');
                     mobileNavDown.classList.remove('hidden');
+                    // Save menu state
+                    localStorage.setItem('mobileMenuOpen', 'true');
                 });
 
                 mobileNavDown.addEventListener('click', () => {
@@ -2288,6 +2302,8 @@
                     // Show up arrow, hide down arrow
                     mobileNavUp.classList.remove('hidden');
                     mobileNavDown.classList.add('hidden');
+                    // Save menu state
+                    localStorage.setItem('mobileMenuOpen', 'false');
                 });
 
                 // Close popup when clicking outside
@@ -2301,6 +2317,8 @@
                         // Show up arrow, hide down arrow
                         mobileNavUp.classList.remove('hidden');
                         mobileNavDown.classList.add('hidden');
+                        // Save menu state
+                        localStorage.setItem('mobileMenuOpen', 'false');
                     }
                 });
 

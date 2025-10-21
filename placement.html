@@ -137,13 +137,27 @@
             currentPageLink.classList.add('active');
         }
         
+        // Check if menu should be open from previous page
+        const menuWasOpen = localStorage.getItem('mobileMenuOpen') === 'true';
+        
         if(up&&down&&popup){
+            // Initialize menu state based on localStorage
+            if (menuWasOpen) {
+                popup.classList.remove('hidden');
+                popup.classList.add('show-up');
+                popup.classList.remove('show-down');
+                up.classList.add('hidden');
+                down.classList.remove('hidden');
+            }
+            
             up.addEventListener('click',()=>{
                 popup.classList.remove('hidden');
                 popup.classList.add('show-up');
                 popup.classList.remove('show-down');
                 up.classList.add('hidden');
                 down.classList.remove('hidden');
+                // Save menu state
+                localStorage.setItem('mobileMenuOpen', 'true');
             });
             
             down.addEventListener('click',()=>{
@@ -151,6 +165,8 @@
                 popup.classList.remove('show-up','show-down');
                 down.classList.add('hidden');
                 up.classList.remove('hidden');
+                // Save menu state
+                localStorage.setItem('mobileMenuOpen', 'false');
             });
             
             // Close popup when clicking outside
@@ -160,6 +176,8 @@
                     popup.classList.remove('show-up','show-down');
                     down.classList.add('hidden');
                     up.classList.remove('hidden');
+                    // Save menu state
+                    localStorage.setItem('mobileMenuOpen', 'false');
                 }
             });
         }
