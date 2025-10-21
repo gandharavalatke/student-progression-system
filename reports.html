@@ -492,45 +492,14 @@
             resetInactivityTimer();
         }
 
-        // Load dynamic IDs and update navigation links
+        // Load dynamic IDs (not needed for navigation since we use event listeners)
         async function loadDynamicIds() {
             try {
                 const response = await fetch('/api/get-current-ids');
                 const ids = await response.json();
                 
-                // Update sidebar navigation links
-                const sidebarLinks = {
-                    'dashboard': document.querySelector('a[href="dashboard.html"]'),
-                    'academic': document.querySelector('a[href="studentprogression.html"]'),
-                    'placement': document.querySelector('a[href="placement.html"]'),
-                    'extracurricular': document.querySelector('a[href="extracurricular.html"]'),
-                    'reports': document.querySelector('a[href="reports.html"]'),
-                    'settings': document.querySelector('a[href="settings.html"]')
-                };
-                
-                // Update mobile navigation links
-                const mobileLinks = {
-                    'dashboard': document.querySelector('.mobile-nav-item[href="dashboard.html"]'),
-                    'academic': document.querySelector('.mobile-nav-item[href="studentprogression.html"]'),
-                    'placement': document.querySelector('.mobile-nav-item[href="placement.html"]'),
-                    'extracurricular': document.querySelector('.mobile-nav-item[href="extracurricular.html"]'),
-                    'reports': document.querySelector('.mobile-nav-item[href="reports.html"]'),
-                    'settings': document.querySelector('.mobile-nav-item[href="settings.html"]')
-                };
-                
-                // Update sidebar links
-                Object.keys(sidebarLinks).forEach(key => {
-                    if (sidebarLinks[key] && ids[key]) {
-                        sidebarLinks[key].href = `/${ids[key]}`;
-                    }
-                });
-                
-                // Update mobile links
-                Object.keys(mobileLinks).forEach(key => {
-                    if (mobileLinks[key] && ids[key]) {
-                        mobileLinks[key].href = `/${ids[key]}`;
-                    }
-                });
+                // Store IDs for potential future use
+                sessionStorage.setItem('dynamicIds', JSON.stringify(ids));
             } catch (error) {
                 console.error('Failed to load dynamic IDs:', error);
             }
