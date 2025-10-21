@@ -1552,10 +1552,21 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize theme from localStorage
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            // Initialize theme - default to dark, only use saved theme if user is logged in
+            const isLoggedIn = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
+            let savedTheme = 'dark'; // Default to dark
+            
+            if (isLoggedIn) {
+                // Only use saved theme if user is logged in
+                savedTheme = localStorage.getItem('theme') || 'dark';
+            } else {
+                // If not logged in, force dark theme and clear any saved theme
+                localStorage.removeItem('theme');
+                savedTheme = 'dark';
+            }
+            
             const html = document.documentElement;
-            console.log('Initializing theme:', savedTheme);
+            console.log('Initializing theme:', savedTheme, 'isLoggedIn:', isLoggedIn);
             if (savedTheme === 'light') {
                 html.classList.remove('dark');
                 html.classList.add('light');
