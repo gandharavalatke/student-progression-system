@@ -27,31 +27,6 @@
             border: 1px solid rgba(59, 130, 246, 0.2);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        
-        /* Light mode styles */
-        .light body {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-        }
-        .light .admin-card {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        }
-        .light .text-white {
-            color: #1e293b !important;
-        }
-        .light .text-slate-300 {
-            color: #475569 !important;
-        }
-        .light .bg-slate-800\/50 {
-            background-color: rgba(248, 250, 252, 0.5) !important;
-        }
-        .light .border-slate-600 {
-            border-color: #cbd5e1 !important;
-        }
-        .light .focus\:border-blue-500:focus {
-            border-color: #3b82f6 !important;
-        }
     </style>
 </head>
 <body class="text-white">
@@ -99,59 +74,21 @@
         </div>
     </div>
     <div id="result-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
-        <div id="result-modal" class="modal-box bg-slate-800 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-sm sm:max-w-md mx-4 text-center border border-slate-600">
+        <div id="result-modal" class="modal-box bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600">
             <div id="result-icon-bg" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4">
                 <i id="result-icon" class="fa-solid text-xl text-white"></i>
             </div>
-            <h3 class="text-base sm:text-lg leading-6 font-medium text-white" id="result-title"></h3>
-            <div class="mt-2 px-4 sm:px-7 py-3">
+            <h3 class="text-lg leading-6 font-medium text-white" id="result-title"></h3>
+            <div class="mt-2 px-7 py-3">
                 <p class="text-sm text-slate-300" id="result-message"></p>
             </div>
-            <div class="mt-4 sm:mt-5 sm:mt-6">
-                <button id="result-close-btn" class="w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-sm sm:text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 transition-all">Close</button>
+            <div class="mt-5 sm:mt-6">
+                <button id="result-close-btn" class="w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 font-medium text-white hover:from-blue-700 hover:to-blue-800 transition-all">Close</button>
             </div>
         </div>
     </div>
     <script>
-        // Generate unique ID for URL
-        function generateUniqueId() {
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 15);
-            const extraRandom = Math.random().toString(36).substring(2, 15);
-            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
-        }
-
-        // Update URL with unique ID
-        function updateUrlWithUniqueId() {
-            const uniqueId = generateUniqueId();
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('id', uniqueId);
-            currentUrl.searchParams.set('t', Date.now());
-            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
-            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
-            
-            // Update URL without page reload
-            window.history.replaceState({}, '', currentUrl.toString());
-            
-            // Store the unique ID for this session
-            sessionStorage.setItem('currentPageId', uniqueId);
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize theme from localStorage
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            const html = document.documentElement;
-            if (savedTheme === 'light') {
-                html.classList.remove('dark');
-                html.classList.add('light');
-            } else {
-                html.classList.remove('light');
-                html.classList.add('dark');
-            }
-            
-            // Generate unique URL ID
-            updateUrlWithUniqueId();
             const form = document.getElementById('admin-login-form');
             const pwd = document.getElementById('admin-password');
             const authErr = document.getElementById('auth-error');
