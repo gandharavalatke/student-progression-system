@@ -1,4 +1,7 @@
+import bcrypt
 import os
+import certifi
+import pandas as pd
 import random
 import secrets
 import string
@@ -9,56 +12,12 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from flask import Flask, request, jsonify, session, redirect, g
 from flask_cors import CORS
+from pymongo import MongoClient
+from gridfs import GridFS
+from bson import ObjectId
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from io import BytesIO
-
-# Optional imports: make robust so app can start even when not all packages are installed
-try:
-    import pandas as pd
-    import numpy as np
-    HAVE_PANDAS = True
-except Exception as e:
-    pd = None
-    np = None
-    HAVE_PANDAS = False
-    print(f"⚠️ pandas/numpy not installed or broken — result parsing endpoints will be disabled: {e}")
-
-try:
-    import bcrypt
-    HAVE_BCRYPT = True
-except Exception:
-    bcrypt = None
-    HAVE_BCRYPT = False
-    print("⚠️ bcrypt not installed — password hashing will use a simple fallback (dev only).")
-
-try:
-    import certifi
-    HAVE_CERTIFI = True
-except Exception:
-    certifi = None
-    HAVE_CERTIFI = False
-    print("⚠️ certifi not installed — SSL verification may fail on some Windows systems.")
-
-try:
-    from pymongo import MongoClient
-    from gridfs import GridFS
-    from bson import ObjectId
-    HAVE_MONGO = True
-except Exception:
-    MongoClient = None
-    GridFS = None
-    ObjectId = None
-    HAVE_MONGO = False
-    print("⚠️ pymongo/gridfs not installed — running in degraded (in-memory) mode.")
-
-try:
-    from sendgrid import SendGridAPIClient
-    from sendgrid.helpers.mail import Mail
-    HAVE_SENDGRID = True
-except Exception:
-    SendGridAPIClient = None
-    Mail = None
-    HAVE_SENDGRID = False
-    print("⚠️ sendgrid package not installed — email sending will be logged (dev only).")
 # --- Flask App Initialization ---
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
@@ -881,19 +840,11 @@ def reset_password_new():
 
 def build_master_and_summary():
     """Build master DataFrame and per-semester summary from latest GridFS excel files."""
-    if not HAVE_PANDAS:
-        print("⚠️ Cannot build summary: pandas not available")
-        return None, []
-        
-    if not HAVE_MONGO or db is None:
-        print("⚠️ Cannot build summary: MongoDB not available")
-        return None, []
-
-    try:
-        fs = GridFS(db)
-        sem_keys = [f"sem{i}" for i in range(1, 9)]
-        latest_docs = {sem: db.result_files.find_one({"semester": sem, "file_type": "excel"}, sort=[("uploaded_at", -1)]) for sem in sem_keys}
-        master = pd.DataFrame(columns=["Name", "Role"] + [f"Sem{i}" for i in range(1, 9)])
+    fs = GridFS(db)
+    sem_keys = [f"sem{i}" for i in range(1, 9)]
+    latest_docs = {sem: db.result_files.find_one({"semester": sem, "file_type": "excel"}, sort=[("uploaded_at", -1)]) for sem in sem_keys}
+    import pandas as pd
+    master = pd.DataFrame(columns=["Name", "Role"] + [f"Sem{i}" for i in range(1, 9)])
     cleared_set: set = set()
     summary_rows: list = []
     prev_names: set = set()
@@ -1163,9 +1114,6 @@ def upload_admissions_kpis():
 
 @app.route('/api/dashboard-summary', methods=['GET'])
 def get_dashboard_summary():
-    # Get batch filter from query parameters
-    batch_filter = request.args.get('batch', '2024-25')  # Default to current batch
-    
     # Always recompute so UI reflects latest alignment and metrics
     try:
         recompute_dashboard_summary()
@@ -1174,48 +1122,11 @@ def get_dashboard_summary():
     doc = db.dashboard_summary.find_one({"_id": "summary"})
     if not doc:
         return jsonify({"message": "Summary not available"}), 404
-    
-    # Filter data by batch if specified
-    if batch_filter and batch_filter != 'all':
-        # Apply batch filtering logic here
-        # For now, return the full data - this will be enhanced based on actual data structure
-        pass
-    
     # Convert datetime to iso
     if doc.get("updated_at"):
         doc["updated_at"] = doc["updated_at"].isoformat()
-    
-    # Add batch information to response
-    doc["current_batch"] = batch_filter
     return jsonify(doc), 200
 
-
-@app.route('/api/available-batches', methods=['GET'])
-def get_available_batches():
-    """Get list of available batches for filtering."""
-    try:
-        # Get available batches from result files
-        batches = []
-        result_files = list(db.result_files.find({}, {"semester": 1, "uploaded_at": 1}).sort("uploaded_at", -1))
-        
-        # Extract batch years from uploaded files
-        batch_years = set()
-        for file in result_files:
-            if file.get('uploaded_at'):
-                year = file['uploaded_at'].year
-                # Create batch format (e.g., 2024-25)
-                batch_years.add(f"{year}-{str(year+1)[-2:]}")
-        
-        # Add default batches if no files found
-        if not batch_years:
-            batch_years = {"2022-23", "2023-24", "2024-25", "2025-26"}
-        
-        # Sort batches in descending order
-        batches = sorted(list(batch_years), reverse=True)
-        
-        return jsonify({"batches": batches}), 200
-    except Exception as e:
-        return jsonify({"message": f"Error getting batches: {e}"}), 500
 
 @app.route('/api/export-result-summary', methods=['GET'])
 def export_result_summary():
@@ -1244,12 +1155,6 @@ def export_result_summary():
 def upload_result_file():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
-    
-    if not HAVE_PANDAS:
-        return jsonify({"message": "Result upload disabled: pandas not available"}), 503
-    
-    if not HAVE_MONGO or db is None:
-        return jsonify({"message": "Result upload disabled: database not available"}), 503
     
     if 'file' not in request.files:
         return jsonify({"message": "No file part"}), 400

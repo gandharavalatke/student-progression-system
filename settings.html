@@ -368,7 +368,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 20px 20px 0 0;
+            border-radius: 20px;
             padding: 20px;
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(59, 130, 246, 0.2);
@@ -458,6 +458,21 @@
             box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
         }
         
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            }
+            to {
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.3);
+            }
+        }
+        
         /* Ensure extracurricular icon is blue */
         .mobile-nav-item[href*="extracurricular"] {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
@@ -530,19 +545,19 @@
                  <img src="gitlogosite.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-                <a href="dashboard.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/dash-7x9k2m" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
-                <a href="studentprogression.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/academic-3r6t5w" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/placement-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="/extracurricular-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="/reports-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
@@ -571,25 +586,25 @@
             <div class="mobile-nav-content">
                 <!-- First Row - 4 options -->
                 <div class="mobile-nav-row">
-                <a href="dashboard.html" class="mobile-nav-item">
+                <a href="/dash-7x9k2m" class="mobile-nav-item">
                     <i class="fa-solid fa-chart-pie"></i>
                 </a>
-                <a href="studentprogression.html" class="mobile-nav-item">
+                <a href="/academic-3r6t5w" class="mobile-nav-item">
                     <i class="fa-solid fa-arrow-trend-up"></i>
                 </a>
-                    <a href="placement.html" class="mobile-nav-item">
+                    <a href="/placement-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </a>
-                    <a href="extracurricular.html" class="mobile-nav-item">
+                    <a href="/extracurricular-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-trophy"></i>
                     </a>
                 </div>
                 <!-- Second Row - 3 options -->
                 <div class="mobile-nav-row">
-                    <a href="reports.html" class="mobile-nav-item">
+                    <a href="/reports-abc123" class="mobile-nav-item">
                         <i class="fa-solid fa-file-alt"></i>
                     </a>
-                    <a href="settings.html" class="mobile-nav-item">
+                    <a href="/settings-4p8q1n" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
                     <a id="mobile-logout" href="/logout" class="mobile-nav-item">
@@ -1343,6 +1358,12 @@
             const mobileNavDown = document.getElementById('mobile-nav-down');
             const mobileNavPopup = document.getElementById('mobile-nav-popup');
             const mobileLogout = document.getElementById('mobile-logout');
+            
+            // Mark current page as active
+            const currentPageLink = document.querySelector('.mobile-nav-item[href*="settings"]');
+            if (currentPageLink) {
+                currentPageLink.classList.add('active');
+            }
 
             if (mobileNavUp && mobileNavDown && mobileNavPopup) {
                 mobileNavUp.addEventListener('click', () => {
