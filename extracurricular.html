@@ -18,6 +18,12 @@
         .mobile-nav-btn{width:40px;height:40px;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);border:none;border-radius:50%;color:#fff;box-shadow:0 4px 12px rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center}
         /* Make container curved on all edges */
         .mobile-nav-popup{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(30,41,59,0.8);border-radius:20px;padding:20px;box-shadow:0 -10px 40px rgba(0,0,0,.3);border:1px solid rgba(59,130,246,0.2);backdrop-filter:blur(20px);z-index:1000;max-width:90vw;width:300px}
+        .mobile-nav-popup.show-up{animation:slideUp 0.3s ease-out}
+        .mobile-nav-popup.show-down{animation:slideDown 0.3s ease-out}
+        @keyframes slideUp{from{transform:translateX(-50%) translateY(100%);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+        @keyframes slideDown{from{transform:translateX(-50%) translateY(-100%);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+        .mobile-nav-item.active{background:linear-gradient(135deg,#10b981 0%,#059669 100%)!important;box-shadow:0 4px 12px rgba(16,185,129,.4)!important;animation:glow 2s ease-in-out infinite alternate}
+        @keyframes glow{from{box-shadow:0 4px 12px rgba(16,185,129,.4)}to{box-shadow:0 8px 20px rgba(16,185,129,.6),0 0 20px rgba(16,185,129,.3)}}
         .mobile-nav-content{display:flex;flex-direction:column;gap:15px;max-width:280px}
         .mobile-nav-row{display:grid;gap:15px}
         .mobile-nav-row:first-child{grid-template-columns:repeat(4,1fr)}
@@ -118,10 +124,43 @@
     </div>
 
     <script>
+        // Enhanced mobile menu toggle with animations and persistence
         const up=document.getElementById('mobile-nav-up');
         const down=document.getElementById('mobile-nav-down');
         const popup=document.getElementById('mobile-nav-popup');
-        if(up&&down&&popup){up.addEventListener('click',()=>{popup.classList.remove('hidden');up.classList.add('hidden');down.classList.remove('hidden');});down.addEventListener('click',()=>{popup.classList.add('hidden');down.classList.add('hidden');up.classList.remove('hidden');});}
+        
+        // Mark current page as active
+        const currentPageLink = document.querySelector('.mobile-nav-item[href*="extracurricular"]');
+        if (currentPageLink) {
+            currentPageLink.classList.add('active');
+        }
+        
+        if(up&&down&&popup){
+            up.addEventListener('click',()=>{
+                popup.classList.remove('hidden');
+                popup.classList.add('show-up');
+                popup.classList.remove('show-down');
+                up.classList.add('hidden');
+                down.classList.remove('hidden');
+            });
+            
+            down.addEventListener('click',()=>{
+                popup.classList.add('hidden');
+                popup.classList.remove('show-up','show-down');
+                down.classList.add('hidden');
+                up.classList.remove('hidden');
+            });
+            
+            // Close popup when clicking outside
+            document.addEventListener('click',(e)=>{
+                if(!popup.contains(e.target)&&!up.contains(e.target)&&!down.contains(e.target)){
+                    popup.classList.add('hidden');
+                    popup.classList.remove('show-up','show-down');
+                    down.classList.add('hidden');
+                    up.classList.remove('hidden');
+                }
+            });
+        }
 
         // Enhanced authentication check with server verification
         async function checkAuthentication() {

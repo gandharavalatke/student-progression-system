@@ -998,7 +998,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 20px 20px 0 0;
+            border-radius: 20px;
             padding: 20px;
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(59, 130, 246, 0.2);
@@ -1086,6 +1086,21 @@
 
         .mobile-nav-item:last-child:hover {
             box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            }
+            to {
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.3);
+            }
         }
         
         /* Ensure extracurricular icon is blue */
@@ -2248,6 +2263,12 @@
             const mobileNavDown = document.getElementById('mobile-nav-down');
             const mobileNavPopup = document.getElementById('mobile-nav-popup');
             const mobileLogout = document.getElementById('mobile-logout');
+            
+            // Mark current page as active
+            const currentPageLink = document.querySelector('.mobile-nav-item[href*="academic"]');
+            if (currentPageLink) {
+                currentPageLink.classList.add('active');
+            }
 
             if (mobileNavUp && mobileNavDown && mobileNavPopup) {
                 mobileNavUp.addEventListener('click', () => {
