@@ -581,7 +581,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 20px;
+            border-radius: 20px 20px 0 0;
             padding: 20px;
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(59, 130, 246, 0.2);
@@ -671,21 +671,6 @@
             box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
         }
         
-        .mobile-nav-item.active {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from {
-                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-            }
-            to {
-                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.3);
-            }
-        }
-        
         /* Ensure extracurricular icon is blue */
         .mobile-nav-item[href*="extracurricular"] {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
@@ -694,19 +679,6 @@
         
         .mobile-nav-item[href*="extracurricular"]:hover {
             box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4) !important;
-        }
-        
-        .light .mobile-nav-popup {
-            background: rgba(255, 255, 255, 0.95) !important;
-            border: 1px solid rgba(59, 130, 246, 0.3) !important;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1) !important;
-        }
-        
-        .mobile-nav-popup.show-up {
-            animation: slideUp 0.3s ease-out;
-        }
-        .mobile-nav-popup.show-down {
-            animation: slideDown 0.3s ease-out;
         }
         
         /* Ensure consistent icon sizing */
@@ -779,7 +751,7 @@
         }
     </style>
 </head>
-<body class="text-white dark:text-white light:text-slate-800">
+<body class="text-white">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
@@ -787,24 +759,24 @@
                  <img src="gitlogosite.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-                <a href="/dashboard" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
+                <a href="dashboard.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
-                <a href="/academic-3r6t5w" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="studentprogression.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="/placement-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="/extracurricular-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="/reports-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
-                 <a href="/settings-4p8q1n" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
                  <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
@@ -828,25 +800,25 @@
             <div class="mobile-nav-content">
                 <!-- First Row - 4 options -->
                 <div class="mobile-nav-row">
-                <a href="/dash-7x9k2m" class="mobile-nav-item">
+                <a href="/dashboard.html" class="mobile-nav-item">
                     <i class="fa-solid fa-chart-pie"></i>
                 </a>
-                <a href="/academic-3r6t5w" class="mobile-nav-item">
+                <a href="studentprogression.html" class="mobile-nav-item">
                     <i class="fa-solid fa-arrow-trend-up"></i>
                 </a>
-                    <a href="/placement-abc123" class="mobile-nav-item">
+                    <a href="placement.html" class="mobile-nav-item">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </a>
-                    <a href="/extracurricular-abc123" class="mobile-nav-item">
+                    <a href="extracurricular.html" class="mobile-nav-item">
                         <i class="fa-solid fa-trophy"></i>
                     </a>
                 </div>
                 <!-- Second Row - 3 options -->
                 <div class="mobile-nav-row">
-                    <a href="/reports-abc123" class="mobile-nav-item">
+                    <a href="reports.html" class="mobile-nav-item">
                         <i class="fa-solid fa-file-alt"></i>
                     </a>
-                    <a href="/settings-4p8q1n" class="mobile-nav-item">
+                    <a href="settings.html" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
                     <a id="mobile-logout" href="/logout" class="mobile-nav-item">
@@ -877,17 +849,11 @@
 
                     <!-- Year Dropdown -->
                     <div class="relative">
-                        <button id="year-button" class="flex items-center justify-between w-28 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
-                            <i class="fa-solid fa-calendar-alt text-blue-400 mr-2"></i>
-                            <span id="year-selected" class="truncate text-xs">2024-25</span>
-                            <i id="year-chevron" class="fa-solid fa-chevron-down ml-auto flex-shrink-0 transition-transform text-xs"></i>
-                        </button>
-                        <div id="year-panel" class="dropdown-panel hidden absolute mt-2 w-28 glass-card rounded-md shadow-lg z-30 right-0 py-1">
-                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2022-23</a>
-                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2023-24</a>
-                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2024-25</a>
-                            <a href="#" class="year-option block px-3 py-2 text-xs text-slate-300 hover:bg-slate-700/50">2025-26</a>
-                        </div>
+                        <select class="w-32 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
+                            <option value="2024-25">2024-25</option>
+                            <option value="2023-24">2023-24</option>
+                            <option value="2022-23">2022-23</option>
+                        </select>
                     </div>
                 </div>
             </header>
@@ -1116,211 +1082,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.umd.min.js"></script>
     <script>
-        // Generate unique ID for URL
-        function generateUniqueId() {
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 15);
-            const extraRandom = Math.random().toString(36).substring(2, 15);
-            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
-        }
-
-        // Update URL with unique ID
-        function updateUrlWithUniqueId() {
-            const uniqueId = generateUniqueId();
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('id', uniqueId);
-            currentUrl.searchParams.set('t', Date.now());
-            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
-            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
-            
-            // Update URL without page reload
-            window.history.replaceState({}, '', currentUrl.toString());
-            
-            // Store the unique ID for this session
-            sessionStorage.setItem('currentPageId', uniqueId);
-        }
-        
-        // Generate dynamic navigation URLs
-        function generateNavUrl(page) {
-            const uniqueId = generateUniqueId();
-            const url = `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
-            console.log(`Generated URL for ${page}:`, url);
-            return url;
-        }
-        
-        // Update all navigation links with dynamic URLs
-        function updateNavigationUrls() {
-            console.log('updateNavigationUrls called');
-            // Desktop navigation
-            const dashboardLink = document.querySelector('a[href="/dashboard"]');
-            const placementLink = document.querySelector('a[href="/placement-abc123"]');
-            const extracurricularLink = document.querySelector('a[href="/extracurricular-abc123"]');
-            const reportsLink = document.querySelector('a[href="/reports-abc123"]');
-            const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
-            
-            console.log('Found links:', { dashboardLink, placementLink, extracurricularLink, reportsLink, settingsLink });
-            
-            if (dashboardLink) dashboardLink.href = generateNavUrl('dashboard');
-            if (placementLink) placementLink.href = generateNavUrl('placement');
-            if (extracurricularLink) extracurricularLink.href = generateNavUrl('extracurricular');
-            if (reportsLink) reportsLink.href = generateNavUrl('reports');
-            if (settingsLink) settingsLink.href = generateNavUrl('settings');
-            
-            // Mobile navigation
-            const mobilePlacementLink = document.querySelector('.mobile-nav-item[href="/placement-abc123"]');
-            const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href="/extracurricular-abc123"]');
-            const mobileReportsLink = document.querySelector('.mobile-nav-item[href="/reports-abc123"]');
-            const mobileSettingsLink = document.querySelector('.mobile-nav-item[href="/settings-4p8q1n"]');
-            
-            if (mobilePlacementLink) mobilePlacementLink.href = generateNavUrl('placement');
-            if (mobileExtracurricularLink) mobileExtracurricularLink.href = generateNavUrl('extracurricular');
-            if (mobileReportsLink) mobileReportsLink.href = generateNavUrl('reports');
-            if (mobileSettingsLink) mobileSettingsLink.href = generateNavUrl('settings');
-        }
-
-        // Function to load dashboard data
-        function loadDashboardData() {
-            console.log('loadDashboardData function called');
-            // Optimized dashboard data fetching with caching
-            const cacheKey = 'dashboard_data_cache';
-            const cacheExpiry = 5 * 60 * 1000; // 5 minutes cache
-            const now = Date.now();
-            console.log('Cache key:', cacheKey, 'Cache expiry:', cacheExpiry, 'Now:', now);
-            
-            // Check if we have cached data that's still valid
-            const cachedData = localStorage.getItem(cacheKey);
-            const cacheTimestamp = localStorage.getItem(cacheKey + '_timestamp');
-            
-            if (cachedData && cacheTimestamp && (now - parseInt(cacheTimestamp)) < cacheExpiry) {
-                // Use cached data for faster loading
-                try {
-                    const data = JSON.parse(cachedData);
-                    chartData = data?.semesters || [];
-                    renderKpis(data?.kpis || {});
-                    renderCharts(chartData);
-                    console.log('Dashboard data loaded from cache');
-                } catch (e) {
-                    console.log('Cache corrupted, fetching fresh data');
-                    fetchFreshData();
-                }
-            } else {
-                // Fetch fresh data
-                fetchFreshData();
-            }
-            
-            function fetchFreshData() {
-                // Show loading indicator
-                const loadingIndicator = document.createElement('div');
-                loadingIndicator.id = 'loading-indicator';
-                loadingIndicator.innerHTML = '<div class="text-center p-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-slate-600">Loading dashboard data...</p></div>';
-                document.body.appendChild(loadingIndicator);
-                
-                // Fetch with timeout
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-                
-                fetch('https://sps.up.railway.app/api/dashboard-summary', {
-                    signal: controller.signal,
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache'
-                    }
-                })
-                .then(r => {
-                    clearTimeout(timeoutId);
-                    if (!r.ok) throw new Error('Network response was not ok');
-                    return r.json();
-                })
-                .then(data => {
-                    console.log('API Response:', data);
-                    console.log('KPIs data:', data?.kpis);
-                    console.log('Semesters data:', data?.semesters);
-                    
-                    // Cache the data
-                    localStorage.setItem(cacheKey, JSON.stringify(data));
-                    localStorage.setItem(cacheKey + '_timestamp', now.toString());
-                    
-                    chartData = data?.semesters || [];
-                    renderKpis(data?.kpis || {});
-                    renderCharts(chartData);
-                    
-                    // Remove loading indicator
-                    const loadingEl = document.getElementById('loading-indicator');
-                    if (loadingEl) loadingEl.remove();
-                    
-                    console.log('Dashboard data fetched and cached');
-                })
-                .catch(error => {
-                    clearTimeout(timeoutId);
-                    console.error('Dashboard fetch error:', error);
-                    
-                    // Remove loading indicator
-                    const loadingEl = document.getElementById('loading-indicator');
-                    if (loadingEl) loadingEl.remove();
-                    
-                    // Try to load from cache as fallback
-                    try {
-                        const cachedData = localStorage.getItem(cacheKey);
-                        if (cachedData) {
-                            const data = JSON.parse(cachedData);
-                            console.log('Loading from cache as fallback:', data);
-                            chartData = data?.semesters || [];
-                            renderKpis(data?.kpis || {});
-                            renderCharts(chartData);
-                            return;
-                        }
-                    } catch (e) {
-                        console.log('Cache also failed:', e);
-                    }
-                    
-                    // Show error message and try with mock data
-                    console.log('API failed, trying with mock data for testing');
-                    
-                    // Mock data for testing
-                    const mockData = {
-                        kpis: {
-                            sanctioned_intake: 60,
-                            total_admitted: 58,
-                            dse: 2,
-                            successfully_completed: 45,
-                            placed_percentage: 78,
-                            higher_ed_percentage: 15
-                        },
-                        semesters: [
-                            { semester: 'SEM1', pass_percentage: 85, avg_cgpa: 7.2 },
-                            { semester: 'SEM2', pass_percentage: 88, avg_cgpa: 7.5 },
-                            { semester: 'SEM3', pass_percentage: 82, avg_cgpa: 7.1 },
-                            { semester: 'SEM4', pass_percentage: 90, avg_cgpa: 7.8 }
-                        ]
-                    };
-                    
-                    chartData = mockData.semesters || [];
-                    renderKpis(mockData.kpis || {});
-                    renderCharts(chartData);
-                    
-                    showAlert('Using demo data. API connection failed.', () => {
-                        // Retry after 3 seconds
-                        setTimeout(fetchFreshData, 3000);
-                    });
-                });
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize theme - default to dark, only use saved theme if user is logged in
-            const isLoggedIn = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
-            let savedTheme = 'dark'; // Default to dark
-            
-            if (isLoggedIn) {
-                // Only use saved theme if user is logged in
-                savedTheme = localStorage.getItem('theme') || 'dark';
-            } else {
-                // If not logged in, force dark theme and clear any saved theme
-                localStorage.removeItem('theme');
-                savedTheme = 'dark';
-            }
-            
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
             const html = document.documentElement;
             if (savedTheme === 'light') {
                 html.classList.remove('dark');
@@ -1330,49 +1094,14 @@
                 html.classList.add('dark');
             }
             
-            // Generate unique URL ID
-            updateUrlWithUniqueId();
-            
-            // Update navigation URLs with dynamic IDs
-            updateNavigationUrls();
-            
-            // Load dashboard data
-            console.log('About to call loadDashboardData');
-            console.log('loadDashboardData function exists:', typeof loadDashboardData);
-            loadDashboardData();
-            
             const headerTitle = document.getElementById('header-title');
             
-            // Year Dropdown
-            const yearButton = document.getElementById('year-button');
-            const yearPanel = document.getElementById('year-panel');
-            const yearSelected = document.getElementById('year-selected');
-            const yearOptions = document.querySelectorAll('.year-option');
-            const yearChevron = document.getElementById('year-chevron');
-
-            // Department now static, no dropdown logic needed
-
-            // Toggle Year Dropdown
-            yearButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-            const isHidden = yearPanel.classList.toggle('hidden');
-            yearChevron.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
-            });
-
-            // Department is now static, no selection logic needed
-
-            // Handle Year Selection
-            yearOptions.forEach(option => {
-                option.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    yearSelected.textContent = option.textContent;
-                    updateHeaderTitle();
-                });
-            });
             
             function updateHeaderTitle() {
-                headerTitle.textContent = `CSE(AIML) Dept - ${yearSelected.textContent}`;
+                const dept = deptSelected ? deptSelected.textContent : 'CSE(AIML)';
+                headerTitle.textContent = `${dept} Dashboard`;
             }
+
 
             // Logout with confirmation modal
             const logoutLink = document.getElementById('logout-link');
@@ -1404,8 +1133,8 @@
 
             // Close dropdowns if clicking anywhere else
             window.addEventListener('click', () => {
-                yearPanel.classList.add('hidden');
-                yearChevron.style.transform = 'rotate(0deg)';
+                batchPanel.classList.add('hidden');
+                batchChevron.style.transform = 'rotate(0deg)';
             });
 
             // Store chart data for re-rendering
@@ -1428,115 +1157,17 @@
             });
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
             
+            // Fetch dashboard data and render with selected batch
+            const selectedBatch = window.batchFilter.getCurrentBatch();
+            fetch(`/api/dashboard-summary?batch=${encodeURIComponent(selectedBatch)}`)
+                .then(r => r.json())
+                .then(data => {
+                    chartData = data?.semesters || [];
+                    renderKpis(data?.kpis || {});
+                    renderCharts(chartData);
+                })
+                .catch(() => {});
         });
-
-        // Enhanced modal functions for better UX
-        function showAlertModal(message, title = 'Notice') {
-            return new Promise((resolve) => {
-                const overlay = document.createElement('div');
-                overlay.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]';
-                overlay.innerHTML = `
-                    <div class="bg-white rounded-xl shadow-2xl border border-blue-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="alert-modal">
-                        <div class="mx-auto flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-blue-100 mb-3 sm:mb-4">
-                            <i class="fa-solid fa-circle-info text-blue-500 text-lg sm:text-xl"></i>
-                        </div>
-                        <h3 class="text-gray-800 text-base sm:text-lg font-semibold mb-2">${title}</h3>
-                        <p class="text-gray-600 mb-4 sm:mb-5 text-sm sm:text-base">${message}</p>
-                        <button id="alert-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
-                
-                // Animate in
-                setTimeout(() => {
-                    const modal = overlay.querySelector('#alert-modal');
-                    modal.classList.remove('scale-95', 'opacity-0');
-                    modal.classList.add('scale-100', 'opacity-100');
-                }, 10);
-                
-                overlay.querySelector('#alert-ok').addEventListener('click', () => {
-                    const modal = overlay.querySelector('#alert-modal');
-                    modal.classList.remove('scale-100', 'opacity-100');
-                    modal.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        document.body.removeChild(overlay);
-                        resolve(true);
-                    }, 300);
-                });
-                
-                overlay.addEventListener('click', (e) => {
-                    if (e.target === overlay) {
-                        const modal = overlay.querySelector('#alert-modal');
-                        modal.classList.remove('scale-100', 'opacity-100');
-                        modal.classList.add('scale-95', 'opacity-0');
-                        setTimeout(() => {
-                            document.body.removeChild(overlay);
-                            resolve(true);
-                        }, 300);
-                    }
-                });
-            });
-        }
-
-        function showConfirmModal(message, title = 'Confirm') {
-            return new Promise((resolve) => {
-                const overlay = document.createElement('div');
-                overlay.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]';
-                overlay.innerHTML = `
-                    <div class="bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="confirm-modal">
-                        <div class="mx-auto flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-yellow-100 mb-3 sm:mb-4">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-lg sm:text-xl"></i>
-                        </div>
-                        <h3 class="text-gray-800 text-base sm:text-lg font-semibold mb-2">${title}</h3>
-                        <p class="text-gray-600 mb-4 sm:mb-5 text-sm sm:text-base">${message}</p>
-                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:space-x-3">
-                            <button id="confirm-cancel" class="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all transform hover:scale-105 text-sm sm:text-base">Cancel</button>
-                            <button id="confirm-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
-                
-                // Animate in
-                setTimeout(() => {
-                    const modal = overlay.querySelector('#confirm-modal');
-                    modal.classList.remove('scale-95', 'opacity-0');
-                    modal.classList.add('scale-100', 'opacity-100');
-                }, 10);
-                
-                overlay.querySelector('#confirm-cancel').addEventListener('click', () => {
-                    const modal = overlay.querySelector('#confirm-modal');
-                    modal.classList.remove('scale-100', 'opacity-100');
-                    modal.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        document.body.removeChild(overlay);
-                        resolve(false);
-                    }, 300);
-                });
-                
-                overlay.querySelector('#confirm-ok').addEventListener('click', () => {
-                    const modal = overlay.querySelector('#confirm-modal');
-                    modal.classList.remove('scale-100', 'opacity-100');
-                    modal.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        document.body.removeChild(overlay);
-                        resolve(true);
-                    }, 300);
-                });
-                
-                overlay.addEventListener('click', (e) => {
-                    if (e.target === overlay) {
-                        const modal = overlay.querySelector('#confirm-modal');
-                        modal.classList.remove('scale-100', 'opacity-100');
-                        modal.classList.add('scale-95', 'opacity-0');
-                        setTimeout(() => {
-                            document.body.removeChild(overlay);
-                            resolve(false);
-                        }, 300);
-                    }
-                });
-            });
-        }
 
         function showAlert(message, onClose) {
             const overlay = document.getElementById('alert-overlay');
@@ -1555,10 +1186,6 @@
         }
 
         function renderKpis(kpis) {
-            console.log('renderKpis called with:', kpis);
-            console.log('renderKpis kpis type:', typeof kpis);
-            console.log('renderKpis kpis keys:', Object.keys(kpis || {}));
-            
             const elS = document.getElementById('kpi-sanctioned');
             const elA = document.getElementById('kpi-admitted');
             const elD = document.getElementById('kpi-dse');
@@ -1566,32 +1193,12 @@
             const elP = document.getElementById('kpi-placed');
             const elH = document.getElementById('kpi-higher-ed');
             
-            console.log('Elements found:', { elS, elA, elD, elC, elP, elH });
-            
-            if (elS) {
-                elS.textContent = kpis.sanctioned_intake ?? '—';
-                console.log('Set sanctioned_intake:', kpis.sanctioned_intake);
-            }
-            if (elA) {
-                elA.textContent = kpis.total_admitted ?? '—';
-                console.log('Set total_admitted:', kpis.total_admitted);
-            }
-            if (elD) {
-                elD.textContent = kpis.dse ?? '—';
-                console.log('Set dse:', kpis.dse);
-            }
-            if (elC) {
-                elC.textContent = kpis.successfully_completed ?? '—';
-                console.log('Set successfully_completed:', kpis.successfully_completed);
-            }
-            if (elP) {
-                elP.textContent = kpis.placed_percentage ? `${kpis.placed_percentage}%` : '—';
-                console.log('Set placed_percentage:', kpis.placed_percentage);
-            }
-            if (elH) {
-                elH.textContent = kpis.higher_ed_percentage ? `${kpis.higher_ed_percentage}%` : '—';
-                console.log('Set higher_ed_percentage:', kpis.higher_ed_percentage);
-            }
+            if (elS) elS.textContent = kpis.sanctioned_intake ?? '—';
+            if (elA) elA.textContent = kpis.total_admitted ?? '—';
+            if (elD) elD.textContent = kpis.dse ?? '—';
+            if (elC) elC.textContent = kpis.successfully_completed ?? '—';
+            if (elP) elP.textContent = kpis.placed_percentage ? `${kpis.placed_percentage}%` : '—';
+            if (elH) elH.textContent = kpis.higher_ed_percentage ? `${kpis.higher_ed_percentage}%` : '—';
         }
 
         function renderCharts(semesters) {
@@ -1678,26 +1285,8 @@
         const mobileNavDown = document.getElementById('mobile-nav-down');
         const mobileNavPopup = document.getElementById('mobile-nav-popup');
         const mobileLogout = document.getElementById('mobile-logout');
-        
-        // Mark current page as active
-        const currentPageLink = document.querySelector('.mobile-nav-item[href*="dash"]');
-        if (currentPageLink) {
-            currentPageLink.classList.add('active');
-        }
 
-        // Check if menu should be open from previous page
-        const menuWasOpen = localStorage.getItem('mobileMenuOpen') === 'true';
-        
         if (mobileNavUp && mobileNavDown && mobileNavPopup) {
-            // Initialize menu state based on localStorage
-            if (menuWasOpen) {
-                mobileNavPopup.classList.remove('hidden');
-                mobileNavPopup.classList.add('show-up');
-                mobileNavPopup.classList.remove('show-down');
-                mobileNavUp.classList.add('hidden');
-                mobileNavDown.classList.remove('hidden');
-            }
-            
             mobileNavUp.addEventListener('click', () => {
                 mobileNavPopup.classList.remove('hidden');
                 mobileNavPopup.classList.add('show-up');
@@ -1706,26 +1295,15 @@
                 // Hide up arrow, show down arrow
                 mobileNavUp.classList.add('hidden');
                 mobileNavDown.classList.remove('hidden');
-                // Save menu state
-                localStorage.setItem('mobileMenuOpen', 'true');
             });
 
             mobileNavDown.addEventListener('click', () => {
-                // Add down animation before hiding
-                mobileNavPopup.classList.add('show-down');
-                mobileNavPopup.classList.remove('show-up');
-                
-                // Hide after animation completes
-                setTimeout(() => {
-                    mobileNavPopup.classList.add('hidden');
-                    mobileNavPopup.classList.remove('show-up', 'show-down');
-                }, 300); // Match animation duration
+                mobileNavPopup.classList.add('hidden');
+                mobileNavPopup.classList.remove('show-up', 'show-down');
                 
                 // Show up arrow, hide down arrow
                 mobileNavUp.classList.remove('hidden');
                 mobileNavDown.classList.add('hidden');
-                // Save menu state
-                localStorage.setItem('mobileMenuOpen', 'false');
             });
 
             // Close popup when clicking outside
@@ -1733,21 +1311,12 @@
                 if (!mobileNavPopup.contains(e.target) && 
                     !mobileNavUp.contains(e.target) && 
                     !mobileNavDown.contains(e.target)) {
-                    // Add down animation before hiding
-                    mobileNavPopup.classList.add('show-down');
-                    mobileNavPopup.classList.remove('show-up');
-                    
-                    // Hide after animation completes
-                    setTimeout(() => {
-                        mobileNavPopup.classList.add('hidden');
-                        mobileNavPopup.classList.remove('show-up', 'show-down');
-                    }, 300); // Match animation duration
+                    mobileNavPopup.classList.add('hidden');
+                    mobileNavPopup.classList.remove('show-up', 'show-down');
                     
                     // Show up arrow, hide down arrow
                     mobileNavUp.classList.remove('hidden');
                     mobileNavDown.classList.add('hidden');
-                    // Save menu state
-                    localStorage.setItem('mobileMenuOpen', 'false');
                 }
             });
 
@@ -1803,24 +1372,24 @@
         // Update header title function
         function updateHeaderTitle() {
             const dept = deptSelected ? deptSelected.textContent : 'CSE(AIML)';
-            const year = yearSelected ? yearSelected.textContent : 'Academic Year';
-            headerTitle.textContent = `${dept} Dept - ${year}`;
+            const batch = batchSelected ? batchSelected.textContent : 'Academic Year';
+            headerTitle.textContent = `${dept} Dept - ${batch}`;
             
             // Save to localStorage
             localStorage.setItem('selectedDepartment', dept);
-            localStorage.setItem('selectedYear', year);
+            localStorage.setItem('selectedBatch', batch);
         }
 
-        // Load saved department and year on page load
+        // Load saved department and batch on page load
         function loadSavedSelections() {
             const savedDept = localStorage.getItem('selectedDepartment');
-            const savedYear = localStorage.getItem('selectedYear');
+            const savedBatch = localStorage.getItem('selectedBatch');
             
             if (savedDept && deptSelected) {
                 deptSelected.textContent = savedDept;
             }
-            if (savedYear && yearSelected) {
-                yearSelected.textContent = savedYear;
+            if (savedBatch && batchSelected) {
+                batchSelected.textContent = savedBatch;
             }
             
             updateHeaderTitle();
@@ -1862,9 +1431,9 @@
 
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            inactivityTimer = setTimeout(async () => {
+            inactivityTimer = setTimeout(() => {
                 // Show logout confirmation
-                if (await showConfirmModal('You have been inactive for 15 minutes. You will be logged out for security.', 'Session Timeout')) {
+                if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
                     localStorage.removeItem('loggedInUser');
                     sessionStorage.removeItem('loggedInUser');
                     window.location.href = '/';
@@ -1972,8 +1541,7 @@
                 });
             }
         });
-        
-        // Cache buster - Version 2.0
+        }
     </script>
 </body>
 </html>
