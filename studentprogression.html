@@ -1189,27 +1189,27 @@
                  <img src="gitlogosite.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-                <a href="/dash-7x9k2m" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a id="nav-dashboard" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
-                <a href="/academic-3r6t5w" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
+                <a id="nav-academic" href="#" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="/placement-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a id="nav-placement" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="/extracurricular-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a id="nav-extracurricular" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="/reports-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="nav-reports" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
-                 <a href="/settings-4p8q1n" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="nav-settings" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -1230,28 +1230,28 @@
             <div class="mobile-nav-content">
                 <!-- First Row - 4 options -->
                 <div class="mobile-nav-row">
-                <a href="/dash-7x9k2m" class="mobile-nav-item">
+                <a id="mobile-nav-dashboard" href="#" class="mobile-nav-item">
                     <i class="fa-solid fa-chart-pie"></i>
                 </a>
-                <a href="/academic-3r6t5w" class="mobile-nav-item">
+                <a id="mobile-nav-academic" href="#" class="mobile-nav-item">
                     <i class="fa-solid fa-arrow-trend-up"></i>
                 </a>
-                    <a href="/placement-abc123" class="mobile-nav-item">
+                    <a id="mobile-nav-placement" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </a>
-                    <a href="/extracurricular-abc123" class="mobile-nav-item">
+                    <a id="mobile-nav-extracurricular" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-trophy"></i>
                     </a>
                 </div>
                 <!-- Second Row - 3 options -->
                 <div class="mobile-nav-row">
-                    <a href="/reports-abc123" class="mobile-nav-item">
+                    <a id="mobile-nav-reports" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-file-alt"></i>
                     </a>
-                    <a href="/settings-4p8q1n" class="mobile-nav-item">
+                    <a id="mobile-nav-settings" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
-                    <a id="mobile-logout" href="/logout" class="mobile-nav-item">
+                    <a id="mobile-logout" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-sign-out-alt"></i>
                     </a>
                 </div>
@@ -1516,6 +1516,12 @@
             
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
+        }
+
+        // Dynamic navigation function
+        function navigateToPage(pageType) {
+            const uniqueId = generateUniqueId();
+            window.location.href = `/${uniqueId}`;
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1830,20 +1836,21 @@
                 });
             }
 
-            function showConfirmModal(message, title = 'Confirm') {
+            // Function for delete confirmations (separate from file upload confirmations)
+            function showDeleteConfirmModal(message, title = 'Confirm') {
                 return new Promise((resolve) => {
                     const overlay = document.createElement('div');
                     overlay.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]';
                     overlay.innerHTML = `
-                        <div class="bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="confirm-modal">
+                        <div class="bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="delete-confirm-modal">
                             <div class="mx-auto flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-yellow-100 mb-3 sm:mb-4">
                                 <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-lg sm:text-xl"></i>
                             </div>
                             <h3 class="text-gray-800 text-base sm:text-lg font-semibold mb-2">${title}</h3>
                             <p class="text-gray-600 mb-4 sm:mb-5 text-sm sm:text-base">${message}</p>
                             <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:space-x-3">
-                                <button id="confirm-cancel" class="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all transform hover:scale-105 text-sm sm:text-base">Cancel</button>
-                                <button id="confirm-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
+                                <button id="delete-confirm-cancel" class="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all transform hover:scale-105 text-sm sm:text-base">Cancel</button>
+                                <button id="delete-confirm-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
                             </div>
                         </div>
                     `;
@@ -1851,13 +1858,13 @@
                     
                     // Animate in
                     setTimeout(() => {
-                        const modal = overlay.querySelector('#confirm-modal');
+                        const modal = overlay.querySelector('#delete-confirm-modal');
                         modal.classList.remove('scale-95', 'opacity-0');
                         modal.classList.add('scale-100', 'opacity-100');
                     }, 10);
                     
-                    overlay.querySelector('#confirm-cancel').addEventListener('click', () => {
-                        const modal = overlay.querySelector('#confirm-modal');
+                    overlay.querySelector('#delete-confirm-cancel').addEventListener('click', () => {
+                        const modal = overlay.querySelector('#delete-confirm-modal');
                         modal.classList.remove('scale-100', 'opacity-100');
                         modal.classList.add('scale-95', 'opacity-0');
                         setTimeout(() => {
@@ -1866,8 +1873,8 @@
                         }, 300);
                     });
                     
-                    overlay.querySelector('#confirm-ok').addEventListener('click', () => {
-                        const modal = overlay.querySelector('#confirm-modal');
+                    overlay.querySelector('#delete-confirm-ok').addEventListener('click', () => {
+                        const modal = overlay.querySelector('#delete-confirm-modal');
                         modal.classList.remove('scale-100', 'opacity-100');
                         modal.classList.add('scale-95', 'opacity-0');
                         setTimeout(() => {
@@ -1878,7 +1885,7 @@
                     
                     overlay.addEventListener('click', (e) => {
                         if (e.target === overlay) {
-                            const modal = overlay.querySelector('#confirm-modal');
+                            const modal = overlay.querySelector('#delete-confirm-modal');
                             modal.classList.remove('scale-100', 'opacity-100');
                             modal.classList.add('scale-95', 'opacity-0');
                             setTimeout(() => {
@@ -2145,7 +2152,7 @@
             };
 
             window.deleteIntakeFile = async function(fileId) {
-                const confirmDelete = await showConfirmModal('Are you sure you want to delete this intake file?', 'Delete Confirmation');
+                const confirmDelete = await showDeleteConfirmModal('Are you sure you want to delete this intake file?', 'Delete Confirmation');
                 if (!confirmDelete) return;
                 
                 try {
@@ -2500,6 +2507,74 @@
                     });
                 }
             }
+            
+            // Setup dynamic navigation
+            function setupDynamicNavigation() {
+                // Desktop navigation
+                document.getElementById('nav-dashboard').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('dashboard');
+                });
+                
+                document.getElementById('nav-academic').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('academic');
+                });
+                
+                document.getElementById('nav-placement').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('placement');
+                });
+                
+                document.getElementById('nav-extracurricular').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('extracurricular');
+                });
+                
+                document.getElementById('nav-reports').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('reports');
+                });
+                
+                document.getElementById('nav-settings').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('settings');
+                });
+                
+                // Mobile navigation
+                document.getElementById('mobile-nav-dashboard').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('dashboard');
+                });
+                
+                document.getElementById('mobile-nav-academic').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('academic');
+                });
+                
+                document.getElementById('mobile-nav-placement').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('placement');
+                });
+                
+                document.getElementById('mobile-nav-extracurricular').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('extracurricular');
+                });
+                
+                document.getElementById('mobile-nav-reports').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('reports');
+                });
+                
+                document.getElementById('mobile-nav-settings').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('settings');
+                });
+            }
+            
+            // Call the navigation setup
+            setupDynamicNavigation();
         });
     </script>
 </body>

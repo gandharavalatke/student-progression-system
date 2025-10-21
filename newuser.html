@@ -249,7 +249,7 @@
                 </button>
             </form>
             <div class="text-center mt-6">
-                <a href="index.html" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Already have an account? Login</a>
+                <a id="return-to-login" href="#" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Already have an account? Login</a>
             </div>
         </div>
     </div>
@@ -307,6 +307,15 @@
                 html.classList.remove('light');
                 html.classList.add('dark');
             }
+            
+            // Generate unique URL ID for new user page
+            updateUrlWithUniqueId();
+            
+            // Setup navigation
+            document.getElementById('return-to-login').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPage('login');
+            });
             
             // Generate unique URL ID
             updateUrlWithUniqueId();
@@ -399,7 +408,10 @@
                 const response = await apiCall('/api/register', payload);
                 setStatus(response.message, false);
                 submitButton.disabled = true;
-                setTimeout(() => window.location.href = 'index.html', 2000);
+                setTimeout(() => {
+                    const uniqueId = generateUniqueId();
+                    window.location.href = `/${uniqueId}`;
+                }, 2000);
             }
 
             async function apiCall(endpoint, body) {
