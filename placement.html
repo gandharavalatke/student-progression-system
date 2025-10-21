@@ -199,29 +199,39 @@
     </div>
 
     <script>
-        // Generate unique ID for URL
-        function generateUniqueId() {
+        // Generate enhanced unique ID for URL
+        function generateEnhancedUniqueId() {
             const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 15);
-            const extraRandom = Math.random().toString(36).substring(2, 15);
+            const random1 = Math.random().toString(36).substring(2, 15);
+            const random2 = Math.random().toString(36).substring(2, 15);
+            const random3 = Math.random().toString(36).substring(2, 15);
+            const random4 = Math.random().toString(36).substring(2, 15);
             const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            return `placement-${timestamp}-${random}-${extraRandom}`;
+            const userAgent = navigator.userAgent.slice(0, 10);
+            const screenRes = `${screen.width}x${screen.height}`;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const language = navigator.language;
+            
+            return `placement-${timestamp}-${random1}-${random2}-${random3}-${random4}-${sessionId}-${userAgent}-${screenRes}-${timezone}-${language}`.replace(/[^a-zA-Z0-9-]/g, '');
         }
 
-        // Update URL with unique ID
-        function updateUrlWithUniqueId() {
-            const uniqueId = generateUniqueId();
+        // Update URL with enhanced unique ID
+        function updateUrlWithEnhancedId() {
+            const uniqueId = generateEnhancedUniqueId();
             const currentUrl = new URL(window.location);
             currentUrl.searchParams.set('id', uniqueId);
             currentUrl.searchParams.set('t', Date.now());
             currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
             currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
+            currentUrl.searchParams.set('v', '1.0');
+            currentUrl.searchParams.set('u', navigator.userAgent.slice(0, 20));
             
             // Update URL without page reload
             window.history.replaceState({}, '', currentUrl.toString());
             
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
+            sessionStorage.setItem('lastVisit', Date.now());
         }
 
         // Navigation function
@@ -258,8 +268,8 @@
                 html.classList.add('dark');
             }
             
-            // Generate unique URL ID
-            updateUrlWithUniqueId();
+            // Generate enhanced unique URL ID
+            updateUrlWithEnhancedId();
         });
         
         // Enhanced mobile menu toggle with animations and persistence
