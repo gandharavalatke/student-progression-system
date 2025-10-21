@@ -1140,6 +1140,39 @@
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
         }
+        
+        // Generate dynamic navigation URLs
+        function generateNavUrl(page) {
+            const uniqueId = generateUniqueId();
+            return `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
+        }
+        
+        // Update all navigation links with dynamic URLs
+        function updateNavigationUrls() {
+            // Desktop navigation
+            const dashboardLink = document.querySelector('a[href="/dashboard"]');
+            const placementLink = document.querySelector('a[href="/placement-abc123"]');
+            const extracurricularLink = document.querySelector('a[href="/extracurricular-abc123"]');
+            const reportsLink = document.querySelector('a[href="/reports-abc123"]');
+            const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
+            
+            if (dashboardLink) dashboardLink.href = generateNavUrl('dashboard');
+            if (placementLink) placementLink.href = generateNavUrl('placement');
+            if (extracurricularLink) extracurricularLink.href = generateNavUrl('extracurricular');
+            if (reportsLink) reportsLink.href = generateNavUrl('reports');
+            if (settingsLink) settingsLink.href = generateNavUrl('settings');
+            
+            // Mobile navigation
+            const mobilePlacementLink = document.querySelector('.mobile-nav-item[href="/placement-abc123"]');
+            const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href="/extracurricular-abc123"]');
+            const mobileReportsLink = document.querySelector('.mobile-nav-item[href="/reports-abc123"]');
+            const mobileSettingsLink = document.querySelector('.mobile-nav-item[href="/settings-4p8q1n"]');
+            
+            if (mobilePlacementLink) mobilePlacementLink.href = generateNavUrl('placement');
+            if (mobileExtracurricularLink) mobileExtracurricularLink.href = generateNavUrl('extracurricular');
+            if (mobileReportsLink) mobileReportsLink.href = generateNavUrl('reports');
+            if (mobileSettingsLink) mobileSettingsLink.href = generateNavUrl('settings');
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
@@ -1156,8 +1189,137 @@
             // Generate unique URL ID
             updateUrlWithUniqueId();
             
+            // Update navigation URLs with dynamic IDs
+            updateNavigationUrls();
+            
             // Load dashboard data
             loadDashboardData();
+            
+            // Function to load dashboard data
+            function loadDashboardData() {
+                // Optimized dashboard data fetching with caching
+                const cacheKey = 'dashboard_data_cache';
+                const cacheExpiry = 5 * 60 * 1000; // 5 minutes cache
+                const now = Date.now();
+                
+                // Check if we have cached data that's still valid
+                const cachedData = localStorage.getItem(cacheKey);
+                const cacheTimestamp = localStorage.getItem(cacheKey + '_timestamp');
+                
+                if (cachedData && cacheTimestamp && (now - parseInt(cacheTimestamp)) < cacheExpiry) {
+                    // Use cached data for faster loading
+                    try {
+                        const data = JSON.parse(cachedData);
+                        chartData = data?.semesters || [];
+                        renderKpis(data?.kpis || {});
+                        renderCharts(chartData);
+                        console.log('Dashboard data loaded from cache');
+                    } catch (e) {
+                        console.log('Cache corrupted, fetching fresh data');
+                        fetchFreshData();
+                    }
+                } else {
+                    // Fetch fresh data
+                    fetchFreshData();
+                }
+                
+                function fetchFreshData() {
+                    // Show loading indicator
+                    const loadingIndicator = document.createElement('div');
+                    loadingIndicator.id = 'loading-indicator';
+                    loadingIndicator.innerHTML = '<div class="text-center p-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-slate-600">Loading dashboard data...</p></div>';
+                    document.body.appendChild(loadingIndicator);
+                    
+                    // Fetch with timeout
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                    
+                    fetch('https://sps.up.railway.app/api/dashboard-summary', {
+                        signal: controller.signal,
+                        headers: {
+                            'Cache-Control': 'no-cache',
+                            'Pragma': 'no-cache'
+                        }
+                    })
+                    .then(r => {
+                        clearTimeout(timeoutId);
+                        if (!r.ok) throw new Error('Network response was not ok');
+                        return r.json();
+                    })
+                    .then(data => {
+                        console.log('API Response:', data);
+                        console.log('KPIs data:', data?.kpis);
+                        console.log('Semesters data:', data?.semesters);
+                        
+                        // Cache the data
+                        localStorage.setItem(cacheKey, JSON.stringify(data));
+                        localStorage.setItem(cacheKey + '_timestamp', now.toString());
+                        
+                        chartData = data?.semesters || [];
+                        renderKpis(data?.kpis || {});
+                        renderCharts(chartData);
+                        
+                        // Remove loading indicator
+                        const loadingEl = document.getElementById('loading-indicator');
+                        if (loadingEl) loadingEl.remove();
+                        
+                        console.log('Dashboard data fetched and cached');
+                    })
+                    .catch(error => {
+                        clearTimeout(timeoutId);
+                        console.error('Dashboard fetch error:', error);
+                        
+                        // Remove loading indicator
+                        const loadingEl = document.getElementById('loading-indicator');
+                        if (loadingEl) loadingEl.remove();
+                        
+                        // Try to load from cache as fallback
+                        try {
+                            const cachedData = localStorage.getItem(cacheKey);
+                            if (cachedData) {
+                                const data = JSON.parse(cachedData);
+                                console.log('Loading from cache as fallback:', data);
+                                chartData = data?.semesters || [];
+                                renderKpis(data?.kpis || {});
+                                renderCharts(chartData);
+                                return;
+                            }
+                        } catch (e) {
+                            console.log('Cache also failed:', e);
+                        }
+                        
+                        // Show error message and try with mock data
+                        console.log('API failed, trying with mock data for testing');
+                        
+                        // Mock data for testing
+                        const mockData = {
+                            kpis: {
+                                sanctioned_intake: 60,
+                                total_admitted: 58,
+                                dse: 2,
+                                successfully_completed: 45,
+                                placed_percentage: 78,
+                                higher_ed_percentage: 15
+                            },
+                            semesters: [
+                                { semester: 'SEM1', pass_percentage: 85, avg_cgpa: 7.2 },
+                                { semester: 'SEM2', pass_percentage: 88, avg_cgpa: 7.5 },
+                                { semester: 'SEM3', pass_percentage: 82, avg_cgpa: 7.1 },
+                                { semester: 'SEM4', pass_percentage: 90, avg_cgpa: 7.8 }
+                            ]
+                        };
+                        
+                        chartData = mockData.semesters || [];
+                        renderKpis(mockData.kpis || {});
+                        renderCharts(chartData);
+                        
+                        showAlert('Using demo data. API connection failed.', () => {
+                            // Retry after 3 seconds
+                            setTimeout(fetchFreshData, 3000);
+                        });
+                    });
+                }
+            }
             
             const headerTitle = document.getElementById('header-title');
             
@@ -1246,85 +1408,6 @@
             });
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
             
-            // Optimized dashboard data fetching with caching
-            const cacheKey = 'dashboard_data_cache';
-            const cacheExpiry = 5 * 60 * 1000; // 5 minutes cache
-            const now = Date.now();
-            
-            // Check if we have cached data that's still valid
-            const cachedData = localStorage.getItem(cacheKey);
-            const cacheTimestamp = localStorage.getItem(cacheKey + '_timestamp');
-            
-            if (cachedData && cacheTimestamp && (now - parseInt(cacheTimestamp)) < cacheExpiry) {
-                // Use cached data for faster loading
-                try {
-                    const data = JSON.parse(cachedData);
-                    chartData = data?.semesters || [];
-                    renderKpis(data?.kpis || {});
-                    renderCharts(chartData);
-                    console.log('Dashboard data loaded from cache');
-                } catch (e) {
-                    console.log('Cache corrupted, fetching fresh data');
-                    fetchFreshData();
-                }
-            } else {
-                // Fetch fresh data
-                fetchFreshData();
-            }
-            
-            function fetchFreshData() {
-                // Show loading indicator
-                const loadingIndicator = document.createElement('div');
-                loadingIndicator.id = 'loading-indicator';
-                loadingIndicator.innerHTML = '<div class="text-center p-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-slate-600">Loading dashboard data...</p></div>';
-                document.body.appendChild(loadingIndicator);
-                
-                // Fetch with timeout
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-                
-                fetch('https://sps.up.railway.app/api/dashboard-summary', {
-                    signal: controller.signal,
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache'
-                    }
-                })
-                .then(r => {
-                    clearTimeout(timeoutId);
-                    if (!r.ok) throw new Error('Network response was not ok');
-                    return r.json();
-                })
-                .then(data => {
-                    // Cache the data
-                    localStorage.setItem(cacheKey, JSON.stringify(data));
-                    localStorage.setItem(cacheKey + '_timestamp', now.toString());
-                    
-                    chartData = data?.semesters || [];
-                    renderKpis(data?.kpis || {});
-                    renderCharts(chartData);
-                    
-                    // Remove loading indicator
-                    const loadingEl = document.getElementById('loading-indicator');
-                    if (loadingEl) loadingEl.remove();
-                    
-                    console.log('Dashboard data fetched and cached');
-                })
-                .catch(error => {
-                    clearTimeout(timeoutId);
-                    console.error('Dashboard fetch error:', error);
-                    
-                    // Remove loading indicator
-                    const loadingEl = document.getElementById('loading-indicator');
-                    if (loadingEl) loadingEl.remove();
-                    
-                    // Show error message
-                    showAlert('Failed to load dashboard data. Please try again.', () => {
-                        // Retry after 3 seconds
-                        setTimeout(fetchFreshData, 3000);
-                    });
-                });
-            }
         });
 
         // Enhanced modal functions for better UX
@@ -1452,6 +1535,7 @@
         }
 
         function renderKpis(kpis) {
+            console.log('renderKpis called with:', kpis);
             const elS = document.getElementById('kpi-sanctioned');
             const elA = document.getElementById('kpi-admitted');
             const elD = document.getElementById('kpi-dse');
@@ -1459,12 +1543,32 @@
             const elP = document.getElementById('kpi-placed');
             const elH = document.getElementById('kpi-higher-ed');
             
-            if (elS) elS.textContent = kpis.sanctioned_intake ?? '—';
-            if (elA) elA.textContent = kpis.total_admitted ?? '—';
-            if (elD) elD.textContent = kpis.dse ?? '—';
-            if (elC) elC.textContent = kpis.successfully_completed ?? '—';
-            if (elP) elP.textContent = kpis.placed_percentage ? `${kpis.placed_percentage}%` : '—';
-            if (elH) elH.textContent = kpis.higher_ed_percentage ? `${kpis.higher_ed_percentage}%` : '—';
+            console.log('Elements found:', { elS, elA, elD, elC, elP, elH });
+            
+            if (elS) {
+                elS.textContent = kpis.sanctioned_intake ?? '—';
+                console.log('Set sanctioned_intake:', kpis.sanctioned_intake);
+            }
+            if (elA) {
+                elA.textContent = kpis.total_admitted ?? '—';
+                console.log('Set total_admitted:', kpis.total_admitted);
+            }
+            if (elD) {
+                elD.textContent = kpis.dse ?? '—';
+                console.log('Set dse:', kpis.dse);
+            }
+            if (elC) {
+                elC.textContent = kpis.successfully_completed ?? '—';
+                console.log('Set successfully_completed:', kpis.successfully_completed);
+            }
+            if (elP) {
+                elP.textContent = kpis.placed_percentage ? `${kpis.placed_percentage}%` : '—';
+                console.log('Set placed_percentage:', kpis.placed_percentage);
+            }
+            if (elH) {
+                elH.textContent = kpis.higher_ed_percentage ? `${kpis.higher_ed_percentage}%` : '—';
+                console.log('Set higher_ed_percentage:', kpis.higher_ed_percentage);
+            }
         }
 
         function renderCharts(semesters) {

@@ -80,11 +80,16 @@
         }
         
         .theme-toggle.light .theme-toggle-slider {
-            transform: translateY(-50%) translateX(0); /* Light mode: stay on left with perfect centering */
+            transform: translateY(-50%) translateX(0) !important; /* Light mode: stay on left with perfect centering */
         }
         
         .theme-toggle:not(.light) .theme-toggle-slider {
-            transform: translateY(-50%) translateX(20px); /* Dark mode: move to right with perfect centering */
+            transform: translateY(-50%) translateX(20px) !important; /* Dark mode: move to right with perfect centering */
+        }
+        
+        /* Additional CSS to ensure knob movement */
+        .theme-toggle .theme-toggle-slider {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
         
         /* Ensure perfect alignment for both states */
@@ -847,6 +852,39 @@
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
         }
+        
+        // Generate dynamic navigation URLs
+        function generateNavUrl(page) {
+            const uniqueId = generateUniqueId();
+            return `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
+        }
+        
+        // Update all navigation links with dynamic URLs
+        function updateNavigationUrls() {
+            // Desktop navigation
+            const dashboardLink = document.querySelector('a[href="/dashboard"]');
+            const placementLink = document.querySelector('a[href="/placement-abc123"]');
+            const extracurricularLink = document.querySelector('a[href="/extracurricular-abc123"]');
+            const reportsLink = document.querySelector('a[href="/reports-abc123"]');
+            const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
+            
+            if (dashboardLink) dashboardLink.href = generateNavUrl('dashboard');
+            if (placementLink) placementLink.href = generateNavUrl('placement');
+            if (extracurricularLink) extracurricularLink.href = generateNavUrl('extracurricular');
+            if (reportsLink) reportsLink.href = generateNavUrl('reports');
+            if (settingsLink) settingsLink.href = generateNavUrl('settings');
+            
+            // Mobile navigation
+            const mobilePlacementLink = document.querySelector('.mobile-nav-item[href="/placement-abc123"]');
+            const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href="/extracurricular-abc123"]');
+            const mobileReportsLink = document.querySelector('.mobile-nav-item[href="/reports-abc123"]');
+            const mobileSettingsLink = document.querySelector('.mobile-nav-item[href="/settings-4p8q1n"]');
+            
+            if (mobilePlacementLink) mobilePlacementLink.href = generateNavUrl('placement');
+            if (mobileExtracurricularLink) mobileExtracurricularLink.href = generateNavUrl('extracurricular');
+            if (mobileReportsLink) mobileReportsLink.href = generateNavUrl('reports');
+            if (mobileSettingsLink) mobileSettingsLink.href = generateNavUrl('settings');
+        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             // Check if user is logged in with server verification
@@ -865,6 +903,9 @@
             
             // Generate unique URL ID
             updateUrlWithUniqueId();
+            
+            // Update navigation URLs with dynamic IDs
+            updateNavigationUrls();
             
             // --- Element Declarations ---
             const usernameInput = document.getElementById('username-input');
@@ -925,21 +966,31 @@
 
             function applyTheme(theme) {
                 const html = document.documentElement;
+                const body = document.body;
                 console.log('Applying theme:', theme);
+                console.log('Current HTML classes before:', html.className);
+                console.log('Current body classes before:', body.className);
+                
                 if (theme === 'light') {
                     html.classList.remove('dark');
                     html.classList.add('light');
+                    body.classList.remove('dark');
+                    body.classList.add('light');
                     themeToggle.classList.add('light');
                     themeToggle.style.backgroundColor = '#e5e7eb';
                     themeLabel.textContent = 'Light';
-                    console.log('Light theme applied, classes:', html.className);
+                    console.log('Light theme applied, HTML classes:', html.className);
+                    console.log('Light theme applied, body classes:', body.className);
                 } else {
                     html.classList.remove('light');
                     html.classList.add('dark');
+                    body.classList.remove('light');
+                    body.classList.add('dark');
                     themeToggle.classList.remove('light');
                     themeToggle.style.backgroundColor = '#2563eb';
                     themeLabel.textContent = 'Dark';
-                    console.log('Dark theme applied, classes:', html.className);
+                    console.log('Dark theme applied, HTML classes:', html.className);
+                    console.log('Dark theme applied, body classes:', body.className);
                 }
                 localStorage.setItem('theme', theme);
             }

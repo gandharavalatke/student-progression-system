@@ -223,6 +223,39 @@
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
         }
+        
+        // Generate dynamic navigation URLs
+        function generateNavUrl(page) {
+            const uniqueId = generateUniqueId();
+            return `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
+        }
+        
+        // Update all navigation links with dynamic URLs
+        function updateNavigationUrls() {
+            // Desktop navigation
+            const dashboardLink = document.querySelector('a[href="/dashboard"]');
+            const placementLink = document.querySelector('a[href="/placement-abc123"]');
+            const extracurricularLink = document.querySelector('a[href="/extracurricular-abc123"]');
+            const reportsLink = document.querySelector('a[href="/reports-abc123"]');
+            const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
+            
+            if (dashboardLink) dashboardLink.href = generateNavUrl('dashboard');
+            if (placementLink) placementLink.href = generateNavUrl('placement');
+            if (extracurricularLink) extracurricularLink.href = generateNavUrl('extracurricular');
+            if (reportsLink) reportsLink.href = generateNavUrl('reports');
+            if (settingsLink) settingsLink.href = generateNavUrl('settings');
+            
+            // Mobile navigation
+            const mobilePlacementLink = document.querySelector('.mobile-nav-item[href="/placement-abc123"]');
+            const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href="/extracurricular-abc123"]');
+            const mobileReportsLink = document.querySelector('.mobile-nav-item[href="/reports-abc123"]');
+            const mobileSettingsLink = document.querySelector('.mobile-nav-item[href="/settings-4p8q1n"]');
+            
+            if (mobilePlacementLink) mobilePlacementLink.href = generateNavUrl('placement');
+            if (mobileExtracurricularLink) mobileExtracurricularLink.href = generateNavUrl('extracurricular');
+            if (mobileReportsLink) mobileReportsLink.href = generateNavUrl('reports');
+            if (mobileSettingsLink) mobileSettingsLink.href = generateNavUrl('settings');
+        }
 
         // Initialize theme from localStorage
         document.addEventListener('DOMContentLoaded', () => {
@@ -238,6 +271,9 @@
             
             // Generate unique URL ID
             updateUrlWithUniqueId();
+            
+            // Update navigation URLs with dynamic IDs
+            updateNavigationUrls();
         });
         
         // Enhanced mobile menu toggle with animations and persistence
