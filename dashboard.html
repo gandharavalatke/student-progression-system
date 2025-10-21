@@ -849,6 +849,11 @@
                 <h2 id="header-title" class="text-lg font-semibold text-white mobile-title-center">CSE(AIML) Dept - Academic Year</h2>
                 
                 <div class="flex items-center space-x-4 mobile-header-controls">
+                    <!-- Test Navigation Button -->
+                    <button onclick="testNavigation()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
+                        Test Nav
+                    </button>
+                    
                     <!-- Department Dropdown -->
                     <div class="relative">
                         <button id="dept-button" class="flex items-center justify-between w-32 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
@@ -1130,6 +1135,7 @@
 
         // Navigation function
         function navigateToPage(pageType) {
+            console.log('navigateToPage called with:', pageType);
             const pagePrefixes = {
                 'dashboard': 'dash',
                 'academic': 'academic',
@@ -1144,6 +1150,7 @@
                 const random = Math.random().toString(36).substring(2, 15);
                 const extraRandom = Math.random().toString(36).substring(2, 15);
                 const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random}-${extraRandom}`;
+                console.log('Navigating to:', `/${uniqueId}`);
                 window.location.href = `/${uniqueId}`;
             } else {
                 console.error('Unknown page type:', pageType);
@@ -1566,86 +1573,166 @@
 
             // Setup dynamic navigation
             function setupDynamicNavigation() {
-                // Desktop navigation
-                document.getElementById('nav-dashboard').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('dashboard');
-                });
+                console.log('Setting up dynamic navigation...');
                 
-                document.getElementById('nav-academic').addEventListener('click', (e) => {
-                    e.preventDefault();
+                // Test navigation function
+                window.testNavigation = function() {
+                    console.log('Testing navigation...');
                     navigateToPage('academic');
-                });
+                };
                 
-                document.getElementById('nav-placement').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('placement');
-                });
+                // Desktop navigation
+                const navDashboard = document.getElementById('nav-dashboard');
+                if (navDashboard) {
+                    navDashboard.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Dashboard clicked');
+                        navigateToPage('dashboard');
+                    });
+                } else {
+                    console.error('nav-dashboard element not found');
+                }
                 
-                document.getElementById('nav-extracurricular').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('extracurricular');
-                });
+                const navAcademic = document.getElementById('nav-academic');
+                if (navAcademic) {
+                    navAcademic.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Academic clicked');
+                        navigateToPage('academic');
+                    });
+                } else {
+                    console.error('nav-academic element not found');
+                }
                 
-                document.getElementById('nav-reports').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('reports');
-                });
+                const navPlacement = document.getElementById('nav-placement');
+                if (navPlacement) {
+                    navPlacement.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Placement clicked');
+                        navigateToPage('placement');
+                    });
+                } else {
+                    console.error('nav-placement element not found');
+                }
                 
-                document.getElementById('nav-settings').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('settings');
-                });
+                const navExtracurricular = document.getElementById('nav-extracurricular');
+                if (navExtracurricular) {
+                    navExtracurricular.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Extracurricular clicked');
+                        navigateToPage('extracurricular');
+                    });
+                } else {
+                    console.error('nav-extracurricular element not found');
+                }
+                
+                const navReports = document.getElementById('nav-reports');
+                if (navReports) {
+                    navReports.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Reports clicked');
+                        navigateToPage('reports');
+                    });
+                } else {
+                    console.error('nav-reports element not found');
+                }
+                
+                const navSettings = document.getElementById('nav-settings');
+                if (navSettings) {
+                    navSettings.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Settings clicked');
+                        navigateToPage('settings');
+                    });
+                } else {
+                    console.error('nav-settings element not found');
+                }
                 
                 // Mobile navigation
-                document.getElementById('mobile-nav-dashboard').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('dashboard');
-                });
+                const mobileNavDashboard = document.getElementById('mobile-nav-dashboard');
+                if (mobileNavDashboard) {
+                    mobileNavDashboard.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Mobile Dashboard clicked');
+                        navigateToPage('dashboard');
+                    });
+                } else {
+                    console.error('mobile-nav-dashboard element not found');
+                }
                 
-                document.getElementById('mobile-nav-academic').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('academic');
-                });
+                const mobileNavAcademic = document.getElementById('mobile-nav-academic');
+                if (mobileNavAcademic) {
+                    mobileNavAcademic.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Mobile Academic clicked');
+                        navigateToPage('academic');
+                    });
+                } else {
+                    console.error('mobile-nav-academic element not found');
+                }
                 
-                document.getElementById('mobile-nav-placement').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('placement');
-                });
+                const mobileNavPlacement = document.getElementById('mobile-nav-placement');
+                if (mobileNavPlacement) {
+                    mobileNavPlacement.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Mobile Placement clicked');
+                        navigateToPage('placement');
+                    });
+                } else {
+                    console.error('mobile-nav-placement element not found');
+                }
                 
-                document.getElementById('mobile-nav-extracurricular').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('extracurricular');
-                });
+                const mobileNavExtracurricular = document.getElementById('mobile-nav-extracurricular');
+                if (mobileNavExtracurricular) {
+                    mobileNavExtracurricular.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Mobile Extracurricular clicked');
+                        navigateToPage('extracurricular');
+                    });
+                } else {
+                    console.error('mobile-nav-extracurricular element not found');
+                }
                 
-                document.getElementById('mobile-nav-reports').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('reports');
-                });
+                const mobileNavReports = document.getElementById('mobile-nav-reports');
+                if (mobileNavReports) {
+                    mobileNavReports.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Mobile Reports clicked');
+                        navigateToPage('reports');
+                    });
+                } else {
+                    console.error('mobile-nav-reports element not found');
+                }
                 
-                document.getElementById('mobile-nav-settings').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToPage('settings');
+                const mobileNavSettings = document.getElementById('mobile-nav-settings');
+                if (mobileNavSettings) {
+                    mobileNavSettings.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Mobile Settings clicked');
+                        navigateToPage('settings');
+                    });
+                } else {
+                    console.error('mobile-nav-settings element not found');
+            }
+        }
+
+        // Call authentication check, load dynamic IDs, and loadSavedSelections when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (await checkAuthentication()) {
+                    updateUrlWithUniqueId(); // Generate unique URL for dashboard page
+                await loadDynamicIds();
+                loadSavedSelections();
+                    setupDynamicNavigation();
+                
+                // Start inactivity tracking
+                resetInactivityTimer();
+                
+                // Add event listeners for activity tracking
+                ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+                    document.addEventListener(event, trackActivity, true);
                 });
             }
-
-            // Call authentication check, load dynamic IDs, and loadSavedSelections when page loads
-            document.addEventListener('DOMContentLoaded', async () => {
-                if (await checkAuthentication()) {
-                    updateUrlWithUniqueId(); // Generate unique URL for dashboard page
-                    await loadDynamicIds();
-                    loadSavedSelections();
-                    setupDynamicNavigation();
-                    
-                    // Start inactivity tracking
-                    resetInactivityTimer();
-                    
-                    // Add event listeners for activity tracking
-                    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
-                        document.addEventListener(event, trackActivity, true);
-                    });
-                }
-            });
+        });
         }
     </script>
 </body>
