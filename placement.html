@@ -161,8 +161,16 @@
             });
             
             down.addEventListener('click',()=>{
-                popup.classList.add('hidden');
-                popup.classList.remove('show-up','show-down');
+                // Add down animation before hiding
+                popup.classList.add('show-down');
+                popup.classList.remove('show-up');
+                
+                // Hide after animation completes
+                setTimeout(() => {
+                    popup.classList.add('hidden');
+                    popup.classList.remove('show-up','show-down');
+                }, 300); // Match animation duration
+                
                 down.classList.add('hidden');
                 up.classList.remove('hidden');
                 // Save menu state
@@ -172,8 +180,16 @@
             // Close popup when clicking outside
             document.addEventListener('click',(e)=>{
                 if(!popup.contains(e.target)&&!up.contains(e.target)&&!down.contains(e.target)){
-                    popup.classList.add('hidden');
-                    popup.classList.remove('show-up','show-down');
+                    // Add down animation before hiding
+                    popup.classList.add('show-down');
+                    popup.classList.remove('show-up');
+                    
+                    // Hide after animation completes
+                    setTimeout(() => {
+                        popup.classList.add('hidden');
+                        popup.classList.remove('show-up','show-down');
+                    }, 300); // Match animation duration
+                    
                     down.classList.add('hidden');
                     up.classList.remove('hidden');
                     // Save menu state

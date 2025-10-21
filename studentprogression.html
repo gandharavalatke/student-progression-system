@@ -2296,8 +2296,15 @@
                 });
 
                 mobileNavDown.addEventListener('click', () => {
-                    mobileNavPopup.classList.add('hidden');
-                    mobileNavPopup.classList.remove('show-up', 'show-down');
+                    // Add down animation before hiding
+                    mobileNavPopup.classList.add('show-down');
+                    mobileNavPopup.classList.remove('show-up');
+                    
+                    // Hide after animation completes
+                    setTimeout(() => {
+                        mobileNavPopup.classList.add('hidden');
+                        mobileNavPopup.classList.remove('show-up', 'show-down');
+                    }, 300); // Match animation duration
                     
                     // Show up arrow, hide down arrow
                     mobileNavUp.classList.remove('hidden');
@@ -2311,8 +2318,15 @@
                     if (!mobileNavPopup.contains(e.target) && 
                         !mobileNavUp.contains(e.target) && 
                         !mobileNavDown.contains(e.target)) {
-                        mobileNavPopup.classList.add('hidden');
-                        mobileNavPopup.classList.remove('show-up', 'show-down');
+                        // Add down animation before hiding
+                        mobileNavPopup.classList.add('show-down');
+                        mobileNavPopup.classList.remove('show-up');
+                        
+                        // Hide after animation completes
+                        setTimeout(() => {
+                            mobileNavPopup.classList.add('hidden');
+                            mobileNavPopup.classList.remove('show-up', 'show-down');
+                        }, 300); // Match animation duration
                         
                         // Show up arrow, hide down arrow
                         mobileNavUp.classList.remove('hidden');
