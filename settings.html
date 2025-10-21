@@ -368,7 +368,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 20px 20px 0 0;
+            border-radius: 20px;
             padding: 20px;
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(59, 130, 246, 0.2);
@@ -458,6 +458,21 @@
             box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
         }
         
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            }
+            to {
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.3);
+            }
+        }
+        
         /* Ensure extracurricular icon is blue */
         .mobile-nav-item[href*="extracurricular"] {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
@@ -530,27 +545,27 @@
                  <img src="gitlogosite.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-                <a href="/dash-7x9k2m" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a id="nav-dashboard" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
-                <a href="/academic-3r6t5w" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a id="nav-academic" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="/placement-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a id="nav-placement" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="/extracurricular-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a id="nav-extracurricular" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="/reports-abc123" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="nav-reports" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
-                 <a href="/settings-4p8q1n" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
+                 <a id="nav-settings" href="#" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -571,28 +586,28 @@
             <div class="mobile-nav-content">
                 <!-- First Row - 4 options -->
                 <div class="mobile-nav-row">
-                <a href="/dash-7x9k2m" class="mobile-nav-item">
+                <a id="mobile-nav-dashboard" href="#" class="mobile-nav-item">
                     <i class="fa-solid fa-chart-pie"></i>
                 </a>
-                <a href="/academic-3r6t5w" class="mobile-nav-item">
+                <a id="mobile-nav-academic" href="#" class="mobile-nav-item">
                     <i class="fa-solid fa-arrow-trend-up"></i>
                 </a>
-                    <a href="/placement-abc123" class="mobile-nav-item">
+                    <a id="mobile-nav-placement" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </a>
-                    <a href="/extracurricular-abc123" class="mobile-nav-item">
+                    <a id="mobile-nav-extracurricular" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-trophy"></i>
                     </a>
                 </div>
                 <!-- Second Row - 3 options -->
                 <div class="mobile-nav-row">
-                    <a href="/reports-abc123" class="mobile-nav-item">
+                    <a id="mobile-nav-reports" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-file-alt"></i>
                     </a>
-                    <a href="/settings-4p8q1n" class="mobile-nav-item">
+                    <a id="mobile-nav-settings" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
-                    <a id="mobile-logout" href="/logout" class="mobile-nav-item">
+                    <a id="mobile-logout" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-sign-out-alt"></i>
                     </a>
                 </div>
@@ -795,11 +810,129 @@
     </div>
 
     <script>
+        // Generate unique ID for URL
+        function generateUniqueId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 15);
+            const extraRandom = Math.random().toString(36).substring(2, 15);
+            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
+            return `settings-${timestamp}-${random}-${extraRandom}`;
+        }
+
+        // Update URL with unique ID
+        function updateUrlWithUniqueId() {
+            const uniqueId = generateUniqueId();
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('id', uniqueId);
+            currentUrl.searchParams.set('t', Date.now());
+            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
+            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
+            
+            // Update URL without page reload
+            window.history.replaceState({}, '', currentUrl.toString());
+            
+            // Store the unique ID for this session
+            sessionStorage.setItem('currentPageId', uniqueId);
+        }
+
+        // Navigation function
+        function navigateToPage(pageType) {
+            const pagePrefixes = {
+                'dashboard': 'dash',
+                'academic': 'academic',
+                'placement': 'placement',
+                'extracurricular': 'extracurricular',
+                'reports': 'reports',
+                'settings': 'settings'
+            };
+            
+            if (pagePrefixes[pageType]) {
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substring(2, 15);
+                const extraRandom = Math.random().toString(36).substring(2, 15);
+                const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random}-${extraRandom}`;
+                window.location.href = `/${uniqueId}`;
+            } else {
+                console.error('Unknown page type:', pageType);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             // Check if user is logged in with server verification
             if (!(await checkAuthentication())) {
                 return;
             }
+            
+            // Generate unique URL ID for settings page
+            updateUrlWithUniqueId();
+            
+            // Setup dynamic navigation
+            function setupDynamicNavigation() {
+                // Desktop navigation
+                document.getElementById('nav-dashboard').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('dashboard');
+                });
+                
+                document.getElementById('nav-academic').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('academic');
+                });
+                
+                document.getElementById('nav-placement').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('placement');
+                });
+                
+                document.getElementById('nav-extracurricular').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('extracurricular');
+                });
+                
+                document.getElementById('nav-reports').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('reports');
+                });
+                
+                document.getElementById('nav-settings').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('settings');
+                });
+                
+                // Mobile navigation
+                document.getElementById('mobile-nav-dashboard').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('dashboard');
+                });
+                
+                document.getElementById('mobile-nav-academic').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('academic');
+                });
+                
+                document.getElementById('mobile-nav-placement').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('placement');
+                });
+                
+                document.getElementById('mobile-nav-extracurricular').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('extracurricular');
+                });
+                
+                document.getElementById('mobile-nav-reports').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('reports');
+                });
+                
+                document.getElementById('mobile-nav-settings').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage('settings');
+                });
+            }
+            
+            // Call the navigation setup
+            setupDynamicNavigation();
             
             // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -1198,7 +1331,7 @@
             async function checkAuthentication() {
                 const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
                 if (!loggedInUser) {
-                    window.location.href = '/';
+                    window.location.href = 'index.html';
                     return false;
                 }
                 
@@ -1210,7 +1343,7 @@
                         // Clear client-side storage if server session is invalid
                         localStorage.removeItem('loggedInUser');
                         sessionStorage.removeItem('loggedInUser');
-                        window.location.href = '/';
+                        window.location.href = 'index.html';
                         return false;
                     }
                     return true;
@@ -1219,7 +1352,7 @@
                     // On error, redirect to login for security
                     localStorage.removeItem('loggedInUser');
                     sessionStorage.removeItem('loggedInUser');
-                    window.location.href = '/';
+                    window.location.href = 'index.html';
                     return false;
                 }
             }
@@ -1235,7 +1368,7 @@
                     if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
                         localStorage.removeItem('loggedInUser');
                         sessionStorage.removeItem('loggedInUser');
-                        window.location.href = '/';
+                        window.location.href = 'index.html';
                     } else {
                         // Reset timer if user cancels
                         resetInactivityTimer();
@@ -1248,83 +1381,20 @@
                 resetInactivityTimer();
             }
 
-            // Load dynamic IDs and update navigation links
+            // Load dynamic IDs (not needed for navigation since we use event listeners)
             async function loadDynamicIds() {
                 try {
                     const response = await fetch('/api/get-current-ids');
                     const ids = await response.json();
                     
-                    // Update all navigation links with dynamic IDs
-                    updateNavigationLinks(ids);
+                    // Store IDs for potential future use
+                    sessionStorage.setItem('dynamicIds', JSON.stringify(ids));
                 } catch (error) {
                     console.error('Failed to load dynamic IDs:', error);
                 }
             }
 
-            function updateNavigationLinks(ids) {
-                // Update sidebar links
-                const dashboardLink = document.querySelector('aside nav a[href*="dash"]');
-                if (dashboardLink && ids.dashboard) {
-                    dashboardLink.href = `/${ids.dashboard}`;
-                }
-                
-                const academicLink = document.querySelector('aside nav a[href*="academic"]');
-                if (academicLink && ids.academic) {
-                    academicLink.href = `/${ids.academic}`;
-                }
-                
-                const settingsLink = document.querySelector('aside nav a[href*="settings"]');
-                if (settingsLink && ids.settings) {
-                    settingsLink.href = `/${ids.settings}`;
-                }
-                
-                // Update mobile navigation links
-                const mobileDashboardLink = document.querySelector('.mobile-nav-item[href*="dash"]');
-                if (mobileDashboardLink && ids.dashboard) {
-                    mobileDashboardLink.href = `/${ids.dashboard}`;
-                }
-                
-                const mobileAcademicLink = document.querySelector('.mobile-nav-item[href*="academic"]');
-                if (mobileAcademicLink && ids.academic) {
-                    mobileAcademicLink.href = `/${ids.academic}`;
-                }
-                
-                const mobileSettingsLink = document.querySelector('.mobile-nav-item[href*="settings"]');
-                if (mobileSettingsLink && ids.settings) {
-                    mobileSettingsLink.href = `/${ids.settings}`;
-                }
-                
-                // Update desktop sidebar links
-                const placementLink = document.querySelector('aside nav a[href*="placement"]');
-                if (placementLink && ids.placement) {
-                    placementLink.href = `/${ids.placement}`;
-                }
-                
-                const extracurricularLink = document.querySelector('aside nav a[href*="extracurricular"]');
-                if (extracurricularLink && ids.extracurricular) {
-                    extracurricularLink.href = `/${ids.extracurricular}`;
-                }
-                
-                const reportsLink = document.querySelector('aside nav a[href*="reports"]');
-                if (reportsLink && ids.reports) {
-                    reportsLink.href = `/${ids.reports}`;
-                }
-                
-                const mobilePlacementLink = document.querySelector('.mobile-nav-item[href*="placement"]');
-                if (mobilePlacementLink && ids.placement) {
-                    mobilePlacementLink.href = `/${ids.placement}`;
-                }
-                
-                const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href*="extracurricular"]');
-                if (mobileExtracurricularLink && ids.extracurricular) {
-                    mobileExtracurricularLink.href = `/${ids.extracurricular}`;
-                }
-                
-                const mobileReportsLink = document.querySelector('.mobile-nav-item[href*="reports"]');
-                if (mobileReportsLink && ids.reports) {
-                    mobileReportsLink.href = `/${ids.reports}`;
-                }
-            }
+            // Navigation links are handled by event listeners, no need to update href attributes
 
             // Check authentication on page load
             // Load dynamic IDs and update navigation
@@ -1343,6 +1413,12 @@
             const mobileNavDown = document.getElementById('mobile-nav-down');
             const mobileNavPopup = document.getElementById('mobile-nav-popup');
             const mobileLogout = document.getElementById('mobile-logout');
+            
+            // Mark current page as active
+            const currentPageLink = document.querySelector('.mobile-nav-item[href*="settings"]');
+            if (currentPageLink) {
+                currentPageLink.classList.add('active');
+            }
 
             if (mobileNavUp && mobileNavDown && mobileNavPopup) {
                 mobileNavUp.addEventListener('click', () => {

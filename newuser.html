@@ -249,28 +249,76 @@
                 </button>
             </form>
             <div class="text-center mt-6">
-                <a href="index.html" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Already have an account? Login</a>
+                <a id="return-to-login" href="#" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Already have an account? Login</a>
             </div>
         </div>
     </div>
     <!-- Success Modal -->
     <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
-        <div id="result-modal" class="bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600">
+        <div id="result-modal" class="bg-slate-800 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-sm sm:max-w-md mx-4 text-center border border-slate-600">
             <div id="result-icon-bg" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-green-600/20 border border-green-500/30">
                 <i id="result-icon" class="fa-solid fa-check text-green-400"></i>
             </div>
-            <h3 class="text-lg leading-6 font-medium text-white" id="result-title">Success</h3>
-            <div class="mt-2 px-7 py-3">
+            <h3 class="text-base sm:text-lg leading-6 font-medium text-white" id="result-title">Success</h3>
+            <div class="mt-2 px-4 sm:px-7 py-3">
                 <p class="text-sm text-slate-300" id="result-message">Verification code sent.</p>
             </div>
-            <div class="mt-5 sm:mt-6">
-                <button id="result-close-btn" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none transition-all">
+            <div class="mt-4 sm:mt-5 sm:mt-6">
+                <button id="result-close-btn" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-sm sm:text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none transition-all">
                     Close
                 </button>
             </div>
         </div>
     </div>
     <script>
+        // Generate unique ID for URL
+        function generateUniqueId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 15);
+            const extraRandom = Math.random().toString(36).substring(2, 15);
+            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
+            return `newuser-${timestamp}-${random}-${extraRandom}`;
+        }
+
+        // Update URL with unique ID
+        function updateUrlWithUniqueId() {
+            const uniqueId = generateUniqueId();
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('id', uniqueId);
+            currentUrl.searchParams.set('t', Date.now());
+            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
+            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
+            
+            // Update URL without page reload
+            window.history.replaceState({}, '', currentUrl.toString());
+            
+            // Store the unique ID for this session
+            sessionStorage.setItem('currentPageId', uniqueId);
+        }
+
+        // Navigation function
+        function navigateToPage(pageType) {
+            const pagePrefixes = {
+                'dashboard': 'dash',
+                'academic': 'academic',
+                'placement': 'placement',
+                'extracurricular': 'extracurricular',
+                'reports': 'reports',
+                'settings': 'settings',
+                'login': 'dash'  // Redirect to dashboard after login
+            };
+            
+            if (pagePrefixes[pageType]) {
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substring(2, 15);
+                const extraRandom = Math.random().toString(36).substring(2, 15);
+                const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random}-${extraRandom}`;
+                window.location.href = `/${uniqueId}`;
+            } else {
+                console.error('Unknown page type:', pageType);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -282,6 +330,18 @@
                 html.classList.remove('light');
                 html.classList.add('dark');
             }
+            
+            // Generate unique URL ID for new user page
+            updateUrlWithUniqueId();
+            
+            // Setup navigation
+            document.getElementById('return-to-login').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPage('login');
+            });
+            
+            // Generate unique URL ID
+            updateUrlWithUniqueId();
             
             // Modal elements
             const modalOverlay = document.getElementById('modal-overlay');
@@ -371,7 +431,10 @@
                 const response = await apiCall('/api/register', payload);
                 setStatus(response.message, false);
                 submitButton.disabled = true;
-                setTimeout(() => window.location.href = 'index.html', 2000);
+                setTimeout(() => {
+                    const uniqueId = generateUniqueId();
+                    window.location.href = `/${uniqueId}`;
+                }, 2000);
             }
 
             async function apiCall(endpoint, body) {
