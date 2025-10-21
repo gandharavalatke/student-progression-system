@@ -1209,7 +1209,7 @@
                  <a id="nav-settings" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -1251,7 +1251,7 @@
                     <a id="mobile-nav-settings" href="#" class="mobile-nav-item">
                         <i class="fa-solid fa-cog"></i>
                     </a>
-                    <a id="mobile-logout" href="#" class="mobile-nav-item">
+                    <a id="mobile-logout" href="/logout" class="mobile-nav-item">
                         <i class="fa-solid fa-sign-out-alt"></i>
                     </a>
                 </div>
@@ -1526,71 +1526,6 @@
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
             sessionStorage.setItem('lastVisit', Date.now());
-        }
-
-        // Setup dynamic navigation
-        function setupDynamicNavigation() {
-            // Desktop navigation
-            document.getElementById('nav-dashboard').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('dashboard');
-            });
-            
-            document.getElementById('nav-academic').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('academic');
-            });
-            
-            document.getElementById('nav-placement').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('placement');
-            });
-            
-            document.getElementById('nav-extracurricular').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('extracurricular');
-            });
-            
-            document.getElementById('nav-reports').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('reports');
-            });
-            
-            document.getElementById('nav-settings').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('settings');
-            });
-            
-            // Mobile navigation
-            document.getElementById('mobile-nav-dashboard').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('dashboard');
-            });
-            
-            document.getElementById('mobile-nav-academic').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('academic');
-            });
-            
-            document.getElementById('mobile-nav-placement').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('placement');
-            });
-            
-            document.getElementById('mobile-nav-extracurricular').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('extracurricular');
-            });
-            
-            document.getElementById('mobile-nav-reports').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('reports');
-            });
-            
-            document.getElementById('mobile-nav-settings').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPageWithEnhancedId('settings');
-            });
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -2385,6 +2320,71 @@
                 resetInactivityTimer();
             }
 
+            // Setup dynamic navigation
+            function setupDynamicNavigation() {
+                // Desktop navigation
+                document.getElementById('nav-dashboard').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('dashboard');
+                });
+                
+                document.getElementById('nav-academic').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('academic');
+                });
+                
+                document.getElementById('nav-placement').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('placement');
+                });
+                
+                document.getElementById('nav-extracurricular').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('extracurricular');
+                });
+                
+                document.getElementById('nav-reports').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('reports');
+                });
+                
+                document.getElementById('nav-settings').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('settings');
+                });
+                
+                // Mobile navigation
+                document.getElementById('mobile-nav-dashboard').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('dashboard');
+                });
+                
+                document.getElementById('mobile-nav-academic').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('academic');
+                });
+                
+                document.getElementById('mobile-nav-placement').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('placement');
+                });
+                
+                document.getElementById('mobile-nav-extracurricular').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('extracurricular');
+                });
+                
+                document.getElementById('mobile-nav-reports').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('reports');
+                });
+                
+                document.getElementById('mobile-nav-settings').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPageWithEnhancedId('settings');
+                });
+            }
+
             // Load dynamic IDs and update navigation links
             async function loadDynamicIds() {
                 try {
@@ -2473,10 +2473,10 @@
 
             // Load dynamic IDs and update navigation
             await loadDynamicIds();
+            setupDynamicNavigation();
 
             // Initialize
             loadFiles();
-            setupDynamicNavigation();
             
             // Start inactivity tracking
             resetInactivityTimer();
