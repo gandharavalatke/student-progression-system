@@ -1181,7 +1181,7 @@
         }
     </style>
 </head>
-<body class="text-white dark:text-white light:text-slate-800">
+<body class="text-white">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
@@ -1517,56 +1517,12 @@
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
         }
-        
-        // Generate dynamic navigation URLs
-        function generateNavUrl(page) {
-            const uniqueId = generateUniqueId();
-            return `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
-        }
-        
-        // Update all navigation links with dynamic URLs
-        function updateNavigationUrls() {
-            // Desktop navigation
-            const dashboardLink = document.querySelector('a[href="/dashboard"]');
-            const placementLink = document.querySelector('a[href="/placement-abc123"]');
-            const extracurricularLink = document.querySelector('a[href="/extracurricular-abc123"]');
-            const reportsLink = document.querySelector('a[href="/reports-abc123"]');
-            const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
-            
-            if (dashboardLink) dashboardLink.href = generateNavUrl('dashboard');
-            if (placementLink) placementLink.href = generateNavUrl('placement');
-            if (extracurricularLink) extracurricularLink.href = generateNavUrl('extracurricular');
-            if (reportsLink) reportsLink.href = generateNavUrl('reports');
-            if (settingsLink) settingsLink.href = generateNavUrl('settings');
-            
-            // Mobile navigation
-            const mobilePlacementLink = document.querySelector('.mobile-nav-item[href="/placement-abc123"]');
-            const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href="/extracurricular-abc123"]');
-            const mobileReportsLink = document.querySelector('.mobile-nav-item[href="/reports-abc123"]');
-            const mobileSettingsLink = document.querySelector('.mobile-nav-item[href="/settings-4p8q1n"]');
-            
-            if (mobilePlacementLink) mobilePlacementLink.href = generateNavUrl('placement');
-            if (mobileExtracurricularLink) mobileExtracurricularLink.href = generateNavUrl('extracurricular');
-            if (mobileReportsLink) mobileReportsLink.href = generateNavUrl('reports');
-            if (mobileSettingsLink) mobileSettingsLink.href = generateNavUrl('settings');
-        }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize theme - default to dark, only use saved theme if user is logged in
-            const isLoggedIn = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
-            let savedTheme = 'dark'; // Default to dark
-            
-            if (isLoggedIn) {
-                // Only use saved theme if user is logged in
-                savedTheme = localStorage.getItem('theme') || 'dark';
-            } else {
-                // If not logged in, force dark theme and clear any saved theme
-                localStorage.removeItem('theme');
-                savedTheme = 'dark';
-            }
-            
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
             const html = document.documentElement;
-            console.log('Initializing theme:', savedTheme, 'isLoggedIn:', isLoggedIn);
+            console.log('Initializing theme:', savedTheme);
             if (savedTheme === 'light') {
                 html.classList.remove('dark');
                 html.classList.add('light');
@@ -1579,9 +1535,6 @@
             
             // Generate unique URL ID
             updateUrlWithUniqueId();
-            
-            // Update navigation URLs with dynamic IDs
-            updateNavigationUrls();
             
             // Element references
             const semesterSelect = document.getElementById('semester-select');
@@ -1767,11 +1720,11 @@
                 cancelDeleteBtn.disabled = true;
                 try {
                     const response = await fetch(`https://sps.up.railway.app/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
-                    const show = (status, msg) => {
+            const show = (status, msg) => {
                         // Ensure the confirm modal is hidden before showing result
                         deleteConfirmModal.classList.add('hidden');
                         // Small delay to avoid visual overlap
-                        setTimeout(() => showResultModal(status, msg, status === 'success' ? 'Delete Successful' : 'Delete Failed'), 50);
+                setTimeout(() => showResultModal(status, msg, status === 'success' ? 'Delete Successful' : 'Delete Failed'), 50);
                     };
                     if (response.ok) {
                         await loadFiles();

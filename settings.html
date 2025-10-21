@@ -61,9 +61,6 @@
             transition: all 0.3s ease !important;
             position: relative;
             overflow: hidden;
-            cursor: pointer;
-            z-index: 10;
-            pointer-events: auto;
         }
         
         .theme-toggle:hover {
@@ -73,33 +70,30 @@
         .theme-toggle-slider {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
             position: absolute;
-            top: 50%;
+            top: 2px;
             left: 2px;
-            transform: translateY(-50%) translateX(0); /* Perfect vertical centering + horizontal position */
+            transform: translateX(0); /* Default to left position (light mode) */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .theme-toggle.light .theme-toggle-slider {
-            transform: translateY(-50%) translateX(0) !important; /* Light mode: stay on left with perfect centering */
+            transform: translateX(0); /* Light mode: stay on left */
         }
         
         .theme-toggle:not(.light) .theme-toggle-slider {
-            transform: translateY(-50%) translateX(20px) !important; /* Dark mode: move to right with perfect centering */
-        }
-        
-        /* Additional CSS to ensure knob movement */
-        .theme-toggle .theme-toggle-slider {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transform: translateX(20px); /* Dark mode: move to right */
         }
         
         /* Ensure perfect alignment for both states */
         .theme-toggle {
-            position: relative;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            cursor: pointer;
-            z-index: 10;
-            pointer-events: auto;
+            justify-content: flex-start; /* Default to left (light mode) */
+            position: relative;
+        }
+        
+        .theme-toggle:not(.light) {
+            justify-content: flex-end; /* Dark mode: right */
         }
         
         /* Enhanced knob styling */
@@ -556,7 +550,7 @@
         }
     </style>
 </head>
-<body class="text-white dark:text-white light:text-slate-800">
+<body class="text-white">
     <div class="flex h-screen overflow-hidden">
         <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
             <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
@@ -852,54 +846,6 @@
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
         }
-        
-        // Generate dynamic navigation URLs
-        function generateNavUrl(page) {
-            const uniqueId = generateUniqueId();
-            return `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
-        }
-        
-        // Update all navigation links with dynamic URLs
-        function updateNavigationUrls() {
-            // Desktop navigation
-            const dashboardLink = document.querySelector('a[href="/dashboard"]');
-            const placementLink = document.querySelector('a[href="/placement-abc123"]');
-            const extracurricularLink = document.querySelector('a[href="/extracurricular-abc123"]');
-            const reportsLink = document.querySelector('a[href="/reports-abc123"]');
-            const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
-            
-            if (dashboardLink) {
-                dashboardLink.href = generateNavUrl('dashboard');
-                console.log('Updated dashboard link:', dashboardLink.href);
-            }
-            if (placementLink) {
-                placementLink.href = generateNavUrl('placement');
-                console.log('Updated placement link:', placementLink.href);
-            }
-            if (extracurricularLink) {
-                extracurricularLink.href = generateNavUrl('extracurricular');
-                console.log('Updated extracurricular link:', extracurricularLink.href);
-            }
-            if (reportsLink) {
-                reportsLink.href = generateNavUrl('reports');
-                console.log('Updated reports link:', reportsLink.href);
-            }
-            if (settingsLink) {
-                settingsLink.href = generateNavUrl('settings');
-                console.log('Updated settings link:', settingsLink.href);
-            }
-            
-            // Mobile navigation
-            const mobilePlacementLink = document.querySelector('.mobile-nav-item[href="/placement-abc123"]');
-            const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href="/extracurricular-abc123"]');
-            const mobileReportsLink = document.querySelector('.mobile-nav-item[href="/reports-abc123"]');
-            const mobileSettingsLink = document.querySelector('.mobile-nav-item[href="/settings-4p8q1n"]');
-            
-            if (mobilePlacementLink) mobilePlacementLink.href = generateNavUrl('placement');
-            if (mobileExtracurricularLink) mobileExtracurricularLink.href = generateNavUrl('extracurricular');
-            if (mobileReportsLink) mobileReportsLink.href = generateNavUrl('reports');
-            if (mobileSettingsLink) mobileSettingsLink.href = generateNavUrl('settings');
-        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             // Check if user is logged in with server verification
@@ -907,33 +853,17 @@
                 return;
             }
             
-            // Initialize theme - default to dark, only use saved theme if user is logged in
-            const isLoggedIn = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
-            let savedTheme = 'dark'; // Default to dark
-            
-            if (isLoggedIn) {
-                // Only use saved theme if user is logged in
-                savedTheme = localStorage.getItem('theme') || 'dark';
-            } else {
-                // If not logged in, force dark theme and clear any saved theme
-                localStorage.removeItem('theme');
-                savedTheme = 'dark';
-            }
-            
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
             const html = document.documentElement;
             if (savedTheme === 'light') {
                 html.classList.remove('dark');
-                html.classList.add('light');
             } else {
-                html.classList.remove('light');
                 html.classList.add('dark');
             }
             
             // Generate unique URL ID
             updateUrlWithUniqueId();
-            
-            // Update navigation URLs with dynamic IDs
-            updateNavigationUrls();
             
             // --- Element Declarations ---
             const usernameInput = document.getElementById('username-input');
@@ -949,8 +879,6 @@
             const themeToggle = document.getElementById('theme-toggle');
             const themeToggleSlider = document.getElementById('theme-toggle-slider');
             const themeLabel = document.getElementById('theme-label');
-            
-            console.log('Theme toggle elements found:', { themeToggle, themeToggleSlider, themeLabel });
             
             const modalOverlay = document.getElementById('modal-overlay');
             const resultModal = document.getElementById('result-modal');
@@ -996,44 +924,28 @@
 
             function applyTheme(theme) {
                 const html = document.documentElement;
-                const body = document.body;
                 console.log('Applying theme:', theme);
-                console.log('Current HTML classes before:', html.className);
-                console.log('Current body classes before:', body.className);
-                
                 if (theme === 'light') {
                     html.classList.remove('dark');
                     html.classList.add('light');
-                    body.classList.remove('dark');
-                    body.classList.add('light');
                     themeToggle.classList.add('light');
                     themeToggle.style.backgroundColor = '#e5e7eb';
                     themeLabel.textContent = 'Light';
-                    console.log('Light theme applied, HTML classes:', html.className);
-                    console.log('Light theme applied, body classes:', body.className);
-                    console.log('Theme toggle classes after light:', themeToggle.className);
-                    console.log('Theme toggle slider classes after light:', themeToggleSlider.className);
+                    console.log('Light theme applied, classes:', html.className);
                 } else {
                     html.classList.remove('light');
                     html.classList.add('dark');
-                    body.classList.remove('light');
-                    body.classList.add('dark');
                     themeToggle.classList.remove('light');
                     themeToggle.style.backgroundColor = '#2563eb';
                     themeLabel.textContent = 'Dark';
-                    console.log('Dark theme applied, HTML classes:', html.className);
-                    console.log('Dark theme applied, body classes:', body.className);
-                    console.log('Theme toggle classes after dark:', themeToggle.className);
-                    console.log('Theme toggle slider classes after dark:', themeToggleSlider.className);
+                    console.log('Dark theme applied, classes:', html.className);
                 }
                 localStorage.setItem('theme', theme);
             }
 
-            themeToggle.addEventListener('click', (e) => {
-                console.log('Theme toggle clicked!', e);
+            themeToggle.addEventListener('click', () => {
                 const currentTheme = localStorage.getItem('theme') || 'dark';
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                console.log('Current theme:', currentTheme, 'New theme:', newTheme);
                 applyTheme(newTheme);
             });
 
