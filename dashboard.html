@@ -1144,17 +1144,22 @@
         // Generate dynamic navigation URLs
         function generateNavUrl(page) {
             const uniqueId = generateUniqueId();
-            return `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
+            const url = `/${page}?id=${uniqueId}&t=${Date.now()}&r=${Math.random().toString(36).substring(2, 15)}&s=${sessionStorage.getItem('sessionId') || 'new'}`;
+            console.log(`Generated URL for ${page}:`, url);
+            return url;
         }
         
         // Update all navigation links with dynamic URLs
         function updateNavigationUrls() {
+            console.log('updateNavigationUrls called');
             // Desktop navigation
             const dashboardLink = document.querySelector('a[href="/dashboard"]');
             const placementLink = document.querySelector('a[href="/placement-abc123"]');
             const extracurricularLink = document.querySelector('a[href="/extracurricular-abc123"]');
             const reportsLink = document.querySelector('a[href="/reports-abc123"]');
             const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
+            
+            console.log('Found links:', { dashboardLink, placementLink, extracurricularLink, reportsLink, settingsLink });
             
             if (dashboardLink) dashboardLink.href = generateNavUrl('dashboard');
             if (placementLink) placementLink.href = generateNavUrl('placement');
@@ -1193,14 +1198,17 @@
             updateNavigationUrls();
             
             // Load dashboard data
+            console.log('About to call loadDashboardData');
             loadDashboardData();
             
             // Function to load dashboard data
             function loadDashboardData() {
+                console.log('loadDashboardData function called');
                 // Optimized dashboard data fetching with caching
                 const cacheKey = 'dashboard_data_cache';
                 const cacheExpiry = 5 * 60 * 1000; // 5 minutes cache
                 const now = Date.now();
+                console.log('Cache key:', cacheKey, 'Cache expiry:', cacheExpiry, 'Now:', now);
                 
                 // Check if we have cached data that's still valid
                 const cachedData = localStorage.getItem(cacheKey);

@@ -868,11 +868,26 @@
             const reportsLink = document.querySelector('a[href="/reports-abc123"]');
             const settingsLink = document.querySelector('a[href="/settings-4p8q1n"]');
             
-            if (dashboardLink) dashboardLink.href = generateNavUrl('dashboard');
-            if (placementLink) placementLink.href = generateNavUrl('placement');
-            if (extracurricularLink) extracurricularLink.href = generateNavUrl('extracurricular');
-            if (reportsLink) reportsLink.href = generateNavUrl('reports');
-            if (settingsLink) settingsLink.href = generateNavUrl('settings');
+            if (dashboardLink) {
+                dashboardLink.href = generateNavUrl('dashboard');
+                console.log('Updated dashboard link:', dashboardLink.href);
+            }
+            if (placementLink) {
+                placementLink.href = generateNavUrl('placement');
+                console.log('Updated placement link:', placementLink.href);
+            }
+            if (extracurricularLink) {
+                extracurricularLink.href = generateNavUrl('extracurricular');
+                console.log('Updated extracurricular link:', extracurricularLink.href);
+            }
+            if (reportsLink) {
+                reportsLink.href = generateNavUrl('reports');
+                console.log('Updated reports link:', reportsLink.href);
+            }
+            if (settingsLink) {
+                settingsLink.href = generateNavUrl('settings');
+                console.log('Updated settings link:', settingsLink.href);
+            }
             
             // Mobile navigation
             const mobilePlacementLink = document.querySelector('.mobile-nav-item[href="/placement-abc123"]');
@@ -921,6 +936,8 @@
             const themeToggle = document.getElementById('theme-toggle');
             const themeToggleSlider = document.getElementById('theme-toggle-slider');
             const themeLabel = document.getElementById('theme-label');
+            
+            console.log('Theme toggle elements found:', { themeToggle, themeToggleSlider, themeLabel });
             
             const modalOverlay = document.getElementById('modal-overlay');
             const resultModal = document.getElementById('result-modal');
@@ -981,6 +998,8 @@
                     themeLabel.textContent = 'Light';
                     console.log('Light theme applied, HTML classes:', html.className);
                     console.log('Light theme applied, body classes:', body.className);
+                    console.log('Theme toggle classes after light:', themeToggle.className);
+                    console.log('Theme toggle slider classes after light:', themeToggleSlider.className);
                 } else {
                     html.classList.remove('light');
                     html.classList.add('dark');
@@ -991,6 +1010,8 @@
                     themeLabel.textContent = 'Dark';
                     console.log('Dark theme applied, HTML classes:', html.className);
                     console.log('Dark theme applied, body classes:', body.className);
+                    console.log('Theme toggle classes after dark:', themeToggle.className);
+                    console.log('Theme toggle slider classes after dark:', themeToggleSlider.className);
                 }
                 localStorage.setItem('theme', theme);
             }
