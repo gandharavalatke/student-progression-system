@@ -1499,7 +1499,7 @@
             const random = Math.random().toString(36).substring(2, 15);
             const extraRandom = Math.random().toString(36).substring(2, 15);
             const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
+            return `academic-${timestamp}-${random}-${extraRandom}`;
         }
 
         // Update URL with unique ID
@@ -1518,10 +1518,26 @@
             sessionStorage.setItem('currentPageId', uniqueId);
         }
 
-        // Dynamic navigation function
+        // Navigation function
         function navigateToPage(pageType) {
-            const uniqueId = generateUniqueId();
-            window.location.href = `/${uniqueId}`;
+            const pagePrefixes = {
+                'dashboard': 'dash',
+                'academic': 'academic',
+                'placement': 'placement',
+                'extracurricular': 'extracurricular',
+                'reports': 'reports',
+                'settings': 'settings'
+            };
+            
+            if (pagePrefixes[pageType]) {
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substring(2, 15);
+                const extraRandom = Math.random().toString(36).substring(2, 15);
+                const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random}-${extraRandom}`;
+                window.location.href = `/${uniqueId}`;
+            } else {
+                console.error('Unknown page type:', pageType);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1702,7 +1718,7 @@
                 localStorage.removeItem('loggedInUser');
                 sessionStorage.removeItem('sps_user');
                 console.log('Session cleared, redirecting...');
-                window.location.href = '/';
+                window.location.href = 'index.html';
             });
             
             // Duplicate modal events
@@ -2259,7 +2275,7 @@
                 console.log('Logged in user:', loggedInUser);
                 if (!loggedInUser) {
                     console.log('No logged in user found, redirecting to login');
-                    window.location.href = '/';
+                    window.location.href = 'index.html';
                     return false;
                 }
                 
@@ -2275,7 +2291,7 @@
                         // Clear client-side storage if server session is invalid
                         localStorage.removeItem('loggedInUser');
                         sessionStorage.removeItem('loggedInUser');
-                        window.location.href = '/';
+                        window.location.href = 'index.html';
                         return false;
                     }
                     console.log('Authentication successful');
@@ -2285,7 +2301,7 @@
                     // On error, redirect to login for security
                     localStorage.removeItem('loggedInUser');
                     sessionStorage.removeItem('loggedInUser');
-                    window.location.href = '/';
+                    window.location.href = 'index.html';
                     return false;
                 }
             }
@@ -2301,7 +2317,7 @@
                     if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
                         localStorage.removeItem('loggedInUser');
                         sessionStorage.removeItem('loggedInUser');
-                        window.location.href = '/';
+                        window.location.href = 'index.html';
                     } else {
                         // Reset timer if user cancels
                         resetInactivityTimer();

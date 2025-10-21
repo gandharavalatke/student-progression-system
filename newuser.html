@@ -277,7 +277,7 @@
             const random = Math.random().toString(36).substring(2, 15);
             const extraRandom = Math.random().toString(36).substring(2, 15);
             const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
+            return `newuser-${timestamp}-${random}-${extraRandom}`;
         }
 
         // Update URL with unique ID
@@ -294,6 +294,29 @@
             
             // Store the unique ID for this session
             sessionStorage.setItem('currentPageId', uniqueId);
+        }
+
+        // Navigation function
+        function navigateToPage(pageType) {
+            const pagePrefixes = {
+                'dashboard': 'dash',
+                'academic': 'academic',
+                'placement': 'placement',
+                'extracurricular': 'extracurricular',
+                'reports': 'reports',
+                'settings': 'settings',
+                'login': 'dash'  // Redirect to dashboard after login
+            };
+            
+            if (pagePrefixes[pageType]) {
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substring(2, 15);
+                const extraRandom = Math.random().toString(36).substring(2, 15);
+                const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random}-${extraRandom}`;
+                window.location.href = `/${uniqueId}`;
+            } else {
+                console.error('Unknown page type:', pageType);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {

@@ -1109,7 +1109,7 @@
             const random = Math.random().toString(36).substring(2, 15);
             const extraRandom = Math.random().toString(36).substring(2, 15);
             const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
+            return `dash-${timestamp}-${random}-${extraRandom}`;
         }
 
         // Update URL with unique ID
@@ -1128,10 +1128,26 @@
             sessionStorage.setItem('currentPageId', uniqueId);
         }
 
-        // Dynamic navigation function
+        // Navigation function
         function navigateToPage(pageType) {
-            const uniqueId = generateUniqueId();
-            window.location.href = `/${uniqueId}`;
+            const pagePrefixes = {
+                'dashboard': 'dash',
+                'academic': 'academic',
+                'placement': 'placement',
+                'extracurricular': 'extracurricular',
+                'reports': 'reports',
+                'settings': 'settings'
+            };
+            
+            if (pagePrefixes[pageType]) {
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substring(2, 15);
+                const extraRandom = Math.random().toString(36).substring(2, 15);
+                const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random}-${extraRandom}`;
+                window.location.href = `/${uniqueId}`;
+            } else {
+                console.error('Unknown page type:', pageType);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1483,7 +1499,7 @@
         async function checkAuthentication() {
             const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
             if (!loggedInUser) {
-                window.location.href = '/';
+                window.location.href = 'index.html';
                 return false;
             }
             
@@ -1495,7 +1511,7 @@
                     // Clear client-side storage if server session is invalid
                     localStorage.removeItem('loggedInUser');
                     sessionStorage.removeItem('loggedInUser');
-                    window.location.href = '/';
+                    window.location.href = 'index.html';
                     return false;
                 }
                 return true;
@@ -1504,7 +1520,7 @@
                 // On error, redirect to login for security
                 localStorage.removeItem('loggedInUser');
                 sessionStorage.removeItem('loggedInUser');
-                window.location.href = '/';
+                window.location.href = 'index.html';
                 return false;
             }
         }
@@ -1678,6 +1694,7 @@
             // Call authentication check, load dynamic IDs, and loadSavedSelections when page loads
             document.addEventListener('DOMContentLoaded', async () => {
                 if (await checkAuthentication()) {
+                    updateUrlWithUniqueId(); // Generate unique URL for dashboard page
                     await loadDynamicIds();
                     loadSavedSelections();
                     setupDynamicNavigation();

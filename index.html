@@ -236,7 +236,7 @@
             const random = Math.random().toString(36).substring(2, 15);
             const extraRandom = Math.random().toString(36).substring(2, 15);
             const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
+            return `dash-${timestamp}-${random}-${extraRandom}`;
         }
 
         // Update URL with unique ID
@@ -301,7 +301,7 @@
                     // Persist logged in user for other pages (e.g., settings)
                     sessionStorage.setItem('sps_user', username.value);
                     localStorage.setItem('loggedInUser', username.value);
-                    // Generate dynamic dashboard ID
+                    // Generate dynamic dashboard ID and redirect
                     const dashboardId = generateUniqueId();
                     window.location.href = `/${dashboardId}`;
                 } catch (err) {
