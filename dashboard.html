@@ -1570,6 +1570,12 @@
             function setupDynamicNavigation() {
                 console.log('Setting up dynamic navigation...');
                 
+                // Test navigation function
+                window.testNavigation = function() {
+                    console.log('Testing navigation...');
+                    navigateToPage('academic');
+                };
+                
                 // Desktop navigation
                 const navDashboard = document.getElementById('nav-dashboard');
                 if (navDashboard) {
