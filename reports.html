@@ -22,6 +22,79 @@
         @keyframes slideDown{from{transform:translateX(-50%) translateY(-100%);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
         .mobile-nav-item.active{background:linear-gradient(135deg,#10b981 0%,#059669 100%)!important;box-shadow:0 4px 12px rgba(16,185,129,.4)!important;animation:glow 2s ease-in-out infinite alternate}
         @keyframes glow{from{box-shadow:0 4px 12px rgba(16,185,129,.4)}to{box-shadow:0 8px 20px rgba(16,185,129,.6),0 0 20px rgba(16,185,129,.3)}}
+        
+        /* Light mode styles */
+        .light body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+        }
+        .light .sidebar-glass {
+            background: rgba(255, 255, 255, 0.95);
+            border-right: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-slate-300 {
+            color: #475569 !important;
+        }
+        .light .text-slate-400 {
+            color: #64748b !important;
+        }
+        .light .text-slate-500 {
+            color: #64748b !important;
+        }
+        .light .text-slate-600 {
+            color: #475569 !important;
+        }
+        .light .text-slate-700 {
+            color: #334155 !important;
+        }
+        .light .text-slate-800 {
+            color: #1e293b !important;
+        }
+        .light .text-slate-900 {
+            color: #0f172a !important;
+        }
+        .light .bg-slate-800 {
+            background-color: #f8fafc !important;
+        }
+        .light .bg-slate-700 {
+            background-color: #e2e8f0 !important;
+        }
+        .light .bg-slate-600 {
+            background-color: #cbd5e1 !important;
+        }
+        .light .bg-slate-900 {
+            background-color: #f1f5f9 !important;
+        }
+        .light .bg-slate-500 {
+            background-color: #94a3b8 !important;
+        }
+        .light .bg-slate-400 {
+            background-color: #cbd5e1 !important;
+        }
+        .light .nav-link {
+            color: #475569 !important;
+        }
+        .light .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            color: #1e293b !important;
+        }
+        .light .nav-link.active {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            color: #1e293b !important;
+        }
+        .light .mobile-nav-popup {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1) !important;
+        }
         .mobile-nav-content{display:flex;flex-direction:column;gap:15px;max-width:280px}
         .mobile-nav-row{display:grid;gap:15px}
         .mobile-nav-row:first-child{grid-template-columns:repeat(4,1fr)}
@@ -122,6 +195,47 @@
     </div>
 
     <script>
+        // Generate unique ID for URL
+        function generateUniqueId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 15);
+            const extraRandom = Math.random().toString(36).substring(2, 15);
+            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
+            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
+        }
+
+        // Update URL with unique ID
+        function updateUrlWithUniqueId() {
+            const uniqueId = generateUniqueId();
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('id', uniqueId);
+            currentUrl.searchParams.set('t', Date.now());
+            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
+            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
+            
+            // Update URL without page reload
+            window.history.replaceState({}, '', currentUrl.toString());
+            
+            // Store the unique ID for this session
+            sessionStorage.setItem('currentPageId', uniqueId);
+        }
+
+        // Initialize theme from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const html = document.documentElement;
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            }
+            
+            // Generate unique URL ID
+            updateUrlWithUniqueId();
+        });
+        
         // Enhanced mobile menu toggle with animations and persistence
         const up=document.getElementById('mobile-nav-up');
         const down=document.getElementById('mobile-nav-down');
@@ -194,6 +308,114 @@
             });
         }
 
+        // Enhanced modal functions for better UX
+        function showAlertModal(message, title = 'Notice') {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]';
+                overlay.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-2xl border border-blue-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="alert-modal">
+                        <div class="mx-auto flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-blue-100 mb-3 sm:mb-4">
+                            <i class="fa-solid fa-circle-info text-blue-500 text-lg sm:text-xl"></i>
+                        </div>
+                        <h3 class="text-gray-800 text-base sm:text-lg font-semibold mb-2">${title}</h3>
+                        <p class="text-gray-600 mb-4 sm:mb-5 text-sm sm:text-base">${message}</p>
+                        <button id="alert-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                
+                // Animate in
+                setTimeout(() => {
+                    const modal = overlay.querySelector('#alert-modal');
+                    modal.classList.remove('scale-95', 'opacity-0');
+                    modal.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                
+                overlay.querySelector('#alert-ok').addEventListener('click', () => {
+                    const modal = overlay.querySelector('#alert-modal');
+                    modal.classList.remove('scale-100', 'opacity-100');
+                    modal.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        document.body.removeChild(overlay);
+                        resolve(true);
+                    }, 300);
+                });
+                
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        const modal = overlay.querySelector('#alert-modal');
+                        modal.classList.remove('scale-100', 'opacity-100');
+                        modal.classList.add('scale-95', 'opacity-0');
+                        setTimeout(() => {
+                            document.body.removeChild(overlay);
+                            resolve(true);
+                        }, 300);
+                    }
+                });
+            });
+        }
+
+        function showConfirmModal(message, title = 'Confirm') {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]';
+                overlay.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="confirm-modal">
+                        <div class="mx-auto flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-yellow-100 mb-3 sm:mb-4">
+                            <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-lg sm:text-xl"></i>
+                        </div>
+                        <h3 class="text-gray-800 text-base sm:text-lg font-semibold mb-2">${title}</h3>
+                        <p class="text-gray-600 mb-4 sm:mb-5 text-sm sm:text-base">${message}</p>
+                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:space-x-3">
+                            <button id="confirm-cancel" class="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all transform hover:scale-105 text-sm sm:text-base">Cancel</button>
+                            <button id="confirm-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                
+                // Animate in
+                setTimeout(() => {
+                    const modal = overlay.querySelector('#confirm-modal');
+                    modal.classList.remove('scale-95', 'opacity-0');
+                    modal.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                
+                overlay.querySelector('#confirm-cancel').addEventListener('click', () => {
+                    const modal = overlay.querySelector('#confirm-modal');
+                    modal.classList.remove('scale-100', 'opacity-100');
+                    modal.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        document.body.removeChild(overlay);
+                        resolve(false);
+                    }, 300);
+                });
+                
+                overlay.querySelector('#confirm-ok').addEventListener('click', () => {
+                    const modal = overlay.querySelector('#confirm-modal');
+                    modal.classList.remove('scale-100', 'opacity-100');
+                    modal.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        document.body.removeChild(overlay);
+                        resolve(true);
+                    }, 300);
+                });
+                
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        const modal = overlay.querySelector('#confirm-modal');
+                        modal.classList.remove('scale-100', 'opacity-100');
+                        modal.classList.add('scale-95', 'opacity-0');
+                        setTimeout(() => {
+                            document.body.removeChild(overlay);
+                            resolve(false);
+                        }, 300);
+                    }
+                });
+            });
+        }
+
         // Enhanced authentication check with server verification
         async function checkAuthentication() {
             const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
@@ -232,7 +454,7 @@
             clearTimeout(inactivityTimer);
             inactivityTimer = setTimeout(() => {
                 // Show logout confirmation
-                if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
+                if (await showConfirmModal('You have been inactive for 15 minutes. You will be logged out for security.', 'Session Timeout')) {
                     localStorage.removeItem('loggedInUser');
                     sessionStorage.removeItem('loggedInUser');
                     window.location.href = '/';

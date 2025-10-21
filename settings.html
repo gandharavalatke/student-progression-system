@@ -70,30 +70,25 @@
         .theme-toggle-slider {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
             position: absolute;
-            top: 2px;
+            top: 50%;
             left: 2px;
-            transform: translateX(0); /* Default to left position (light mode) */
+            transform: translateY(-50%) translateX(0); /* Perfect vertical centering + horizontal position */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .theme-toggle.light .theme-toggle-slider {
-            transform: translateX(0); /* Light mode: stay on left */
+            transform: translateY(-50%) translateX(0); /* Light mode: stay on left with perfect centering */
         }
         
         .theme-toggle:not(.light) .theme-toggle-slider {
-            transform: translateX(20px); /* Dark mode: move to right */
+            transform: translateY(-50%) translateX(20px); /* Dark mode: move to right with perfect centering */
         }
         
         /* Ensure perfect alignment for both states */
         .theme-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start; /* Default to left (light mode) */
             position: relative;
-        }
-        
-        .theme-toggle:not(.light) {
-            justify-content: flex-end; /* Dark mode: right */
+            display: inline-flex;
+            align-items: center;
         }
         
         /* Enhanced knob styling */
@@ -217,6 +212,18 @@
         .light .nav-link.active {
             background-color: rgba(59, 130, 246, 0.15) !important;
             color: #1e293b !important;
+        }
+        .light .mobile-nav-popup {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .mobile-nav-popup.show-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        .mobile-nav-popup.show-down {
+            animation: slideDown 0.3s ease-out;
         }
         
         /* Light mode settings cards */
@@ -810,6 +817,31 @@
     </div>
 
     <script>
+        // Generate unique ID for URL
+        function generateUniqueId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 15);
+            const extraRandom = Math.random().toString(36).substring(2, 15);
+            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
+            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
+        }
+
+        // Update URL with unique ID
+        function updateUrlWithUniqueId() {
+            const uniqueId = generateUniqueId();
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('id', uniqueId);
+            currentUrl.searchParams.set('t', Date.now());
+            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
+            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
+            
+            // Update URL without page reload
+            window.history.replaceState({}, '', currentUrl.toString());
+            
+            // Store the unique ID for this session
+            sessionStorage.setItem('currentPageId', uniqueId);
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             // Check if user is logged in with server verification
             if (!(await checkAuthentication())) {
@@ -824,6 +856,9 @@
             } else {
                 html.classList.add('dark');
             }
+            
+            // Generate unique URL ID
+            updateUrlWithUniqueId();
             
             // --- Element Declarations ---
             const usernameInput = document.getElementById('username-input');
@@ -1209,8 +1244,116 @@
                 };
             }
 
-            // Enhanced authentication check with server verification
-            async function checkAuthentication() {
+        // Enhanced modal functions for better UX
+        function showAlertModal(message, title = 'Notice') {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]';
+                overlay.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-2xl border border-blue-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="alert-modal">
+                        <div class="mx-auto flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-blue-100 mb-3 sm:mb-4">
+                            <i class="fa-solid fa-circle-info text-blue-500 text-lg sm:text-xl"></i>
+                        </div>
+                        <h3 class="text-gray-800 text-base sm:text-lg font-semibold mb-2">${title}</h3>
+                        <p class="text-gray-600 mb-4 sm:mb-5 text-sm sm:text-base">${message}</p>
+                        <button id="alert-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                
+                // Animate in
+                setTimeout(() => {
+                    const modal = overlay.querySelector('#alert-modal');
+                    modal.classList.remove('scale-95', 'opacity-0');
+                    modal.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                
+                overlay.querySelector('#alert-ok').addEventListener('click', () => {
+                    const modal = overlay.querySelector('#alert-modal');
+                    modal.classList.remove('scale-100', 'opacity-100');
+                    modal.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        document.body.removeChild(overlay);
+                        resolve(true);
+                    }, 300);
+                });
+                
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        const modal = overlay.querySelector('#alert-modal');
+                        modal.classList.remove('scale-100', 'opacity-100');
+                        modal.classList.add('scale-95', 'opacity-0');
+                        setTimeout(() => {
+                            document.body.removeChild(overlay);
+                            resolve(true);
+                        }, 300);
+                    }
+                });
+            });
+        }
+
+        function showConfirmModal(message, title = 'Confirm') {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]';
+                overlay.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-sm sm:max-w-md mx-4 p-4 sm:p-6 text-center transform transition-all duration-300 scale-95 opacity-0" id="confirm-modal">
+                        <div class="mx-auto flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-yellow-100 mb-3 sm:mb-4">
+                            <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-lg sm:text-xl"></i>
+                        </div>
+                        <h3 class="text-gray-800 text-base sm:text-lg font-semibold mb-2">${title}</h3>
+                        <p class="text-gray-600 mb-4 sm:mb-5 text-sm sm:text-base">${message}</p>
+                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:space-x-3">
+                            <button id="confirm-cancel" class="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all transform hover:scale-105 text-sm sm:text-base">Cancel</button>
+                            <button id="confirm-ok" class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 text-sm sm:text-base">OK</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                
+                // Animate in
+                setTimeout(() => {
+                    const modal = overlay.querySelector('#confirm-modal');
+                    modal.classList.remove('scale-95', 'opacity-0');
+                    modal.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                
+                overlay.querySelector('#confirm-cancel').addEventListener('click', () => {
+                    const modal = overlay.querySelector('#confirm-modal');
+                    modal.classList.remove('scale-100', 'opacity-100');
+                    modal.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        document.body.removeChild(overlay);
+                        resolve(false);
+                    }, 300);
+                });
+                
+                overlay.querySelector('#confirm-ok').addEventListener('click', () => {
+                    const modal = overlay.querySelector('#confirm-modal');
+                    modal.classList.remove('scale-100', 'opacity-100');
+                    modal.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        document.body.removeChild(overlay);
+                        resolve(true);
+                    }, 300);
+                });
+                
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        const modal = overlay.querySelector('#confirm-modal');
+                        modal.classList.remove('scale-100', 'opacity-100');
+                        modal.classList.add('scale-95', 'opacity-0');
+                        setTimeout(() => {
+                            document.body.removeChild(overlay);
+                            resolve(false);
+                        }, 300);
+                    }
+                });
+            });
+        }
+
+        // Enhanced authentication check with server verification
+        async function checkAuthentication() {
                 const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
                 if (!loggedInUser) {
                     window.location.href = '/';
@@ -1247,7 +1390,7 @@
                 clearTimeout(inactivityTimer);
                 inactivityTimer = setTimeout(() => {
                     // Show logout confirmation
-                    if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
+                    if (await showConfirmModal('You have been inactive for 15 minutes. You will be logged out for security.', 'Session Timeout')) {
                         localStorage.removeItem('loggedInUser');
                         sessionStorage.removeItem('loggedInUser');
                         window.location.href = '/';

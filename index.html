@@ -230,6 +230,31 @@
         </div>
     </div>
     <script>
+        // Generate unique ID for URL
+        function generateUniqueId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 15);
+            const extraRandom = Math.random().toString(36).substring(2, 15);
+            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
+            return `${timestamp}_${random}_${extraRandom}_${sessionId}_${Math.random().toString(36).substring(2, 10)}`;
+        }
+
+        // Update URL with unique ID
+        function updateUrlWithUniqueId() {
+            const uniqueId = generateUniqueId();
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('id', uniqueId);
+            currentUrl.searchParams.set('t', Date.now());
+            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
+            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
+            
+            // Update URL without page reload
+            window.history.replaceState({}, '', currentUrl.toString());
+            
+            // Store the unique ID for this session
+            sessionStorage.setItem('currentPageId', uniqueId);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -241,6 +266,9 @@
                 html.classList.remove('light');
                 html.classList.add('dark');
             }
+            
+            // Generate unique URL ID
+            updateUrlWithUniqueId();
             
             const form = document.getElementById('login-form');
             const username = document.getElementById('username');
