@@ -849,11 +849,6 @@
                 <h2 id="header-title" class="text-lg font-semibold text-white mobile-title-center">CSE(AIML) Dept - Academic Year</h2>
                 
                 <div class="flex items-center space-x-4 mobile-header-controls">
-                    <!-- Test Navigation Button -->
-                    <button onclick="testNavigation()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
-                        Test Nav
-                    </button>
-                    
                     <!-- Department Dropdown -->
                     <div class="relative">
                         <button id="dept-button" class="flex items-center justify-between w-32 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
@@ -1575,12 +1570,6 @@
             function setupDynamicNavigation() {
                 console.log('Setting up dynamic navigation...');
                 
-                // Test navigation function
-                window.testNavigation = function() {
-                    console.log('Testing navigation...');
-                    navigateToPage('academic');
-                };
-                
                 // Desktop navigation
                 const navDashboard = document.getElementById('nav-dashboard');
                 if (navDashboard) {
@@ -1713,6 +1702,7 @@
                     });
                 } else {
                     console.error('mobile-nav-settings element not found');
+                }
             }
         }
 
