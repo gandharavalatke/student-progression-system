@@ -810,58 +810,20 @@
     </div>
 
     <script>
-        // Generate enhanced unique ID for URL
-        function generateEnhancedUniqueId() {
-            const timestamp = Date.now();
-            const random1 = Math.random().toString(36).substring(2, 15);
-            const random2 = Math.random().toString(36).substring(2, 15);
-            const random3 = Math.random().toString(36).substring(2, 15);
-            const random4 = Math.random().toString(36).substring(2, 15);
-            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            const userAgent = navigator.userAgent.slice(0, 10);
-            const screenRes = `${screen.width}x${screen.height}`;
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const language = navigator.language;
-            
-            return `settings-${timestamp}-${random1}-${random2}-${random3}-${random4}-${sessionId}-${userAgent}-${screenRes}-${timezone}-${language}`.replace(/[^a-zA-Z0-9-]/g, '');
-        }
 
-        // Update URL with enhanced unique ID
-        function updateUrlWithEnhancedId() {
-            const uniqueId = generateEnhancedUniqueId();
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('id', uniqueId);
-            currentUrl.searchParams.set('t', Date.now());
-            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
-            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
-            currentUrl.searchParams.set('v', '1.0');
-            currentUrl.searchParams.set('u', navigator.userAgent.slice(0, 20));
-            
-            // Update URL without page reload
-            window.history.replaceState({}, '', currentUrl.toString());
-            
-            // Store the unique ID for this session
-            sessionStorage.setItem('currentPageId', uniqueId);
-            sessionStorage.setItem('lastVisit', Date.now());
-        }
-
-        // Navigation function
+        // Simple navigation function
         function navigateToPage(pageType) {
-            const pagePrefixes = {
-                'dashboard': 'dash',
-                'academic': 'academic',
-                'placement': 'placement',
-                'extracurricular': 'extracurricular',
-                'reports': 'reports',
-                'settings': 'settings'
+            const pageMap = {
+                'dashboard': 'dashboard.html',
+                'academic': 'studentprogression.html',
+                'placement': 'placement.html',
+                'extracurricular': 'extracurricular.html',
+                'reports': 'reports.html',
+                'settings': 'settings.html'
             };
             
-            if (pagePrefixes[pageType]) {
-                const timestamp = Date.now();
-                const random = Math.random().toString(36).substring(2, 15);
-                const extraRandom = Math.random().toString(36).substring(2, 15);
-                const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random}-${extraRandom}`;
-                window.location.href = `/${uniqueId}`;
+            if (pageMap[pageType]) {
+                window.location.href = '/' + pageMap[pageType];
             } else {
                 console.error('Unknown page type:', pageType);
             }
@@ -873,8 +835,6 @@
                 return;
             }
             
-            // Generate unique URL ID for settings page
-            updateUrlWithUniqueId();
             
             // Setup dynamic navigation
             function setupDynamicNavigation() {
