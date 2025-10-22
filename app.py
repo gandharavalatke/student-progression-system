@@ -6,11 +6,8 @@ import random
 import secrets
 import string
 import sys
-import hashlib
-import time
-import uuid
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify, session, redirect, g
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from gridfs import GridFS
@@ -18,61 +15,15 @@ from bson import ObjectId
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from io import BytesIO
-# --- Flask App Initialization ---
-app = Flask(__name__, static_folder='.', static_url_path='')
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
+from dotenv import load_dotenv
 
+load_dotenv()
+# --- Flask App Initialization ---
+app = Flask(__name__)
 # A more robust CORS configuration
 # Ensure TLS verification uses an up-to-date CA bundle (fixes SSL errors on some Windows setups)
 os.environ.setdefault('SSL_CERT_FILE', certifi.where())
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
-
-# Add global CORS headers for all routes
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    return response
-
-# Session timeout configuration (15 minutes)
-SESSION_TIMEOUT = 15 * 60  # 15 minutes in seconds
-
-# Authentication decorator
-def require_auth(f):
-    def decorated_function(*args, **kwargs):
-        # Check if user is authenticated
-        if 'user_id' not in session:
-            return redirect('/')
-        
-        # Check session timeout
-        if 'last_activity' in session:
-            last_activity = session['last_activity']
-            if isinstance(last_activity, str):
-                try:
-                    last_activity = datetime.fromisoformat(last_activity.replace('Z', '+00:00'))
-                except:
-                    session.clear()
-                    return redirect('/')
-            
-            if isinstance(last_activity, datetime) and last_activity.tzinfo is None:
-                last_activity = last_activity.replace(tzinfo=timezone.utc)
-            
-            if isinstance(last_activity, datetime) and datetime.now(timezone.utc) - last_activity > timedelta(seconds=SESSION_TIMEOUT):
-                session.clear()
-                return redirect('/')
-        
-        # Update last activity
-        session['last_activity'] = datetime.now(timezone.utc).isoformat()
-        return f(*args, **kwargs)
-    decorated_function.__name__ = f.__name__
-    return decorated_function
-
-# Update session activity for authenticated requests
-@app.before_request
-def update_session_activity():
-    if 'user_id' in session:
-        session['last_activity'] = datetime.now(timezone.utc).isoformat() 
+CORS(app, resources={r"/api/*": {"origins": "*"}}) 
 
 # --- CRITICAL CONFIGURATION ---
 # Use environment variables for Railway deployment, fallback to local values
@@ -83,232 +34,6 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', 'SG.your-sendgrid-api-key-here'
 FROM_EMAIL = os.getenv('FROM_EMAIL', 'gandharvacjc@gmail.com') # This MUST be a "Verified Sender" in your SendGrid account
 FROM_NAME = 'SPS Admin - GIT'
 
-# --- DYNAMIC ID GENERATION SYSTEM ---
-def generate_dynamic_id(page_type):
-    """Generate a unique, time-based ID for each page access"""
-    timestamp = str(int(time.time() * 1000))  # milliseconds
-    random_part = secrets.token_hex(8)
-    page_hash = hashlib.md5(page_type.encode()).hexdigest()[:8]
-    return f"{page_type}-{timestamp}-{random_part}-{page_hash}"
-
-def get_or_create_page_id(page_type):
-    """Get existing page ID from session or create new one"""
-    session_key = f"{page_type}_id"
-    if session_key not in session:
-        session[session_key] = generate_dynamic_id(page_type)
-    return session[session_key]
-
-# Page type mappings
-PAGE_TYPES = {
-    'dashboard': 'dash',
-    'settings': 'settings', 
-    'academic': 'academic',
-    'newuser': 'newuser',
-    'forgot': 'forgot',
-    'admin': 'admin',
-    'placement': 'placement',
-    'extracurricular': 'extracurricular',
-    'reports': 'reports'
-}
-
-# --- Health Check Endpoints for Railway ---
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
-
-# --- Dynamic ID Generation API ---
-@app.route('/api/generate-id/<page_type>', methods=['GET'])
-def generate_page_id(page_type):
-    """Generate a new dynamic ID for a specific page type"""
-    if page_type not in PAGE_TYPES:
-        return jsonify({"error": "Invalid page type"}), 400
-    
-    # Generate new ID for this session
-    new_id = generate_dynamic_id(PAGE_TYPES[page_type])
-    session[f"{page_type}_id"] = new_id
-    
-    return jsonify({
-        "id": new_id,
-        "page_type": page_type,
-        "url": f"/{new_id}"
-    }), 200
-
-@app.route('/api/get-current-ids', methods=['GET'])
-def get_current_ids():
-    """Get all current page IDs for this session"""
-    current_ids = {}
-    for page_type in PAGE_TYPES:
-        session_key = f"{page_type}_id"
-        if session_key in session:
-            current_ids[page_type] = session[session_key]
-        else:
-            # Generate new ID if not exists
-            new_id = generate_dynamic_id(PAGE_TYPES[page_type])
-            session[session_key] = new_id
-            current_ids[page_type] = new_id
-    
-    return jsonify(current_ids), 200
-
-# --- Serve Static HTML Files ---
-@app.route('/', methods=['GET'])
-def serve_index():
-    return app.send_static_file('index.html')
-
-# --- Handle direct access to domain root ---
-@app.route('/index', methods=['GET'])
-def serve_index_redirect():
-    return redirect('/')
-
-# --- Catch-all for direct .html access - redirect to dynamic IDs ---
-@app.route('/<page_name>.html', methods=['GET'])
-def redirect_html_to_dynamic(page_name):
-    """Redirect direct .html access to dynamic ID system"""
-    # Handle index.html specially - redirect to root domain
-    if page_name == 'index':
-        return redirect('/')
-    
-    page_mapping = {
-        'dashboard': 'dash',
-        'studentprogression': 'academic', 
-        'settings': 'settings',
-        'placement': 'placement',
-        'extracurricular': 'extracurricular',
-        'reports': 'reports',
-        'newuser': 'newuser',
-        'forgot_password': 'forgot',
-        'admin': 'admin'
-    }
-    
-    if page_name in page_mapping:
-        return _redirect_to_dynamic(page_mapping[page_name])
-    else:
-        return "Page not found", 404
-
-@app.route('/<dynamic_id>', methods=['GET'])
-def serve_dynamic_page(dynamic_id):
-    """Serve pages with dynamic IDs - validates ID format and serves appropriate page"""
-    try:
-        # Public pages (no authentication required)
-        if dynamic_id.startswith('newuser-'):
-            return app.send_static_file('newuser.html')
-        elif dynamic_id.startswith('forgot-'):
-            return app.send_static_file('forgot_password.html')
-        elif dynamic_id.startswith('admin-'):
-            return app.send_static_file('admin.html')
-        # Protected pages (require authentication)
-        elif dynamic_id.startswith('dash-'):
-            # Check authentication for protected pages
-            if 'user_id' not in session:
-                return redirect('/')
-            return app.send_static_file('dashboard.html')
-        elif dynamic_id.startswith('settings-'):
-            if 'user_id' not in session:
-                return redirect('/')
-            return app.send_static_file('settings.html')
-        elif dynamic_id.startswith('academic-'):
-            if 'user_id' not in session:
-                return redirect('/')
-            return app.send_static_file('studentprogression.html')
-        elif dynamic_id.startswith('placement-'):
-            if 'user_id' not in session:
-                return redirect('/')
-            return app.send_static_file('placement.html')
-        elif dynamic_id.startswith('extracurricular-'):
-            if 'user_id' not in session:
-                return redirect('/')
-            return app.send_static_file('extracurricular.html')
-        elif dynamic_id.startswith('reports-'):
-            if 'user_id' not in session:
-                return redirect('/')
-            return app.send_static_file('reports.html')
-        else:
-            return "Page not found", 404
-    except Exception as e:
-        return f"Error serving page: {str(e)}", 500
-
-@app.route('/newuser', methods=['GET'])
-def serve_newuser():
-    return _redirect_to_dynamic('newuser')
-
-@app.route('/forgot-password', methods=['GET'])
-def serve_forgot_password():
-    return _redirect_to_dynamic('forgot')
-
-@app.route('/admin', methods=['GET'])
-def serve_admin():
-    return _redirect_to_dynamic('admin')
-
-@app.route('/gitlogosite.jpg', methods=['GET'])
-def serve_logo():
-    return app.send_static_file('gitlogosite.jpg')
-
-# Serve favicon and logo consistently
-@app.route('/git-logo.jpg', methods=['GET'])
-def serve_git_logo():
-    return app.send_static_file('git-logo.jpg')
-
-@app.route('/favicon.ico', methods=['GET'])
-def serve_favicon():
-    # Use jpg logo as favicon source
-    return app.send_static_file('git-logo.jpg')
-
-# --- Index page (login) - only accessible through root domain ---
-
-def _redirect_to_dynamic(page_type_key: str):
-    # always generate a fresh dynamic id on each visit
-    page_prefix = PAGE_TYPES.get(page_type_key)
-    if not page_prefix:
-        return "Page not found", 404
-    new_id = generate_dynamic_id(page_prefix)
-    # store in session for reference if needed
-    session[f"{page_type_key}_id"] = new_id
-    return redirect(f"/{new_id}", code=302)
-
-@app.route('/placement', methods=['GET'])
-def serve_placement_html():
-    return _redirect_to_dynamic('placement')
-
-@app.route('/extracurricular', methods=['GET'])
-def serve_extracurricular_html():
-    return _redirect_to_dynamic('extracurricular')
-
-@app.route('/reports', methods=['GET'])
-def serve_reports_html():
-    return _redirect_to_dynamic('reports')
-
-# --- Logout ---
-@app.route('/logout', methods=['GET'])
-def logout():
-    try:
-        session.clear()
-    finally:
-        return redirect('/', code=302)
-
-# Add authentication check endpoint
-@app.route('/api/check-auth', methods=['GET'])
-def check_auth():
-    if 'user_id' not in session:
-        return jsonify({"authenticated": False}), 401
-    
-    # Check session timeout
-    if 'last_activity' in session:
-        last_activity = session['last_activity']
-        if isinstance(last_activity, str):
-            try:
-                last_activity = datetime.fromisoformat(last_activity.replace('Z', '+00:00'))
-            except:
-                session.clear()
-                return jsonify({"authenticated": False}), 401
-        
-        if isinstance(last_activity, datetime) and last_activity.tzinfo is None:
-            last_activity = last_activity.replace(tzinfo=timezone.utc)
-        
-        if isinstance(last_activity, datetime) and datetime.now(timezone.utc) - last_activity > timedelta(seconds=SESSION_TIMEOUT):
-            session.clear()
-            return jsonify({"authenticated": False}), 401
-    
-    return jsonify({"authenticated": True, "username": session.get('username')}), 200
-
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
     print("CRITICAL ERROR: The SendGrid API key is still a placeholder. Update it in app.py before running.")
@@ -316,14 +41,13 @@ if 'PASTE_YOUR' in SENDGRID_API_KEY:
 
 # --- Database Connection ---
 try:
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    client = MongoClient(MONGO_URI)
     db = client[DB_NAME]
     client.admin.command('ismaster')
     print("SUCCESS: Successfully connected to MongoDB Atlas!")
 except Exception as e:
-    print(f"WARNING: DATABASE CONNECTION ISSUE: {e}")
-    print("Continuing without database connection for health check...")
-    # Don't exit - let the app start for health check
+    print(f"ERROR: DATABASE ERROR: Could not connect to MongoDB. Full error: {e}")
+    sys.exit(1)
 
 # --- Admin Setup Command ---
 def create_admin_user():
@@ -386,10 +110,6 @@ def login_user():
     data = request.get_json()
     user = db.users.find_one({"username": data.get('username')})
     if user and 'password' in user and bcrypt.checkpw(data.get('password').encode('utf-8'), user['password']):
-        # Create server-side session
-        session['user_id'] = str(user['_id'])
-        session['username'] = user['username']
-        session['last_activity'] = datetime.now(timezone.utc).isoformat()
         return jsonify({"message": "Login successful!"}), 200
     return jsonify({"message": "Invalid username or password"}), 401
 
@@ -1425,11 +1145,4 @@ if __name__ == '__main__':
         debug_mode = os.environ.get('FLASK_ENV') != 'production'
         
         print(f"SUCCESS: Flask server is running on port {port}")
-        print(f"Health check endpoint: http://0.0.0.0:{port}/")
-        print(f"API health check: http://0.0.0.0:{port}/api/health")
-        
-        try:
-            app.run(host='0.0.0.0', port=port, debug=debug_mode, threaded=True)
-        except Exception as e:
-            print(f"ERROR: Failed to start Flask server: {e}")
-            sys.exit(1)
+        app.run(host='0.0.0.0', port=port, debug=debug_mode)

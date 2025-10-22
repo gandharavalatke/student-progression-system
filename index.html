@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Student Progression System</title>
-    <link rel="icon" href="/git-logo.jpg">
-    <link rel="shortcut icon" href="/git-logo.jpg">
+    <link rel="icon" type="image/png" href="git-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -198,17 +197,17 @@
     <div class="overlay flex items-center justify-center min-h-screen p-4">
         <div class="page-content login-card w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
             <div class="p-8 sm:p-12">
-                <img src="gitlogosite.jpg" alt="GIT Logo" class="w-auto h-14 mx-auto mb-8">
+                <img src="GIT Logo.jpg" alt="GIT Logo" class="w-auto h-14 mx-auto mb-8">
                 <h2 class="text-3xl font-bold text-white text-center mb-2">Faculty Login</h2>
                 <p class="text-slate-300 text-center mb-8">Enter your credentials to access the dashboard.</p>
                 <form id="login-form" class="space-y-6">
                     <div class="relative">
-                        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none z-10" style="font-size: 1rem; filter: none; -webkit-filter: none;"></i>
-                        <input id="username" type="text" placeholder="Username" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm placeholder-slate-400" autocomplete="username">
+                        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none"></i>
+                        <input id="username" type="text" placeholder="Username" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm placeholder-slate-400">
                     </div>
                     <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none z-10" style="font-size: 1rem; filter: none; -webkit-filter: none;"></i>
-                        <input id="password" type="password" placeholder="Password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm placeholder-slate-400" autocomplete="current-password">
+                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none"></i>
+                        <input id="password" type="password" placeholder="Password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm placeholder-slate-400">
                         <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors">
                             <i id="eye-icon" class="fa-solid fa-eye"></i>
                         </button>
@@ -230,57 +229,6 @@
         </div>
     </div>
     <script>
-        // Generate enhanced unique ID for URL
-        function generateEnhancedUniqueId() {
-            const timestamp = Date.now();
-            const random1 = Math.random().toString(36).substring(2, 15);
-            const random2 = Math.random().toString(36).substring(2, 15);
-            const random3 = Math.random().toString(36).substring(2, 15);
-            const random4 = Math.random().toString(36).substring(2, 15);
-            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            const userAgent = navigator.userAgent.slice(0, 10);
-            const screenRes = `${screen.width}x${screen.height}`;
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const language = navigator.language;
-            
-            return `login-${timestamp}-${random1}-${random2}-${random3}-${random4}-${sessionId}-${userAgent}-${screenRes}-${timezone}-${language}`.replace(/[^a-zA-Z0-9-]/g, '');
-        }
-
-        // Update URL with enhanced unique ID
-        function updateUrlWithEnhancedId() {
-            const uniqueId = generateEnhancedUniqueId();
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('id', uniqueId);
-            currentUrl.searchParams.set('t', Date.now());
-            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
-            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
-            currentUrl.searchParams.set('v', '1.0');
-            currentUrl.searchParams.set('u', navigator.userAgent.slice(0, 20));
-            
-            // Update URL without page reload
-            window.history.replaceState({}, '', currentUrl.toString());
-            
-            // Store the unique ID for this session
-            sessionStorage.setItem('currentPageId', uniqueId);
-            sessionStorage.setItem('lastVisit', Date.now());
-        }
-
-        // Generate enhanced unique ID for dashboard redirect
-        function generateDashboardId() {
-            const timestamp = Date.now();
-            const random1 = Math.random().toString(36).substring(2, 15);
-            const random2 = Math.random().toString(36).substring(2, 15);
-            const random3 = Math.random().toString(36).substring(2, 15);
-            const random4 = Math.random().toString(36).substring(2, 15);
-            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
-            const userAgent = navigator.userAgent.slice(0, 10);
-            const screenRes = `${screen.width}x${screen.height}`;
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const language = navigator.language;
-            
-            return `dash-${timestamp}-${random1}-${random2}-${random3}-${random4}-${sessionId}-${userAgent}-${screenRes}-${timezone}-${language}`.replace(/[^a-zA-Z0-9-]/g, '');
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -292,9 +240,6 @@
                 html.classList.remove('light');
                 html.classList.add('dark');
             }
-            
-            // Generate enhanced unique URL ID for login page
-            updateUrlWithEnhancedId();
             
             const form = document.getElementById('login-form');
             const username = document.getElementById('username');
@@ -317,7 +262,7 @@
                 error.textContent = '';
                 setLoading(true);
                 try {
-                    const res = await fetch('https://sps.up.railway.app/api/login', {
+                    const res = await fetch('http://127.0.0.1:5001/api/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ username: username.value, password: password.value })
@@ -327,9 +272,7 @@
                     // Persist logged in user for other pages (e.g., settings)
                     sessionStorage.setItem('sps_user', username.value);
                     localStorage.setItem('loggedInUser', username.value);
-                    // Generate enhanced dynamic dashboard ID and redirect
-                    const dashboardId = generateDashboardId();
-                    window.location.href = `/${dashboardId}`;
+                    window.location.href = 'dashboard.html';
                 } catch (err) {
                     error.textContent = err.message;
                 } finally {
