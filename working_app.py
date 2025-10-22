@@ -119,6 +119,43 @@ def check_auth():
     else:
         return jsonify({"authenticated": False}), 401
 
+# --- Dashboard API endpoints ---
+@app.route('/api/dashboard-summary', methods=['GET'])
+def dashboard_summary():
+    """Dashboard summary data"""
+    return jsonify({
+        "sanctioned_intake": 60,
+        "total_admitted": 58,
+        "dse": 2,
+        "students_passed": 45,
+        "placed_students_percent": 75.5,
+        "higher_edu_percent": 12.3
+    }), 200
+
+@app.route('/api/student-data', methods=['GET'])
+def student_data():
+    """Student data for dashboard"""
+    return jsonify({
+        "students": [],
+        "total": 0
+    }), 200
+
+@app.route('/api/placement-data', methods=['GET'])
+def placement_data():
+    """Placement data for dashboard"""
+    return jsonify({
+        "placements": [],
+        "total": 0
+    }), 200
+
+@app.route('/api/academic-data', methods=['GET'])
+def academic_data():
+    """Academic data for dashboard"""
+    return jsonify({
+        "academic_records": [],
+        "total": 0
+    }), 200
+
 if __name__ == '__main__':
     try:
         print("=" * 60)
