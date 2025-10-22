@@ -116,6 +116,11 @@ PAGE_TYPES = {
 def health_check():
     return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
 
+@app.route('/health', methods=['GET'])
+def simple_health_check():
+    """Simple health check for Railway deployment"""
+    return "OK", 200
+
 
 # --- Dynamic ID Generation API ---
 @app.route('/api/generate-id/<page_type>', methods=['GET'])
@@ -1458,16 +1463,30 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'create-admin':
         create_admin_user()
     else:
-        # Railway deployment configuration
-        port = int(os.environ.get('PORT', 5001))
-        debug_mode = os.environ.get('FLASK_ENV') != 'production'
-        
-        print(f"SUCCESS: Flask server is running on port {port}")
-        print(f"Health check endpoint: http://0.0.0.0:{port}/")
-        print(f"API health check: http://0.0.0.0:{port}/api/health")
-        
         try:
+            # Railway deployment configuration
+            port = int(os.environ.get('PORT', 5001))
+            debug_mode = os.environ.get('FLASK_ENV') != 'production'
+            
+            print(f"SUCCESS: Flask server starting on port {port}")
+            print(f"Health check endpoint: http://0.0.0.0:{port}/")
+            print(f"API health check: http://0.0.0.0:{port}/api/health")
+            print(f"Debug mode: {debug_mode}")
+            
+            # Test database connection before starting server
+            try:
+                if 'MONGO_URI' in os.environ:
+                    client = MongoClient(os.environ['MONGO_URI'])
+                    client.admin.command('ping')
+                    print("SUCCESS: Database connection verified")
+                else:
+                    print("WARNING: No MONGO_URI found in environment")
+            except Exception as db_error:
+                print(f"WARNING: Database connection failed: {db_error}")
+            
             app.run(host='0.0.0.0', port=port, debug=debug_mode, threaded=True)
         except Exception as e:
-            print(f"ERROR: Failed to start Flask server: {e}")
+            print(f"CRITICAL ERROR: Failed to start Flask server: {e}")
+            import traceback
+            traceback.print_exc()
             sys.exit(1)
