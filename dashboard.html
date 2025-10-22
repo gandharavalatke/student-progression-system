@@ -693,10 +693,12 @@
                 padding: 0 !important;
             }
             
-            .mobile-nav-btn {
+            .mobile-nav-button {
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
             
             /* Mobile Dashboard Redesign */
@@ -1517,44 +1519,58 @@
         }
         
         // Mobile Navigation System
-        const mobileNavButton = document.getElementById('mobile-nav-button');
-        const mobileNavMenu = document.getElementById('mobile-nav-menu');
-        const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
-        
-        function checkMobileView() {
-            if (window.innerWidth <= 768) {
-                mobileNavButton.classList.remove('hidden');
-            } else {
-                mobileNavButton.classList.add('hidden');
-                mobileNavMenu.classList.remove('show');
-                mobileNavButton.classList.remove('rotated');
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            if (!mobileNavButton || !mobileNavMenu) {
+                console.log('Mobile navigation elements not found');
+                return;
             }
-        }
-        
-        checkMobileView();
-        window.addEventListener('resize', checkMobileView);
-        
-        mobileNavButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            mobileNavMenu.classList.toggle('show');
-            mobileNavButton.classList.toggle('rotated');
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
-                mobileNavMenu.classList.remove('show');
-                mobileNavButton.classList.remove('rotated');
+            
+            function checkMobileView() {
+                if (window.innerWidth <= 768) {
+                    mobileNavButton.classList.remove('hidden');
+                    mobileNavButton.style.display = 'flex';
+                } else {
+                    mobileNavButton.classList.add('hidden');
+                    mobileNavButton.style.display = 'none';
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
             }
-        });
-        
-        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-        mobileNavItems.forEach(item => {
-            const pageName = item.getAttribute('data-page');
-            if (pageName === currentPage || (currentPage === 'dashboard' && pageName === 'dashboard')) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
+            
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+            
+            mobileNavButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Mobile nav button clicked');
+                mobileNavMenu.classList.toggle('show');
+                mobileNavButton.classList.toggle('rotated');
+                console.log('Menu classes:', mobileNavMenu.className);
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            });
+            
+            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+            mobileNavItems.forEach(item => {
+                const pageName = item.getAttribute('data-page');
+                if (pageName === currentPage || (currentPage === 'dashboard' && pageName === 'dashboard')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            console.log('Mobile navigation initialized');
         });
         
     </script>
