@@ -933,6 +933,160 @@
             bottom: 0 !important;
             z-index: 9999 !important;
         }
+        /* Mobile Navigation System */
+        @media (max-width: 768px) {
+            aside {
+                display: none !important;
+            }
+            main {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+        }
+        
+        /* Mobile Navigation Button */
+        .mobile-nav-button {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 45px;
+            height: 45px;
+            background: rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+        
+        .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateX(-50%) scale(1.1);
+        }
+        
+        .mobile-nav-button i {
+            font-size: 14px;
+            color: #3b82f6;
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-nav-button.rotated i {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Navigation Menu */
+        .mobile-nav-menu {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            z-index: 999;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px;
+            max-width: 90vw;
+        }
+        
+        .mobile-nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+        
+        .mobile-nav-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .mobile-nav-row {
+            display: grid;
+            gap: 12px;
+            justify-items: center;
+        }
+        
+        .mobile-nav-row:first-child {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .mobile-nav-row:last-child {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            min-height: 60px;
+            width: 50px;
+        }
+        
+        .mobile-nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .mobile-nav-item[data-page="logout"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .mobile-nav-item[data-page="logout"]:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+        
+        .mobile-nav-item span {
+            display: none;
+        }
+        
+        /* Light theme mobile navigation */
+        .light .mobile-nav-menu {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
     </style>
 </head>
 <body class="text-white">
@@ -949,15 +1103,15 @@
                 <a href="studentprogression.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                    <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
-                </a>
+                  <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                      <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
+                  </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
                  <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
@@ -968,6 +1122,49 @@
                 </a>
             </div>
         </aside>
+
+        <!-- Mobile Navigation Button -->
+        <button id="mobile-nav-button" class="mobile-nav-button hidden">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav-menu" class="mobile-nav-menu">
+            <div class="mobile-nav-grid">
+                <div class="mobile-nav-row">
+                    <a href="dashboard.html" class="mobile-nav-item" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="studentprogression.html" class="mobile-nav-item active" data-page="academic">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>Academic</span>
+                    </a>
+                    <a href="placement.html" class="mobile-nav-item" data-page="placement">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Placement</span>
+                    </a>
+                    <a href="extracurricular.html" class="mobile-nav-item" data-page="extracurricular">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Extracurricular</span>
+                    </a>
+                </div>
+                <div class="mobile-nav-row">
+                    <a href="reports.html" class="mobile-nav-item" data-page="reports">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="settings.html" class="mobile-nav-item" data-page="settings">
+                        <i class="fa-solid fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <a href="index.html" class="mobile-nav-item" data-page="logout">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
@@ -1219,6 +1416,47 @@
                 console.log('Dark theme applied, classes:', html.className);
             }
             
+            // Mobile Navigation System
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            function checkMobileView() {
+                if (window.innerWidth <= 768) {
+                    mobileNavButton.classList.remove('hidden');
+                } else {
+                    mobileNavButton.classList.add('hidden');
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            }
+            
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+            
+            mobileNavButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileNavMenu.classList.toggle('show');
+                mobileNavButton.classList.toggle('rotated');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            });
+            
+            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+            mobileNavItems.forEach(item => {
+                const pageName = item.getAttribute('data-page');
+                if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
             // Element references
             const semesterSelect = document.getElementById('semester-select');
             const uploadArea = document.getElementById('upload-area');
@@ -1316,7 +1554,7 @@
             const downloadSummaryBtn = document.getElementById('download-summary-btn');
             downloadSummaryBtn.addEventListener('click', async () => {
                 try {
-                    const res = await fetch('http://127.0.0.1:5001/api/export-result-summary');
+                    const res = await fetch('/api/export-result-summary');
                     if (!res.ok) {
                         const text = await res.text();
                         throw new Error(text || 'Unable to download');
@@ -1385,7 +1623,7 @@
                 confirmDeleteBtn.disabled = true;
                 cancelDeleteBtn.disabled = true;
                 try {
-                    const response = await fetch(`http://127.0.0.1:5001/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
+                    const response = await fetch(`/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
             const show = (status, msg) => {
                         // Ensure the confirm modal is hidden before showing result
                         deleteConfirmModal.classList.add('hidden');
@@ -1476,7 +1714,7 @@
                 formData.append('semester', semesterSelect.value);
                 formData.append('file_type', 'excel');
                 
-                fetch(`http://127.0.0.1:5001${endpoint}`, {
+                fetch(`${endpoint}`, {
                     method: 'POST',
                     body: formData
                 })
@@ -1497,7 +1735,7 @@
             // Find existing file for semester+filename
             async function findExistingFile(semester, filename) {
                 try {
-                    const response = await fetch(`http://127.0.0.1:5001/api/get-result-files?semester=${semester}`);
+                    const response = await fetch(`/api/get-result-files?semester=${semester}`);
                     const files = await response.json();
                     return files.find(f => (f.filename || '').toLowerCase() === filename.toLowerCase());
                 } catch (_) { return null; }
@@ -1508,7 +1746,7 @@
                 try {
                     const existing = await findExistingFile(semesterSelect.value, fileToUpload?.name || '');
                     if (existing) {
-                        await fetch(`http://127.0.0.1:5001/api/delete-result-file/${existing._id}`, { method: 'DELETE' });
+                        await fetch(`/api/delete-result-file/${existing._id}`, { method: 'DELETE' });
                     }
                     duplicateModal.classList.add('hidden');
                     handleUpload(fileToUpload, uploadEndpoint);
@@ -1522,11 +1760,11 @@
             async function loadFiles() {
                 try {
                     const selectedSemester = viewSemesterSelect.value;
-                    const response = await fetch(`http://127.0.0.1:5001/api/get-result-files?semester=${selectedSemester || ''}`);
+                    const response = await fetch(`/api/get-result-files?semester=${selectedSemester || ''}`);
                     const files = await response.json();
                     
                     // Also load intake files
-                    const intakeResponse = await fetch('http://127.0.0.1:5001/api/get-intake-files');
+                    const intakeResponse = await fetch('/api/get-intake-files');
                     const intakeFiles = await intakeResponse.json();
                     
                     if (files.length === 0 && intakeFiles.length === 0) {
@@ -1633,7 +1871,7 @@
                         ? `/api/download-result-file/${currentDownloadFileId}`
                         : `/api/download-intake-file/${currentDownloadFileId}`;
                     
-                    const response = await fetch(`http://127.0.0.1:5001${endpoint}`);
+                    const response = await fetch(`${endpoint}`);
                     if (response.ok) {
                         const blob = await response.blob();
                         const url = window.URL.createObjectURL(blob);
@@ -1670,7 +1908,7 @@
                 if (!confirmDelete) return;
                 
                 try {
-                    const response = await fetch(`http://127.0.0.1:5001/api/delete-intake-file/${fileId}`, { method: 'DELETE' });
+                    const response = await fetch(`/api/delete-intake-file/${fileId}`, { method: 'DELETE' });
                     if (response.ok) {
                         showResultModal('success', 'Intake file deleted successfully');
                         loadFiles(); // Refresh files list
@@ -1687,7 +1925,7 @@
             // Helper function to get file info
             async function getFileInfo(fileId) {
                 try {
-                    const response = await fetch(`http://127.0.0.1:5001/api/get-result-files`);
+                    const response = await fetch(`/api/get-result-files`);
                     const files = await response.json();
                     return files.find(file => file._id === fileId);
                 } catch (error) {
