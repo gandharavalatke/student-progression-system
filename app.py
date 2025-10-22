@@ -123,8 +123,8 @@ def simple_health_check():
 
 @app.route('/', methods=['GET'])
 def root_health_check():
-    """Root health check for Railway deployment"""
-    return "OK", 200
+    """Serve login page at root URL"""
+    return app.send_static_file('index.html')
 
 @app.route('/test', methods=['GET'])
 def test_route():
@@ -368,8 +368,10 @@ if 'PASTE_YOUR' in SENDGRID_API_KEY:
     print("✓ App will continue without SendGrid - email features may not work")
 
 # --- Database Connection (Optional) ---
+client = None
+db = None
 try:
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=3000)
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=1000)
     db = client[DB_NAME]
     client.admin.command('ismaster')
     print("SUCCESS: Successfully connected to MongoDB Atlas!")

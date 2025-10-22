@@ -1576,19 +1576,66 @@
             }
         }
 
-        // Simple navigation function
-        function navigateToPage(pageType) {
-            const pageMap = {
-                'dashboard': 'dashboard.html',
-                'academic': 'studentprogression.html',
-                'placement': 'placement.html',
-                'extracurricular': 'extracurricular.html',
-                'reports': 'reports.html',
-                'settings': 'settings.html'
+        // Generate enhanced unique ID for URL
+        function generateEnhancedUniqueId() {
+            const timestamp = Date.now();
+            const random1 = Math.random().toString(36).substring(2, 15);
+            const random2 = Math.random().toString(36).substring(2, 15);
+            const random3 = Math.random().toString(36).substring(2, 15);
+            const random4 = Math.random().toString(36).substring(2, 15);
+            const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
+            const userAgent = navigator.userAgent.slice(0, 10);
+            const screenRes = `${screen.width}x${screen.height}`;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const language = navigator.language;
+            
+            return `dash-${timestamp}-${random1}-${random2}-${random3}-${random4}-${sessionId}-${userAgent}-${screenRes}-${timezone}-${language}`.replace(/[^a-zA-Z0-9-]/g, '');
+        }
+
+        // Update URL with enhanced unique ID
+        function updateUrlWithEnhancedId() {
+            const uniqueId = generateEnhancedUniqueId();
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('id', uniqueId);
+            currentUrl.searchParams.set('t', Date.now());
+            currentUrl.searchParams.set('r', Math.random().toString(36).substring(2, 15));
+            currentUrl.searchParams.set('s', sessionStorage.getItem('sessionId') || 'new');
+            currentUrl.searchParams.set('v', '1.0');
+            currentUrl.searchParams.set('u', navigator.userAgent.slice(0, 20));
+            
+            // Update URL without page reload
+            window.history.replaceState({}, '', currentUrl.toString());
+            
+            // Store the unique ID for this session
+            sessionStorage.setItem('currentPageId', uniqueId);
+            sessionStorage.setItem('lastVisit', Date.now());
+        }
+
+        // Navigation function with enhanced IDs
+        function navigateToPageWithEnhancedId(pageType) {
+            const pagePrefixes = {
+                'dashboard': 'dash',
+                'academic': 'academic',
+                'placement': 'placement',
+                'extracurricular': 'extracurricular',
+                'reports': 'reports',
+                'settings': 'settings'
             };
             
-            if (pageMap[pageType]) {
-                window.location.href = '/' + pageMap[pageType];
+            if (pagePrefixes[pageType]) {
+                const timestamp = Date.now();
+                const random1 = Math.random().toString(36).substring(2, 15);
+                const random2 = Math.random().toString(36).substring(2, 15);
+                const random3 = Math.random().toString(36).substring(2, 15);
+                const random4 = Math.random().toString(36).substring(2, 15);
+                const sessionId = sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15);
+                const userAgent = navigator.userAgent.slice(0, 10);
+                const screenRes = `${screen.width}x${screen.height}`;
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const language = navigator.language;
+                
+                const uniqueId = `${pagePrefixes[pageType]}-${timestamp}-${random1}-${random2}-${random3}-${random4}-${sessionId}-${userAgent}-${screenRes}-${timezone}-${language}`.replace(/[^a-zA-Z0-9-]/g, '');
+                window.location.href = `/${uniqueId}`;
             } else {
                 console.error('Unknown page type:', pageType);
             }
@@ -1596,130 +1643,77 @@
 
         // Setup dynamic navigation
         function setupDynamicNavigation() {
-            console.log('Setting up dynamic navigation...');
-            
             // Desktop navigation
-            const navDashboard = document.getElementById('nav-dashboard');
-            if (navDashboard) {
-                navDashboard.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Dashboard clicked');
-                    navigateToPage('dashboard');
-                });
-            }
+            document.getElementById('nav-dashboard').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('dashboard');
+            });
             
-            const navAcademic = document.getElementById('nav-academic');
-            if (navAcademic) {
-                navAcademic.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Academic clicked');
-                    navigateToPage('academic');
-                });
-            }
+            document.getElementById('nav-academic').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('academic');
+            });
             
-            const navPlacement = document.getElementById('nav-placement');
-            if (navPlacement) {
-                navPlacement.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Placement clicked');
-                    navigateToPage('placement');
-                });
-            }
+            document.getElementById('nav-placement').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('placement');
+            });
             
-            const navExtracurricular = document.getElementById('nav-extracurricular');
-            if (navExtracurricular) {
-                navExtracurricular.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Extracurricular clicked');
-                    navigateToPage('extracurricular');
-                });
-            }
+            document.getElementById('nav-extracurricular').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('extracurricular');
+            });
             
-            const navReports = document.getElementById('nav-reports');
-            if (navReports) {
-                navReports.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Reports clicked');
-                    navigateToPageWithEnhancedId('reports');
-                });
-            }
+            document.getElementById('nav-reports').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('reports');
+            });
             
-            const navSettings = document.getElementById('nav-settings');
-            if (navSettings) {
-                navSettings.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Settings clicked');
-                    navigateToPageWithEnhancedId('settings');
-                });
-            }
+            document.getElementById('nav-settings').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('settings');
+            });
             
             // Mobile navigation
-            const mobileNavDashboard = document.getElementById('mobile-nav-dashboard');
-            if (mobileNavDashboard) {
-                mobileNavDashboard.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Mobile Dashboard clicked');
-                    navigateToPage('dashboard');
-                });
-            }
+            document.getElementById('mobile-nav-dashboard').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('dashboard');
+            });
             
-            const mobileNavAcademic = document.getElementById('mobile-nav-academic');
-            if (mobileNavAcademic) {
-                mobileNavAcademic.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Mobile Academic clicked');
-                    navigateToPage('academic');
-                });
-            }
+            document.getElementById('mobile-nav-academic').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('academic');
+            });
             
-            const mobileNavPlacement = document.getElementById('mobile-nav-placement');
-            if (mobileNavPlacement) {
-                mobileNavPlacement.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Mobile Placement clicked');
-                    navigateToPage('placement');
-                });
-            }
+            document.getElementById('mobile-nav-placement').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('placement');
+            });
             
-            const mobileNavExtracurricular = document.getElementById('mobile-nav-extracurricular');
-            if (mobileNavExtracurricular) {
-                mobileNavExtracurricular.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Mobile Extracurricular clicked');
-                    navigateToPage('extracurricular');
-                });
-            }
+            document.getElementById('mobile-nav-extracurricular').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('extracurricular');
+            });
             
-            const mobileNavReports = document.getElementById('mobile-nav-reports');
-            if (mobileNavReports) {
-                mobileNavReports.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Mobile Reports clicked');
-                    navigateToPageWithEnhancedId('reports');
-                });
-            }
+            document.getElementById('mobile-nav-reports').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('reports');
+            });
             
-            const mobileNavSettings = document.getElementById('mobile-nav-settings');
-            if (mobileNavSettings) {
-                mobileNavSettings.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Mobile Settings clicked');
-                    navigateToPageWithEnhancedId('settings');
-                });
-            }
-            
-            console.log('Dynamic navigation setup complete');
+            document.getElementById('mobile-nav-settings').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToPageWithEnhancedId('settings');
+            });
         }
 
         // Call authentication check, load dynamic IDs, and loadSavedSelections when page loads
         document.addEventListener('DOMContentLoaded', async () => {
-            
-            // Setup navigation regardless of authentication status
-            setupDynamicNavigation();
-            
+            // Generate enhanced unique URL ID for dashboard page
+            updateUrlWithEnhancedId();
             if (await checkAuthentication()) {
                 await loadDynamicIds();
                 loadSavedSelections();
+                setupDynamicNavigation();
                 
                 // Start inactivity tracking
                 resetInactivityTimer();
