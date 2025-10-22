@@ -126,6 +126,11 @@ def root_health_check():
     """Root health check for Railway deployment"""
     return "OK", 200
 
+@app.route('/test', methods=['GET'])
+def test_route():
+    """Test route for debugging"""
+    return "Flask app is working!", 200
+
 
 # --- Dynamic ID Generation API ---
 @app.route('/api/generate-id/<page_type>', methods=['GET'])
@@ -359,8 +364,8 @@ def check_auth():
 
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
-    print("CRITICAL ERROR: The SendGrid API key is still a placeholder. Update it in app.py before running.")
-    sys.exit(1)
+    print("WARNING: The SendGrid API key is still a placeholder. Email features will be limited.")
+    print("✓ App will continue without SendGrid - email features may not work")
 
 # --- Database Connection (Optional) ---
 try:
