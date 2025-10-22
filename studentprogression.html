@@ -947,12 +947,12 @@
         /* Mobile Navigation Button */
         .mobile-nav-button {
             position: fixed;
-            top: 50%;
+            bottom: 15px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             z-index: 1000;
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
             background: rgba(59, 130, 246, 0.1);
             backdrop-filter: blur(20px);
             border: 2px solid rgba(59, 130, 246, 0.3);
@@ -968,11 +968,11 @@
         .mobile-nav-button:hover {
             background: rgba(59, 130, 246, 0.2);
             border-color: rgba(59, 130, 246, 0.5);
-            transform: translate(-50%, -50%) scale(1.1);
+            transform: translateX(-50%) scale(1.1);
         }
         
         .mobile-nav-button i {
-            font-size: 20px;
+            font-size: 14px;
             color: #3b82f6;
             transition: transform 0.3s ease;
         }
@@ -984,37 +984,40 @@
         /* Mobile Navigation Menu */
         .mobile-nav-menu {
             position: fixed;
-            top: 50%;
+            bottom: 70px;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
+            transform: translateX(-50%) scale(0.8);
             z-index: 999;
             background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 20px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 320px;
+            width: 280px;
             max-width: 90vw;
         }
         
         .mobile-nav-menu.show {
             opacity: 1;
             visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
+            transform: translateX(-50%) scale(1);
         }
         
         .mobile-nav-grid {
-            display: grid;
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
         }
         
         .mobile-nav-row {
             display: grid;
-            gap: 15px;
+            gap: 12px;
+            justify-items: center;
         }
         
         .mobile-nav-row:first-child {
@@ -1030,14 +1033,15 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 15px 10px;
+            padding: 12px 8px;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             border-radius: 12px;
             text-decoration: none;
             color: white;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            min-height: 80px;
+            min-height: 60px;
+            width: 50px;
         }
         
         .mobile-nav-item:hover {
@@ -1051,15 +1055,12 @@
         }
         
         .mobile-nav-item i {
-            font-size: 20px;
-            margin-bottom: 8px;
+            font-size: 18px;
+            margin-bottom: 0;
         }
         
         .mobile-nav-item span {
-            font-size: 12px;
-            font-weight: 500;
-            text-align: center;
-            line-height: 1.2;
+            display: none;
         }
         
         /* Light theme mobile navigation */
@@ -1098,9 +1099,9 @@
                 <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                    <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
-                </a>
+                  <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                      <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
+                  </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
                  <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">

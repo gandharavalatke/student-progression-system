@@ -45,6 +45,8 @@
             font-display: block;
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
+            font-smooth: always;
+            -webkit-font-smooth: always;
         }
         
         /* Ensure icons render at native resolution */
@@ -52,12 +54,25 @@
             display: inline-block;
             font-style: normal;
             font-variant: normal;
-            text-rendering: auto;
+            text-rendering: optimizeLegibility;
             line-height: 1;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             transform: translateZ(0);
             backface-visibility: hidden;
+            font-smooth: always;
+            -webkit-font-smooth: always;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        /* Fix text blurriness */
+        input, button, span, div, p, h1, h2, h3, h4, h5, h6 {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-smooth: always;
+            -webkit-font-smooth: always;
         }
         
         /* Fix icon container sizing */
