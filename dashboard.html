@@ -557,6 +557,9 @@
                 width: 100% !important;
                 margin-left: 0 !important;
             }
+            .mobile-nav-button {
+                display: flex !important;
+            }
         }
         
         /* Mobile Navigation Button */
@@ -729,7 +732,7 @@
         </aside>
 
         <!-- Mobile Navigation Button -->
-        <button id="mobile-nav-button" class="mobile-nav-button hidden">
+        <button id="mobile-nav-button" class="mobile-nav-button">
             <i class="fa-solid fa-chevron-up"></i>
         </button>
 
@@ -1293,28 +1296,40 @@
         }
         
         // Mobile Navigation System
-        document.addEventListener('DOMContentLoaded', () => {
+        function initMobileNavigation() {
             const mobileNavButton = document.getElementById('mobile-nav-button');
             const mobileNavMenu = document.getElementById('mobile-nav-menu');
             const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
             
+            if (!mobileNavButton || !mobileNavMenu) {
+                console.error('Mobile navigation elements not found');
+                return;
+            }
+            
             function checkMobileView() {
                 if (window.innerWidth <= 768) {
-                    mobileNavButton.classList.remove('hidden');
+                    mobileNavButton.style.display = 'flex';
+                    console.log('Mobile view: Button shown');
                 } else {
-                    mobileNavButton.classList.add('hidden');
+                    mobileNavButton.style.display = 'none';
                     mobileNavMenu.classList.remove('show');
                     mobileNavButton.classList.remove('rotated');
+                    console.log('Desktop view: Button hidden');
                 }
             }
             
+            // Initialize
             checkMobileView();
+            
+            // Event listeners
             window.addEventListener('resize', checkMobileView);
             
             mobileNavButton.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 mobileNavMenu.classList.toggle('show');
                 mobileNavButton.classList.toggle('rotated');
+                console.log('Mobile nav button clicked');
             });
             
             document.addEventListener('click', (e) => {
@@ -1324,6 +1339,7 @@
                 }
             });
             
+            // Set active page
             const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
             mobileNavItems.forEach(item => {
                 const pageName = item.getAttribute('data-page');
@@ -1333,7 +1349,16 @@
                     item.classList.remove('active');
                 }
             });
-        });
+            
+            console.log('Mobile navigation initialized successfully');
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileNavigation);
+        } else {
+            initMobileNavigation();
+        }
     </script>
 </body>
 </html>
