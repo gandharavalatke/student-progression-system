@@ -1293,44 +1293,46 @@
         }
         
         // Mobile Navigation System
-        const mobileNavButton = document.getElementById('mobile-nav-button');
-        const mobileNavMenu = document.getElementById('mobile-nav-menu');
-        const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
-        
-        function checkMobileView() {
-            if (window.innerWidth <= 768) {
-                mobileNavButton.classList.remove('hidden');
-            } else {
-                mobileNavButton.classList.add('hidden');
-                mobileNavMenu.classList.remove('show');
-                mobileNavButton.classList.remove('rotated');
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            function checkMobileView() {
+                if (window.innerWidth <= 768) {
+                    mobileNavButton.classList.remove('hidden');
+                } else {
+                    mobileNavButton.classList.add('hidden');
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
             }
-        }
-        
-        checkMobileView();
-        window.addEventListener('resize', checkMobileView);
-        
-        mobileNavButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            mobileNavMenu.classList.toggle('show');
-            mobileNavButton.classList.toggle('rotated');
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
-                mobileNavMenu.classList.remove('show');
-                mobileNavButton.classList.remove('rotated');
-            }
-        });
-        
-        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-        mobileNavItems.forEach(item => {
-            const pageName = item.getAttribute('data-page');
-            if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
+            
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+            
+            mobileNavButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileNavMenu.classList.toggle('show');
+                mobileNavButton.classList.toggle('rotated');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            });
+            
+            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+            mobileNavItems.forEach(item => {
+                const pageName = item.getAttribute('data-page');
+                if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
         });
     </script>
 </body>
