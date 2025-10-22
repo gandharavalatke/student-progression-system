@@ -116,6 +116,7 @@ PAGE_TYPES = {
 def health_check():
     return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
 
+
 # --- Dynamic ID Generation API ---
 @app.route('/api/generate-id/<page_type>', methods=['GET'])
 def generate_page_id(page_type):
@@ -159,7 +160,58 @@ def serve_index():
 def serve_index_redirect():
     return redirect('/')
 
-# --- Serve static HTML files directly ---
+# --- Direct routes for easy access ---
+# Public pages (no authentication required)
+@app.route('/newuser.html', methods=['GET'])
+def serve_newuser():
+    return app.send_static_file('newuser.html')
+
+@app.route('/forgot_password.html', methods=['GET'])
+def serve_forgot_password():
+    return app.send_static_file('forgot_password.html')
+
+@app.route('/admin.html', methods=['GET'])
+def serve_admin():
+    return app.send_static_file('admin.html')
+
+# Protected pages (require authentication)
+@app.route('/dashboard.html', methods=['GET'])
+def serve_dashboard():
+    if 'user_id' not in session:
+        return redirect('/')
+    return app.send_static_file('dashboard.html')
+
+@app.route('/studentprogression.html', methods=['GET'])
+def serve_studentprogression():
+    if 'user_id' not in session:
+        return redirect('/')
+    return app.send_static_file('studentprogression.html')
+
+@app.route('/settings.html', methods=['GET'])
+def serve_settings():
+    if 'user_id' not in session:
+        return redirect('/')
+    return app.send_static_file('settings.html')
+
+@app.route('/placement.html', methods=['GET'])
+def serve_placement():
+    if 'user_id' not in session:
+        return redirect('/')
+    return app.send_static_file('placement.html')
+
+@app.route('/extracurricular.html', methods=['GET'])
+def serve_extracurricular():
+    if 'user_id' not in session:
+        return redirect('/')
+    return app.send_static_file('extracurricular.html')
+
+@app.route('/reports.html', methods=['GET'])
+def serve_reports():
+    if 'user_id' not in session:
+        return redirect('/')
+    return app.send_static_file('reports.html')
+
+# --- Catch-all for other .html files ---
 @app.route('/<page_name>.html', methods=['GET'])
 def serve_static_html(page_name):
     """Serve static HTML files directly"""
@@ -167,32 +219,8 @@ def serve_static_html(page_name):
     if page_name == 'index':
         return redirect('/')
     
-    # Public pages (no authentication required)
-    public_pages = {
-        'newuser': 'newuser.html',
-        'forgot_password': 'forgot_password.html',
-        'admin': 'admin.html'
-    }
-    
-    # Protected pages (require authentication)
-    protected_pages = {
-        'dashboard': 'dashboard.html',
-        'studentprogression': 'studentprogression.html', 
-        'settings': 'settings.html',
-        'placement': 'placement.html',
-        'extracurricular': 'extracurricular.html',
-        'reports': 'reports.html'
-    }
-    
-    if page_name in public_pages:
-        return app.send_static_file(public_pages[page_name])
-    elif page_name in protected_pages:
-        # Check authentication for protected pages
-        if 'user_id' not in session:
-            return redirect('/')
-        return app.send_static_file(protected_pages[page_name])
-    else:
-        return "Page not found", 404
+    # If we get here, the page wasn't found in the specific routes above
+    return "Page not found", 404
 
 @app.route('/<dynamic_id>', methods=['GET'])
 def serve_dynamic_page(dynamic_id):
