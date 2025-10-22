@@ -159,28 +159,38 @@ def serve_index():
 def serve_index_redirect():
     return redirect('/')
 
-# --- Catch-all for direct .html access - redirect to dynamic IDs ---
+# --- Serve static HTML files directly ---
 @app.route('/<page_name>.html', methods=['GET'])
-def redirect_html_to_dynamic(page_name):
-    """Redirect direct .html access to dynamic ID system"""
+def serve_static_html(page_name):
+    """Serve static HTML files directly"""
     # Handle index.html specially - redirect to root domain
     if page_name == 'index':
         return redirect('/')
     
-    page_mapping = {
-        'dashboard': 'dash',
-        'studentprogression': 'academic', 
-        'settings': 'settings',
-        'placement': 'placement',
-        'extracurricular': 'extracurricular',
-        'reports': 'reports',
-        'newuser': 'newuser',
-        'forgot_password': 'forgot',
-        'admin': 'admin'
+    # Public pages (no authentication required)
+    public_pages = {
+        'newuser': 'newuser.html',
+        'forgot_password': 'forgot_password.html',
+        'admin': 'admin.html'
     }
     
-    if page_name in page_mapping:
-        return _redirect_to_dynamic(page_mapping[page_name])
+    # Protected pages (require authentication)
+    protected_pages = {
+        'dashboard': 'dashboard.html',
+        'studentprogression': 'studentprogression.html', 
+        'settings': 'settings.html',
+        'placement': 'placement.html',
+        'extracurricular': 'extracurricular.html',
+        'reports': 'reports.html'
+    }
+    
+    if page_name in public_pages:
+        return app.send_static_file(public_pages[page_name])
+    elif page_name in protected_pages:
+        # Check authentication for protected pages
+        if 'user_id' not in session:
+            return redirect('/')
+        return app.send_static_file(protected_pages[page_name])
     else:
         return "Page not found", 404
 
