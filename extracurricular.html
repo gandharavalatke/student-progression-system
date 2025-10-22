@@ -1,136 +1,291 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extracurricular - Student Progression System</title>
-    <link rel="icon" href="gitlogosite.jpg" type="image/jpeg">
+    <link rel="icon" href="/git-logo.jpg">
+    <link rel="shortcut icon" href="/git-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
-        .mobile-nav-item i {
-            font-size: inherit !important;
-            line-height: 1 !important;
-        }
-        
-        @media (max-width: 768px) {
-            .mobile-nav-item {
-                font-size: 0.75rem !important;
-                padding: 0.5rem !important;
-            }
+        /* Standard theme for extracurricular */
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); background-attachment: fixed; }
+        .sidebar-glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border-right: 1px solid rgba(59, 130, 246, 0.2); }
+        .glass-card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .mobile-nav-buttons{display:none}
+        .mobile-nav-btn{width:40px;height:40px;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);border:none;border-radius:50%;color:#fff;box-shadow:0 4px 12px rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center}
+        /* Make container curved on all edges */
+        .mobile-nav-popup{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(30,41,59,0.8);border-radius:20px;padding:20px;box-shadow:0 -10px 40px rgba(0,0,0,.3);border:1px solid rgba(59,130,246,0.2);backdrop-filter:blur(20px);z-index:1000;max-width:90vw;width:300px}
+        .mobile-nav-content{display:flex;flex-direction:column;gap:15px;max-width:280px}
+        .mobile-nav-row{display:grid;gap:15px}
+        .mobile-nav-row:first-child{grid-template-columns:repeat(4,1fr)}
+        .mobile-nav-row:last-child{grid-template-columns:repeat(3,1fr)}
+        .mobile-nav-item{width:50px;height:50px;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:18px;box-shadow:0 4px 12px rgba(59,130,246,.3)}
+        .mobile-nav-item#mobile-logout{background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);box-shadow:0 4px 12px rgba(239,68,68,.3)}
+        @media (max-width:768px){
+            aside{display:none!important}
+            main{width:100%!important;margin-left:0!important}
+            .mobile-nav-buttons{display:block!important}
+            .mobile-title-center{text-align:center!important;width:100%!important;font-size:16px!important}
+            .mobile-nav-item{width:45px!important;height:45px!important;font-size:16px!important}
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
-    <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <img src="gitlogosite.jpg" alt="GIT Logo" class="h-8 w-auto mr-3">
-                    <h1 class="text-xl font-semibold">Extracurricular Activities</h1>
+<body class="text-white">
+    <div class="flex h-screen overflow-hidden">
+        <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
+            <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
+                <img src="gitlogosite.jpg" alt="GIT Logo" class="h-full w-auto">
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a href="dashboard.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard</a>
+                <a href="studentprogression.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records</a>
+                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed</a>
+                <a href="extracurricular.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30"><i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular</a>
+                <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports</a>
+            </nav>
+            <div class="p-4 border-t border-slate-600">
+                <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings</a>
+                <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout</a>
+            </div>
+        </aside>
+
+        <div class="mobile-nav-buttons fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 hidden">
+            <button id="mobile-nav-up" class="mobile-nav-btn"><i class="fa-solid fa-chevron-up"></i></button>
+            <button id="mobile-nav-down" class="mobile-nav-btn hidden"><i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+        <div id="mobile-nav-popup" class="mobile-nav-popup hidden">
+            <div class="mobile-nav-content">
+                <div class="mobile-nav-row">
+                    <a href="dashboard.html" class="mobile-nav-item"><i class="fa-solid fa-chart-pie"></i></a>
+                    <a href="studentprogression.html" class="mobile-nav-item"><i class="fa-solid fa-arrow-trend-up"></i></a>
+                    <a href="placement.html" class="mobile-nav-item"><i class="fa-solid fa-graduation-cap"></i></a>
+                    <a href="extracurricular.html" class="mobile-nav-item"><i class="fa-solid fa-trophy"></i></a>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <span class="text-sm text-gray-600 dark:text-gray-400">Hi, Gandharva</span>
-                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm">
-                        Logout
-                    </button>
+                <div class="mobile-nav-row">
+                    <a href="reports.html" class="mobile-nav-item"><i class="fa-solid fa-file-alt"></i></a>
+                    <a href="settings.html" class="mobile-nav-item"><i class="fa-solid fa-cog"></i></a>
+                    <a id="mobile-logout" href="/logout" class="mobile-nav-item"><i class="fa-solid fa-sign-out-alt"></i></a>
                 </div>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-            <h2 class="text-2xl font-bold mb-6">Extracurricular Activities</h2>
-            
-            <!-- Coming Soon Message -->
-            <div class="text-center py-12">
-                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                    </svg>
+        <main class="flex-1 overflow-y-auto">
+            <header class="h-16 glass-card shadow-md flex items-center justify-between px-6 sticky top-0 z-10 border-b border-slate-600">
+                <h2 id="header-title" class="text-lg font-semibold text-white mobile-title-center">Extracurricular</h2>
+                
+                <div class="flex items-center space-x-4 mobile-header-controls">
+                    <!-- Batch Dropdown -->
+                    <div class="relative">
+                        <button id="batch-button" class="flex items-center justify-between w-32 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
+                            <i class="fa-solid fa-calendar-alt text-blue-400 mr-2"></i>
+                            <span id="batch-selected" class="truncate text-xs">2024-25</span>
+                            <i id="batch-chevron" class="fa-solid fa-chevron-down ml-auto flex-shrink-0 transition-transform text-xs"></i>
+                        </button>
+                        <div id="batch-panel" class="dropdown-panel hidden absolute mt-2 w-32 glass-card rounded-md shadow-lg z-30 right-0 py-1">
+                            <!-- Batch options will be populated dynamically -->
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Coming Soon</h3>
-                <p class="text-gray-600 dark:text-gray-400">Extracurricular activities tracking features are under development.</p>
+            </header>
+            <div class="p-8">
+                <div class="glass-card p-8 rounded-xl shadow-lg text-center">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-900 mb-4">
+                        <i class="fa-solid fa-trophy text-blue-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Coming Soon</h3>
+                    <p class="text-slate-300">This section will showcase extracurricular activities, hackathons, and achievements.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-sign-out-alt text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Logout</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to logout?</p>
+            <div class="space-x-3">
+                <button id="logout-cancel" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">Cancel</button>
+                <button id="logout-confirm" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">Logout</button>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Navigation -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 md:hidden">
-        <div class="grid grid-cols-2 gap-1 p-2">
-            <button onclick="navigateToPage('dashboard')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                <i class="fas fa-tachometer-alt mb-1"></i>
-                <span>Dashboard</span>
-            </button>
-            <button onclick="navigateToPage('studentprogression')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                <i class="fas fa-graduation-cap mb-1"></i>
-                <span>Academic</span>
-            </button>
-            <button onclick="navigateToPage('placement')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                <i class="fas fa-briefcase mb-1"></i>
-                <span>Placement</span>
-            </button>
-            <button onclick="navigateToPage('extracurricular')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900 rounded">
-                <i class="fas fa-star mb-1"></i>
-                <span>Extracurricular</span>
-            </button>
-            <button onclick="navigateToPage('reports')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                <i class="fas fa-chart-bar mb-1"></i>
-                <span>Reports</span>
-            </button>
-            <button onclick="navigateToPage('settings')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                <i class="fas fa-cog mb-1"></i>
-                <span>Settings</span>
-            </button>
+    <!-- Logout Success Modal -->
+    <div id="logout-success-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3">
+                <i class="fa-solid fa-check text-green-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Logout Successful</h3>
+            <p class="text-slate-300 mb-5">You have been logged out successfully.</p>
+            <div class="space-x-3">
+                <button id="logout-success-ok" class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-colors">OK</button>
+            </div>
         </div>
     </div>
-
-    <!-- Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 
     <script>
-        // Navigation function
-        function navigateToPage(page) {
-            window.location.href = `/${page}.html`;
+        const up=document.getElementById('mobile-nav-up');
+        const down=document.getElementById('mobile-nav-down');
+        const popup=document.getElementById('mobile-nav-popup');
+        if(up&&down&&popup){up.addEventListener('click',()=>{popup.classList.remove('hidden');up.classList.add('hidden');down.classList.remove('hidden');});down.addEventListener('click',()=>{popup.classList.add('hidden');down.classList.add('hidden');up.classList.remove('hidden');});}
+
+        // Setup batch filtering
+        document.addEventListener('DOMContentLoaded', () => {
+            const batchContainer = document.querySelector('.relative:has(#batch-button)');
+            if (batchContainer) {
+                window.batchFilter.setupBatchDropdown(batchContainer);
+            }
+
+            // Register callback for batch changes
+            window.batchFilter.onBatchChange((batch) => {
+                const headerTitle = document.getElementById('header-title');
+                window.batchFilter.updateHeaderTitle(headerTitle, 'Extracurricular');
+                // Add any batch-specific data loading here
+                console.log('Batch changed to:', batch);
+            });
+        });
+
+        // Enhanced authentication check with server verification
+        async function checkAuthentication() {
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                window.location.href = '/';
+                return false;
+            }
+            
+            // Verify with server-side session
+            try {
+                const response = await fetch('/api/check-auth');
+                const authData = await response.json();
+                if (!authData.authenticated) {
+                    // Clear client-side storage if server session is invalid
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                // On error, redirect to login for security
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = '/';
+                return false;
+            }
         }
 
-        // Logout function
-        async function logout() {
+        // Auto-logout for inactivity (15 minutes)
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                // Show logout confirmation
+                if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '/';
+                } else {
+                    // Reset timer if user cancels
+                    resetInactivityTimer();
+                }
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Track user activity
+        function trackActivity() {
+            resetInactivityTimer();
+        }
+
+        // Load dynamic IDs and update navigation links
+        async function loadDynamicIds() {
             try {
-                const response = await fetch('/api/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+                const response = await fetch('/api/get-current-ids');
+                const ids = await response.json();
+                
+                // Update sidebar navigation links
+                const sidebarLinks = {
+                    'dashboard': document.querySelector('a[href="dashboard.html"]'),
+                    'academic': document.querySelector('a[href="studentprogression.html"]'),
+                    'placement': document.querySelector('a[href="placement.html"]'),
+                    'extracurricular': document.querySelector('a[href="extracurricular.html"]'),
+                    'reports': document.querySelector('a[href="reports.html"]'),
+                    'settings': document.querySelector('a[href="settings.html"]')
+                };
+                
+                // Update mobile navigation links
+                const mobileLinks = {
+                    'dashboard': document.querySelector('.mobile-nav-item[href="dashboard.html"]'),
+                    'academic': document.querySelector('.mobile-nav-item[href="studentprogression.html"]'),
+                    'placement': document.querySelector('.mobile-nav-item[href="placement.html"]'),
+                    'extracurricular': document.querySelector('.mobile-nav-item[href="extracurricular.html"]'),
+                    'reports': document.querySelector('.mobile-nav-item[href="reports.html"]'),
+                    'settings': document.querySelector('.mobile-nav-item[href="settings.html"]')
+                };
+                
+                // Update sidebar links
+                Object.keys(sidebarLinks).forEach(key => {
+                    if (sidebarLinks[key] && ids[key]) {
+                        sidebarLinks[key].href = `/${ids[key]}`;
                     }
                 });
                 
-                if (response.ok) {
-                    window.location.href = '/';
-                } else {
-                    console.error('Logout failed');
-                }
+                // Update mobile links
+                Object.keys(mobileLinks).forEach(key => {
+                    if (mobileLinks[key] && ids[key]) {
+                        mobileLinks[key].href = `/${ids[key]}`;
+                    }
+                });
             } catch (error) {
-                console.error('Logout error:', error);
-                window.location.href = '/';
+                console.error('Failed to load dynamic IDs:', error);
             }
         }
 
-        // Check authentication on page load
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const response = await fetch('/api/check-auth');
-                const data = await response.json();
-                
-                if (!data.authenticated) {
-                    window.location.href = '/';
-                }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                window.location.href = '/';
+        // Initialize page with authentication check
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!(await checkAuthentication())) {
+                return;
             }
+            
+            // Load dynamic IDs and update navigation
+            await loadDynamicIds();
+            
+            // Start inactivity tracking
+            resetInactivityTimer();
+            
+            // Add event listeners for activity tracking
+            ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+                document.addEventListener(event, trackActivity, true);
+            });
         });
+
+        // Logout modal wiring
+        const logoutLink=document.getElementById('logout-link');
+        const mobileLogout=document.getElementById('mobile-logout');
+        const logoutOverlay=document.getElementById('logout-overlay');
+        const logoutCancel=document.getElementById('logout-cancel');
+        const logoutConfirm=document.getElementById('logout-confirm');
+        const logoutSuccess=document.getElementById('logout-success-overlay');
+        const logoutOk=document.getElementById('logout-success-ok');
+
+        function openLogout(){logoutOverlay.classList.remove('hidden');logoutOverlay.classList.add('flex');}
+        if(logoutLink){logoutLink.addEventListener('click',e=>{e.preventDefault();openLogout();});}
+        if(mobileLogout){mobileLogout.addEventListener('click',e=>{e.preventDefault();openLogout();});}
+        if(logoutCancel){logoutCancel.addEventListener('click',()=>{logoutOverlay.classList.add('hidden');logoutOverlay.classList.remove('flex');});}
+        if(logoutConfirm){logoutConfirm.addEventListener('click',()=>{logoutOverlay.classList.add('hidden');logoutSuccess.classList.remove('hidden');logoutSuccess.classList.add('flex');});}
+        if(logoutOk){logoutOk.addEventListener('click',()=>{localStorage.removeItem('loggedInUser');sessionStorage.removeItem('sps_user');window.location.href='/';});}
     </script>
 </body>
 </html>
+
+

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Student Progression System</title>
-    <link rel="icon" type="image/png" href="git-logo.jpg">
+    <link rel="icon" href="/git-logo.jpg">
+    <link rel="shortcut icon" href="/git-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -32,15 +33,15 @@
     <div class="flex items-center justify-center min-h-screen p-4">
         <div class="w-full max-w-xl p-8 space-y-6 admin-card rounded-2xl shadow-2xl">
             <div class="text-center">
-                <img src="GIT Logo.jpg" alt="GIT Logo" class="w-auto h-12 mx-auto mb-4">
+                <img src="gitlogosite.jpg" alt="GIT Logo" class="w-auto h-12 mx-auto mb-4">
                 <h2 class="text-2xl font-bold text-white">Administrator Panel</h2>
                 <p id="subtitle" class="text-slate-300">Enter password to continue.</p>
             </div>
             <div id="password-section">
                 <form id="admin-login-form" class="space-y-4">
                     <div class="relative">
-                        <i class="fa-solid fa-shield-halved absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
-                        <input type="password" id="admin-password" placeholder="Admin Password" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        <i class="fa-solid fa-shield-halved absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none z-10" style="font-size: 1rem; filter: none; -webkit-filter: none;"></i>
+                        <input type="password" id="admin-password" placeholder="Admin Password" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm" autocomplete="current-password">
                     </div>
                     <button type="submit" id="admin-login-btn" class="w-full h-12 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 flex items-center justify-center shadow-lg transition-all transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-500/20">
                         <span id="auth-btn-text">Authenticate</span>
@@ -104,7 +105,7 @@
                 e.preventDefault();
                 authErr.textContent = '';
                 try {
-                    const res = await fetch('http://127.0.0.1:5001/api/admin/login', {
+                    const res = await fetch('https://sps.up.railway.app/api/admin/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ password: pwd.value })
@@ -134,7 +135,7 @@
                 const formData = new FormData();
                 formData.append('file', input.files[0]);
                 try {
-                    const res = await fetch('http://127.0.0.1:5001/api/upload-faculty', {
+                    const res = await fetch('https://sps.up.railway.app/api/upload-faculty', {
                         method: 'POST',
                         body: formData
                     });
