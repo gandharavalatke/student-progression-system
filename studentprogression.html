@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Data - Student Progression System</title>
-    <link rel="icon" href="/git-logo.jpg">
-    <link rel="shortcut icon" href="/git-logo.jpg">
+    <link rel="icon" type="image/jpeg" href="git-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -850,37 +849,6 @@
         .light p, .light span, .light div {
             color: inherit !important;
         }
-
-        /* Mobile alignment fixes for Uploaded Files */
-        @media (max-width: 768px) {
-            /* Prevent overlap with bottom mobile menu */
-            #files-list { padding-bottom: 96px !important; }
-
-            /* Stack file card content vertically on mobile */
-            .file-item { 
-                display: grid !important; 
-                grid-template-columns: 1fr !important; 
-                row-gap: 10px !important; 
-                padding: 14px !important;
-            }
-            /* Left section (icon + text) */
-            .file-item > .flex.items-center.space-x-4 {
-                margin-right: 0 !important;
-            }
-            /* Right section (buttons) */
-            .file-item > .flex.space-x-2 {
-                width: 100% !important;
-                justify-content: stretch !important;
-                gap: 10px !important;
-            }
-            .file-item > .flex.space-x-2 button { 
-                flex: 1 1 0% !important; 
-                width: 100% !important; 
-                padding-top: 10px !important; 
-                padding-bottom: 10px !important; 
-                border-radius: 10px !important;
-            }
-        }
         
         /* Light mode for specific upload area text */
         .light #upload-area h5 {
@@ -965,192 +933,6 @@
             bottom: 0 !important;
             z-index: 9999 !important;
         }
-
-        /* Mobile Navigation Styles */
-        .mobile-nav-buttons {
-            display: none;
-        }
-
-        .mobile-nav-btn {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mobile-nav-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .mobile-nav-popup {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 20px 20px 0 0;
-            padding: 20px;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            max-width: 90vw;
-            width: 300px;
-        }
-
-        .mobile-nav-popup.show-up {
-            animation: slideUp 0.3s ease-out;
-        }
-
-        .mobile-nav-popup.show-down {
-            animation: slideDown 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateX(-50%) translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateX(-50%) translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .mobile-nav-content {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 280px;
-        }
-
-        .mobile-nav-row {
-            display: grid;
-            gap: 15px;
-        }
-
-        .mobile-nav-row:first-child {
-            grid-template-columns: repeat(4, 1fr);
-        }
-
-        .mobile-nav-row:last-child {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .mobile-nav-item {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .mobile-nav-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-            color: white;
-        }
-
-        .mobile-nav-item:last-child {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        }
-
-        .mobile-nav-item:last-child:hover {
-            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
-        }
-        
-        /* Ensure extracurricular icon is blue */
-        .mobile-nav-item[href*="extracurricular"] {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
-        }
-        
-        .mobile-nav-item[href*="extracurricular"]:hover {
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4) !important;
-        }
-        
-        /* Ensure consistent icon sizing */
-        .mobile-nav-item i {
-            font-size: inherit !important;
-            line-height: 1 !important;
-        }
-
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            /* Hide sidebar on mobile */
-            aside {
-                display: none !important;
-            }
-
-            /* Make main content full width */
-            main {
-                width: 100% !important;
-                margin-left: 0 !important;
-            }
-
-            .mobile-nav-buttons {
-                display: block !important;
-            }
-
-            .mobile-title-center {
-                text-align: center !important;
-                width: 100% !important;
-                font-size: 16px !important;
-            }
-
-            header {
-                flex-direction: column !important;
-                height: auto !important;
-                padding: 10px !important;
-                gap: 10px !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .mobile-nav-content {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 12px !important;
-            }
-
-            .mobile-nav-item {
-                width: 45px !important;
-                height: 45px !important;
-                font-size: 16px !important;
-            }
-
-            .mobile-title-center {
-                font-size: 14px !important;
-            }
-        }
     </style>
 </head>
 <body class="text-white">
@@ -1158,7 +940,7 @@
         <!-- Sidebar -->
         <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
             <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
-                 <img src="gitlogosite.jpg" alt="GIT Logo" class="h-full w-auto">
+                 <img src="GIT Logo.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
                 <a href="dashboard.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
@@ -1167,84 +949,30 @@
                 <a href="studentprogression.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="#" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
-                 <a href="/settings-4p8q1n" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="/logout" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
         </aside>
 
-        <!-- Mobile Navigation Buttons -->
-        <div class="mobile-nav-buttons fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 hidden">
-            <button id="mobile-nav-up" class="mobile-nav-btn">
-                <i class="fa-solid fa-chevron-up"></i>
-            </button>
-            <button id="mobile-nav-down" class="mobile-nav-btn hidden">
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-        </div>
-
-        <!-- Mobile Navigation Popup -->
-        <div id="mobile-nav-popup" class="mobile-nav-popup hidden">
-            <div class="mobile-nav-content">
-                <!-- First Row - 4 options -->
-                <div class="mobile-nav-row">
-                <a href="dashboard.html" class="mobile-nav-item">
-                    <i class="fa-solid fa-chart-pie"></i>
-                </a>
-                <a href="studentprogression.html" class="mobile-nav-item">
-                    <i class="fa-solid fa-arrow-trend-up"></i>
-                </a>
-                    <a href="placement.html" class="mobile-nav-item">
-                        <i class="fa-solid fa-graduation-cap"></i>
-                    </a>
-                    <a href="extracurricular.html" class="mobile-nav-item">
-                        <i class="fa-solid fa-trophy"></i>
-                    </a>
-                </div>
-                <!-- Second Row - 3 options -->
-                <div class="mobile-nav-row">
-                    <a href="reports.html" class="mobile-nav-item">
-                        <i class="fa-solid fa-file-alt"></i>
-                    </a>
-                    <a href="settings.html" class="mobile-nav-item">
-                        <i class="fa-solid fa-cog"></i>
-                    </a>
-                    <a id="mobile-logout" href="/logout" class="mobile-nav-item">
-                        <i class="fa-solid fa-sign-out-alt"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
             <header class="h-16 bg-slate-800/90 backdrop-blur-sm shadow-md flex items-center justify-between px-6 border-b border-slate-600">
-                <h2 id="header-title" class="text-lg font-semibold text-white mobile-title-center">Upload Student Progression Data</h2>
-                
-                <div class="flex items-center space-x-4 mobile-header-controls">
-                    <!-- Batch Dropdown -->
-                    <div class="relative">
-                        <select class="w-32 h-10 px-3 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
-                            <option value="2024-25">2024-25</option>
-                            <option value="2023-24">2023-24</option>
-                            <option value="2022-23">2022-23</option>
-                        </select>
-                    </div>
-                </div>
+                <h2 class="text-lg font-semibold text-white">Upload Student Progression Data</h2>
             </header>
             <div class="p-8">
                 <h3 class="text-2xl font-bold text-white mb-2">Upload Semester Result</h3>
@@ -1476,7 +1204,7 @@
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
             const html = document.documentElement;
@@ -1490,8 +1218,6 @@
                 html.classList.add('dark');
                 console.log('Dark theme applied, classes:', html.className);
             }
-
-            // Setup batch filtering
             
             // Element references
             const semesterSelect = document.getElementById('semester-select');
@@ -1551,19 +1277,10 @@
             // KPI upload handlers
             const kpiArea = document.getElementById('kpi-upload-area');
             const kpiInput = document.getElementById('kpi-file-input');
-            console.log('KPI area element:', kpiArea);
-            console.log('KPI input element:', kpiInput);
-            if (kpiArea) {
-                kpiArea.addEventListener('click', () => {
-                    console.log('KPI upload area clicked');
-                    kpiInput.click();
-                });
-            }
+            if (kpiArea) kpiArea.addEventListener('click', () => kpiInput.click());
             kpiInput.addEventListener('change', async (e) => {
-                console.log('KPI file input changed, files:', e.target.files.length);
                 if (!e.target.files.length) return;
                 const file = e.target.files[0];
-                console.log('KPI file selected:', file.name);
                 // Reuse confirmation modal UX
                 showConfirmModal(file, '/api/upload-admissions-kpis', 'intake', 'excel');
                 e.target.value = null;
@@ -1571,32 +1288,24 @@
             
 
             uploadArea.addEventListener('click', () => {
-                console.log('Upload area clicked');
                 const selectedSemester = semesterSelect.value;
-                console.log('Selected semester:', selectedSemester);
                 if (!selectedSemester) {
-                    console.log('No semester selected, showing alert');
                     alert('Please select a semester first.');
                     return;
                 }
-                console.log('Opening file input dialog');
                 fileInput.click();
             });
 
             fileInput.addEventListener('change', (e) => {
-                console.log('File input changed, files:', e.target.files.length);
                 if (e.target.files.length) {
                     const selectedSemester = semesterSelect.value;
-                    console.log('Selected semester for upload:', selectedSemester);
                     
                     if (!selectedSemester) {
-                        console.log('No semester selected for upload');
                         alert('Please select a semester first.');
                         return;
                     }
                     
                     const endpoint = '/api/upload-result-file';
-                    console.log('Showing confirm modal for file:', e.target.files[0].name);
                     showConfirmModal(e.target.files[0], endpoint, selectedSemester, 'excel');
                     e.target.value = null;
                 }
@@ -1607,7 +1316,7 @@
             const downloadSummaryBtn = document.getElementById('download-summary-btn');
             downloadSummaryBtn.addEventListener('click', async () => {
                 try {
-                    const res = await fetch('https://sps.up.railway.app/api/export-result-summary');
+                    const res = await fetch('http://127.0.0.1:5001/api/export-result-summary');
                     if (!res.ok) {
                         const text = await res.text();
                         throw new Error(text || 'Unable to download');
@@ -1653,7 +1362,7 @@
                 localStorage.removeItem('loggedInUser');
                 sessionStorage.removeItem('sps_user');
                 console.log('Session cleared, redirecting...');
-                window.location.href = '/';
+                window.location.href = 'index.html';
             });
             
             // Duplicate modal events
@@ -1676,7 +1385,7 @@
                 confirmDeleteBtn.disabled = true;
                 cancelDeleteBtn.disabled = true;
                 try {
-                    const response = await fetch(`https://sps.up.railway.app/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
+                    const response = await fetch(`http://127.0.0.1:5001/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
             const show = (status, msg) => {
                         // Ensure the confirm modal is hidden before showing result
                         deleteConfirmModal.classList.add('hidden');
@@ -1705,7 +1414,6 @@
             });
 
             function showConfirmModal(file, endpoint, semester, fileType) {
-                console.log('Showing confirm modal for:', file.name, 'endpoint:', endpoint, 'semester:', semester);
                 fileToUpload = file;
                 uploadEndpoint = endpoint;
                 confirmFilename.textContent = `${file.name} (${semester.toUpperCase()})`;
@@ -1715,7 +1423,6 @@
                 resultModal.classList.add('hidden');
                 confirmActions.classList.remove('hidden');
                 uploadSpinner.classList.add('hidden');
-                console.log('Confirm modal displayed');
             }
 
             function showResultModal(status, message, titleOverride) {
@@ -1746,30 +1453,21 @@
             });
             
             confirmBtn.addEventListener('click', async () => {
-                console.log('Confirm upload button clicked');
-                if (!fileToUpload) {
-                    console.log('No file to upload');
-                    return;
-                }
-                console.log('File to upload:', fileToUpload.name);
+                if (!fileToUpload) return;
                 // Before upload, check duplicate by semester + filename
                 const selectedSemester = semesterSelect.value;
-                console.log('Selected semester for upload:', selectedSemester);
                 const existing = await findExistingFile(selectedSemester, fileToUpload.name);
                 if (existing) {
-                    console.log('Duplicate file found, showing duplicate modal');
                     // Show duplicate modal
                     duplicateFilename.textContent = `${fileToUpload.name} (${selectedSemester.toUpperCase()})`;
                     confirmModal.classList.add('hidden');
                     duplicateModal.classList.remove('hidden');
                     return;
                 }
-                console.log('No duplicate found, proceeding with upload');
-                handleUpload(fileToUpload, uploadEndpoint);
+                    handleUpload(fileToUpload, uploadEndpoint);
             });
 
             function handleUpload(file, endpoint) {
-                console.log('Starting upload for file:', file.name, 'endpoint:', endpoint);
                 confirmActions.classList.add('hidden');
                 uploadSpinner.classList.remove('hidden');
 
@@ -1778,23 +1476,15 @@
                 formData.append('semester', semesterSelect.value);
                 formData.append('file_type', 'excel');
                 
-                console.log('Upload data:', {
-                    fileName: file.name,
-                    semester: semesterSelect.value,
-                    endpoint: `https://sps.up.railway.app${endpoint}`
-                });
-                
-                fetch(`https://sps.up.railway.app${endpoint}`, {
+                fetch(`http://127.0.0.1:5001${endpoint}`, {
                     method: 'POST',
                     body: formData
                 })
                 .then(response => {
-                    console.log('Upload response status:', response.status);
                     if (!response.ok) return response.text().then(text => { throw new Error(text || 'An unknown error occurred.') });
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Upload successful:', data);
                     showResultModal('success', data.message);
                     loadFiles(); // Refresh files list
                 })
@@ -1807,7 +1497,7 @@
             // Find existing file for semester+filename
             async function findExistingFile(semester, filename) {
                 try {
-                    const response = await fetch(`https://sps.up.railway.app/api/get-result-files?semester=${semester}`);
+                    const response = await fetch(`http://127.0.0.1:5001/api/get-result-files?semester=${semester}`);
                     const files = await response.json();
                     return files.find(f => (f.filename || '').toLowerCase() === filename.toLowerCase());
                 } catch (_) { return null; }
@@ -1818,7 +1508,7 @@
                 try {
                     const existing = await findExistingFile(semesterSelect.value, fileToUpload?.name || '');
                     if (existing) {
-                        await fetch(`https://sps.up.railway.app/api/delete-result-file/${existing._id}`, { method: 'DELETE' });
+                        await fetch(`http://127.0.0.1:5001/api/delete-result-file/${existing._id}`, { method: 'DELETE' });
                     }
                     duplicateModal.classList.add('hidden');
                     handleUpload(fileToUpload, uploadEndpoint);
@@ -1831,30 +1521,13 @@
             // Load and display uploaded files
             async function loadFiles() {
                 try {
-                    console.log('Loading files...');
                     const selectedSemester = viewSemesterSelect.value;
-                    console.log('Selected semester:', selectedSemester);
-                    
-                    const response = await fetch(`https://sps.up.railway.app/api/get-result-files?semester=${selectedSemester || ''}`);
-                    console.log('Result files response status:', response.status);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
+                    const response = await fetch(`http://127.0.0.1:5001/api/get-result-files?semester=${selectedSemester || ''}`);
                     const files = await response.json();
-                    console.log('Result files:', files);
                     
                     // Also load intake files
-                    const intakeResponse = await fetch('https://sps.up.railway.app/api/get-intake-files');
-                    console.log('Intake files response status:', intakeResponse.status);
-                    
-                    if (!intakeResponse.ok) {
-                        throw new Error(`HTTP error! status: ${intakeResponse.status}`);
-                    }
-                    
+                    const intakeResponse = await fetch('http://127.0.0.1:5001/api/get-intake-files');
                     const intakeFiles = await intakeResponse.json();
-                    console.log('Intake files:', intakeFiles);
                     
                     if (files.length === 0 && intakeFiles.length === 0) {
                         filesList.innerHTML = `
@@ -1916,8 +1589,7 @@
                     filesList.innerHTML = `
                         <div class="text-center text-red-400 py-8">
                             <i class="fa-solid fa-exclamation-triangle text-4xl mb-2"></i>
-                            <p>Error loading files: ${error.message}</p>
-                            <p class="text-sm text-slate-400 mt-2">Please check your connection and try again</p>
+                            <p>Error loading files</p>
                         </div>
                     `;
                 }
@@ -1961,7 +1633,7 @@
                         ? `/api/download-result-file/${currentDownloadFileId}`
                         : `/api/download-intake-file/${currentDownloadFileId}`;
                     
-                    const response = await fetch(`https://sps.up.railway.app${endpoint}`);
+                    const response = await fetch(`http://127.0.0.1:5001${endpoint}`);
                     if (response.ok) {
                         const blob = await response.blob();
                         const url = window.URL.createObjectURL(blob);
@@ -1998,7 +1670,7 @@
                 if (!confirmDelete) return;
                 
                 try {
-                    const response = await fetch(`https://sps.up.railway.app/api/delete-intake-file/${fileId}`, { method: 'DELETE' });
+                    const response = await fetch(`http://127.0.0.1:5001/api/delete-intake-file/${fileId}`, { method: 'DELETE' });
                     if (response.ok) {
                         showResultModal('success', 'Intake file deleted successfully');
                         loadFiles(); // Refresh files list
@@ -2015,7 +1687,7 @@
             // Helper function to get file info
             async function getFileInfo(fileId) {
                 try {
-                    const response = await fetch(`https://sps.up.railway.app/api/get-result-files`);
+                    const response = await fetch(`http://127.0.0.1:5001/api/get-result-files`);
                     const files = await response.json();
                     return files.find(file => file._id === fileId);
                 } catch (error) {
@@ -2095,222 +1767,8 @@
             });
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
             
-            // Enhanced authentication check with server verification
-            async function checkAuthentication() {
-                const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
-                console.log('Logged in user:', loggedInUser);
-                if (!loggedInUser) {
-                    console.log('No logged in user found, redirecting to login');
-                    window.location.href = '/';
-                    return false;
-                }
-                
-                // Verify with server-side session
-                try {
-                    console.log('Checking server-side authentication...');
-                    const response = await fetch('/api/check-auth');
-                    console.log('Auth response status:', response.status);
-                    const authData = await response.json();
-                    console.log('Auth data:', authData);
-                    if (!authData.authenticated) {
-                        console.log('Server authentication failed, clearing storage and redirecting');
-                        // Clear client-side storage if server session is invalid
-                        localStorage.removeItem('loggedInUser');
-                        sessionStorage.removeItem('loggedInUser');
-                        window.location.href = '/';
-                        return false;
-                    }
-                    console.log('Authentication successful');
-                    return true;
-                } catch (error) {
-                    console.error('Authentication check failed:', error);
-                    // On error, redirect to login for security
-                    localStorage.removeItem('loggedInUser');
-                    sessionStorage.removeItem('loggedInUser');
-                    window.location.href = '/';
-                    return false;
-                }
-            }
-
-            // Auto-logout for inactivity (15 minutes)
-            let inactivityTimer;
-            const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
-
-            function resetInactivityTimer() {
-                clearTimeout(inactivityTimer);
-                inactivityTimer = setTimeout(() => {
-                    // Show logout confirmation
-                    if (confirm('You have been inactive for 15 minutes. You will be logged out for security.')) {
-                        localStorage.removeItem('loggedInUser');
-                        sessionStorage.removeItem('loggedInUser');
-                        window.location.href = '/';
-                    } else {
-                        // Reset timer if user cancels
-                        resetInactivityTimer();
-                    }
-                }, INACTIVITY_TIMEOUT);
-            }
-
-            // Track user activity
-            function trackActivity() {
-                resetInactivityTimer();
-            }
-
-            // Load dynamic IDs and update navigation links
-            async function loadDynamicIds() {
-                try {
-                    const response = await fetch('/api/get-current-ids');
-                    const ids = await response.json();
-                    
-                    // Update all navigation links with dynamic IDs
-                    updateNavigationLinks(ids);
-                } catch (error) {
-                    console.error('Failed to load dynamic IDs:', error);
-                }
-            }
-
-            function updateNavigationLinks(ids) {
-                // Update sidebar links
-                const dashboardLink = document.querySelector('aside nav a[href*="dash"]');
-                if (dashboardLink && ids.dashboard) {
-                    dashboardLink.href = `/${ids.dashboard}`;
-                }
-                
-                const academicLink = document.querySelector('aside nav a[href*="academic"]');
-                if (academicLink && ids.academic) {
-                    academicLink.href = `/${ids.academic}`;
-                }
-                
-                const settingsLink = document.querySelector('aside nav a[href*="settings"]');
-                if (settingsLink && ids.settings) {
-                    settingsLink.href = `/${ids.settings}`;
-                }
-                
-                // Update mobile navigation links
-                const mobileDashboardLink = document.querySelector('.mobile-nav-item[href*="dash"]');
-                if (mobileDashboardLink && ids.dashboard) {
-                    mobileDashboardLink.href = `/${ids.dashboard}`;
-                }
-                
-                const mobileAcademicLink = document.querySelector('.mobile-nav-item[href*="academic"]');
-                if (mobileAcademicLink && ids.academic) {
-                    mobileAcademicLink.href = `/${ids.academic}`;
-                }
-                
-                const mobileSettingsLink = document.querySelector('.mobile-nav-item[href*="settings"]');
-                if (mobileSettingsLink && ids.settings) {
-                    mobileSettingsLink.href = `/${ids.settings}`;
-                }
-                
-                // Update desktop sidebar links
-                const placementLink = document.querySelector('aside nav a[href*="placement"]');
-                if (placementLink && ids.placement) {
-                    placementLink.href = `/${ids.placement}`;
-                }
-                
-                const extracurricularLink = document.querySelector('aside nav a[href*="extracurricular"]');
-                if (extracurricularLink && ids.extracurricular) {
-                    extracurricularLink.href = `/${ids.extracurricular}`;
-                }
-                
-                const reportsLink = document.querySelector('aside nav a[href*="reports"]');
-                if (reportsLink && ids.reports) {
-                    reportsLink.href = `/${ids.reports}`;
-                }
-                
-                const mobilePlacementLink = document.querySelector('.mobile-nav-item[href*="placement"]');
-                if (mobilePlacementLink && ids.placement) {
-                    mobilePlacementLink.href = `/${ids.placement}`;
-                }
-                
-                const mobileExtracurricularLink = document.querySelector('.mobile-nav-item[href*="extracurricular"]');
-                if (mobileExtracurricularLink && ids.extracurricular) {
-                    mobileExtracurricularLink.href = `/${ids.extracurricular}`;
-                }
-                
-                const mobileReportsLink = document.querySelector('.mobile-nav-item[href*="reports"]');
-                if (mobileReportsLink && ids.reports) {
-                    mobileReportsLink.href = `/${ids.reports}`;
-                }
-            }
-
-            // Check authentication on page load
-            console.log('Checking authentication...');
-            if (!(await checkAuthentication())) {
-                console.log('Authentication failed, redirecting to login');
-                return;
-            }
-            console.log('Authentication successful');
-
-            // Load dynamic IDs and update navigation
-            await loadDynamicIds();
-
             // Initialize
             loadFiles();
-            
-            // Start inactivity tracking
-            resetInactivityTimer();
-            
-            // Add event listeners for activity tracking
-            ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
-                document.addEventListener(event, trackActivity, true);
-            });
-
-            // Mobile Navigation Functionality
-            const mobileNavUp = document.getElementById('mobile-nav-up');
-            const mobileNavDown = document.getElementById('mobile-nav-down');
-            const mobileNavPopup = document.getElementById('mobile-nav-popup');
-            const mobileLogout = document.getElementById('mobile-logout');
-
-            if (mobileNavUp && mobileNavDown && mobileNavPopup) {
-                mobileNavUp.addEventListener('click', () => {
-                    mobileNavPopup.classList.remove('hidden');
-                    mobileNavPopup.classList.add('show-up');
-                    mobileNavPopup.classList.remove('show-down');
-                    
-                    // Hide up arrow, show down arrow
-                    mobileNavUp.classList.add('hidden');
-                    mobileNavDown.classList.remove('hidden');
-                });
-
-                mobileNavDown.addEventListener('click', () => {
-                    mobileNavPopup.classList.add('hidden');
-                    mobileNavPopup.classList.remove('show-up', 'show-down');
-                    
-                    // Show up arrow, hide down arrow
-                    mobileNavUp.classList.remove('hidden');
-                    mobileNavDown.classList.add('hidden');
-                });
-
-                // Close popup when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!mobileNavPopup.contains(e.target) && 
-                        !mobileNavUp.contains(e.target) && 
-                        !mobileNavDown.contains(e.target)) {
-                        mobileNavPopup.classList.add('hidden');
-                        mobileNavPopup.classList.remove('show-up', 'show-down');
-                        
-                        // Show up arrow, hide down arrow
-                        mobileNavUp.classList.remove('hidden');
-                        mobileNavDown.classList.add('hidden');
-                    }
-                });
-
-                // Handle mobile logout
-                if (mobileLogout) {
-                    mobileLogout.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        logoutOverlay.classList.remove('hidden');
-                        logoutOverlay.classList.add('flex');
-                        mobileNavPopup.classList.add('hidden');
-                        mobileNavPopup.classList.remove('show-up', 'show-down');
-                        
-                        // Show up arrow, hide down arrow
-                        mobileNavUp.classList.remove('hidden');
-                        mobileNavDown.classList.add('hidden');
-                    });
-                }
-            }
         });
     </script>
 </body>
