@@ -90,8 +90,24 @@
         input:-webkit-autofill:focus,
         input:-webkit-autofill:active {
             -webkit-box-shadow: 0 0 0 30px transparent inset !important;
-            -webkit-text-fill-color: inherit !important;
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
             transition: background-color 5000s ease-in-out 0s !important;
+        }
+        
+        /* Fix autofill text color for dark theme */
+        input:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+            background-color: transparent !important;
+        }
+        
+        /* Ensure text is white after autofill */
+        input[type="text"]:-webkit-autofill,
+        input[type="email"]:-webkit-autofill,
+        input[type="password"]:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
         }
         
         /* Ensure icons stay visible during auto-fill */
@@ -100,6 +116,26 @@
             display: inline-block !important;
             opacity: 1 !important;
             visibility: visible !important;
+            color: #3b82f6 !important;
+            filter: none !important;
+        }
+        
+        /* Force icon visibility after autofill */
+        input:-webkit-autofill + i,
+        input:autofill + i {
+            display: inline-block !important;
+            opacity: 1 !important;
+            color: #3b82f6 !important;
+            filter: none !important;
+        }
+        
+        /* Ensure icons are sharp after autofill */
+        .input-group i {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: optimizeLegibility !important;
+            image-rendering: -webkit-optimize-contrast !important;
+            image-rendering: crisp-edges !important;
         }
         
         /* Prevent icon transitions from interfering with auto-fill */
