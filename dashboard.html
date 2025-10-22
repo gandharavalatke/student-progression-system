@@ -726,6 +726,16 @@
                 display: grid !important;
             }
             
+            /* Ultra-aggressive override for mobile */
+            div[class*="md:grid-cols-2"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Force single column on any element with responsive classes */
+            * {
+                grid-template-columns: 1fr !important;
+            }
+            
             .mobile-kpi-grid {
                 grid-template-columns: 1fr !important;
                 display: grid !important;
