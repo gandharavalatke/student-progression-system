@@ -1468,21 +1468,26 @@ if __name__ == '__main__':
             port = int(os.environ.get('PORT', 5001))
             debug_mode = os.environ.get('FLASK_ENV') != 'production'
             
+            print("=" * 50)
+            print("STUDENT PROGRESSION SYSTEM STARTING")
+            print("=" * 50)
             print(f"SUCCESS: Flask server starting on port {port}")
-            print(f"Health check endpoint: http://0.0.0.0:{port}/")
+            print(f"Health check endpoint: http://0.0.0.0:{port}/health")
             print(f"API health check: http://0.0.0.0:{port}/api/health")
             print(f"Debug mode: {debug_mode}")
+            print("=" * 50)
             
-            # Test database connection before starting server
+            # Test database connection before starting server (non-blocking)
             try:
                 if 'MONGO_URI' in os.environ:
-                    client = MongoClient(os.environ['MONGO_URI'])
+                    client = MongoClient(os.environ['MONGO_URI'], serverSelectionTimeoutMS=5000)
                     client.admin.command('ping')
                     print("SUCCESS: Database connection verified")
                 else:
                     print("WARNING: No MONGO_URI found in environment")
             except Exception as db_error:
                 print(f"WARNING: Database connection failed: {db_error}")
+                print("CONTINUING: Starting server without database connection")
             
             app.run(host='0.0.0.0', port=port, debug=debug_mode, threaded=True)
         except Exception as e:
