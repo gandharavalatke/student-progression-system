@@ -659,6 +659,10 @@
             .kpi-card {
                 padding: 1rem !important;
                 min-height: 100px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                align-items: center !important;
             }
             
             .kpi-card p:first-child {
@@ -675,10 +679,29 @@
                 width: 2.5rem !important;
                 height: 2.5rem !important;
                 padding: 0.5rem !important;
+                margin-top: 0.5rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
             
             .kpi-card .bg-blue-600\\/20 i {
-                font-size: 1rem !important;
+                font-size: 1.2rem !important;
+                color: #3b82f6 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                line-height: 1 !important;
+                margin: 0 !important;
+            }
+            
+            /* Ensure icon containers are properly centered */
+            .kpi-card .flex-1 {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
             }
             
             /* Mobile Charts */
