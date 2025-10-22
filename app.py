@@ -121,6 +121,11 @@ def simple_health_check():
     """Simple health check for Railway deployment"""
     return "OK", 200
 
+@app.route('/', methods=['GET'])
+def root_health_check():
+    """Root health check for Railway deployment"""
+    return "OK", 200
+
 
 # --- Dynamic ID Generation API ---
 @app.route('/api/generate-id/<page_type>', methods=['GET'])
@@ -1460,38 +1465,49 @@ def delete_result_file(file_id):
         return jsonify({"message": f"Error deleting file: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == 'create-admin':
-        create_admin_user()
-    else:
-        try:
+    try:
+        print("=" * 60)
+        print("STUDENT PROGRESSION SYSTEM - STARTING UP")
+        print("=" * 60)
+        
+        if len(sys.argv) > 1 and sys.argv[1] == 'create-admin':
+            create_admin_user()
+        else:
             # Railway deployment configuration
             port = int(os.environ.get('PORT', 5001))
             debug_mode = os.environ.get('FLASK_ENV') != 'production'
             
-            print("=" * 50)
-            print("STUDENT PROGRESSION SYSTEM STARTING")
-            print("=" * 50)
-            print(f"SUCCESS: Flask server starting on port {port}")
-            print(f"Health check endpoint: http://0.0.0.0:{port}/health")
-            print(f"API health check: http://0.0.0.0:{port}/api/health")
-            print(f"Debug mode: {debug_mode}")
-            print("=" * 50)
+            print(f"✓ Flask app initialized successfully")
+            print(f"✓ Port: {port}")
+            print(f"✓ Debug mode: {debug_mode}")
+            print(f"✓ Health check: http://0.0.0.0:{port}/")
+            print(f"✓ API health: http://0.0.0.0:{port}/api/health")
             
-            # Test database connection before starting server (non-blocking)
+            # Test database connection (non-blocking)
             try:
                 if 'MONGO_URI' in os.environ:
-                    client = MongoClient(os.environ['MONGO_URI'], serverSelectionTimeoutMS=5000)
+                    print("✓ Testing database connection...")
+                    client = MongoClient(os.environ['MONGO_URI'], serverSelectionTimeoutMS=3000)
                     client.admin.command('ping')
-                    print("SUCCESS: Database connection verified")
+                    print("✓ Database connection successful")
                 else:
-                    print("WARNING: No MONGO_URI found in environment")
+                    print("⚠ No MONGO_URI found - continuing without database")
             except Exception as db_error:
-                print(f"WARNING: Database connection failed: {db_error}")
-                print("CONTINUING: Starting server without database connection")
+                print(f"⚠ Database connection failed: {db_error}")
+                print("✓ Continuing without database connection")
+            
+            print("=" * 60)
+            print("STARTING FLASK SERVER...")
+            print("=" * 60)
             
             app.run(host='0.0.0.0', port=port, debug=debug_mode, threaded=True)
-        except Exception as e:
-            print(f"CRITICAL ERROR: Failed to start Flask server: {e}")
-            import traceback
-            traceback.print_exc()
-            sys.exit(1)
+            
+    except Exception as e:
+        print("=" * 60)
+        print("CRITICAL ERROR - FLASK SERVER FAILED TO START")
+        print("=" * 60)
+        print(f"Error: {e}")
+        import traceback
+        traceback.print_exc()
+        print("=" * 60)
+        sys.exit(1)
