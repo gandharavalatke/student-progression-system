@@ -362,16 +362,17 @@ if 'PASTE_YOUR' in SENDGRID_API_KEY:
     print("CRITICAL ERROR: The SendGrid API key is still a placeholder. Update it in app.py before running.")
     sys.exit(1)
 
-# --- Database Connection ---
+# --- Database Connection (Optional) ---
 try:
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=3000)
     db = client[DB_NAME]
     client.admin.command('ismaster')
     print("SUCCESS: Successfully connected to MongoDB Atlas!")
 except Exception as e:
     print(f"WARNING: DATABASE CONNECTION ISSUE: {e}")
-    print("Continuing without database connection for health check...")
-    # Don't exit - let the app start for health check
+    print("✓ App will continue without database - some features may be limited")
+    client = None
+    db = None
 
 # --- Admin Setup Command ---
 def create_admin_user():
@@ -1483,18 +1484,18 @@ if __name__ == '__main__':
             print(f"✓ Health check: http://0.0.0.0:{port}/")
             print(f"✓ API health: http://0.0.0.0:{port}/api/health")
             
-            # Test database connection (non-blocking)
+            # Test database connection (completely optional)
             try:
                 if 'MONGO_URI' in os.environ:
                     print("✓ Testing database connection...")
-                    client = MongoClient(os.environ['MONGO_URI'], serverSelectionTimeoutMS=3000)
+                    client = MongoClient(os.environ['MONGO_URI'], serverSelectionTimeoutMS=2000)
                     client.admin.command('ping')
                     print("✓ Database connection successful")
                 else:
-                    print("⚠ No MONGO_URI found - continuing without database")
+                    print("⚠ No MONGO_URI found - app will work without database")
             except Exception as db_error:
                 print(f"⚠ Database connection failed: {db_error}")
-                print("✓ Continuing without database connection")
+                print("✓ App will work without database - some features may be limited")
             
             print("=" * 60)
             print("STARTING FLASK SERVER...")
