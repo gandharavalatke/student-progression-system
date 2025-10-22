@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 # --- Flask App Initialization ---
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 # A more robust CORS configuration
 # Ensure TLS verification uses an up-to-date CA bundle (fixes SSL errors on some Windows setups)
 os.environ.setdefault('SSL_CERT_FILE', certifi.where())
@@ -1136,8 +1136,19 @@ def delete_result_file(file_id):
     except Exception as e:
         return jsonify({"message": f"Error deleting file: {str(e)}"}), 500
 
-# Health check endpoint for Railway
+# Serve HTML files
 @app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+@app.route('/<path:filename>')
+def serve_html(filename):
+    if filename.endswith('.html'):
+        return app.send_static_file(filename)
+    return jsonify({"error": "File not found"}), 404
+
+# Health check endpoint for Railway
+@app.route('/health')
 def health_check():
     return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
 
