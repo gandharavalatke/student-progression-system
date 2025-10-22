@@ -564,23 +564,23 @@
         
         /* Mobile Navigation Button */
         .mobile-nav-button {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            width: 45px;
-            height: 45px;
-            background: rgba(59, 130, 246, 0.1);
+            position: fixed !important;
+            bottom: 15px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            z-index: 1000 !important;
+            width: 45px !important;
+            height: 45px !important;
+            background: rgba(59, 130, 246, 0.9) !important;
             backdrop-filter: blur(20px);
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.5) !important;
+            border-radius: 50% !important;
+            display: none !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4) !important;
         }
         
         .mobile-nav-button:hover {
@@ -590,9 +590,9 @@
         }
         
         .mobile-nav-button i {
-            font-size: 14px;
-            color: #3b82f6;
-            transition: transform 0.3s ease;
+            font-size: 16px !important;
+            color: white !important;
+            transition: transform 0.3s ease !important;
         }
         
         .mobile-nav-button.rotated i {
@@ -732,7 +732,7 @@
         </aside>
 
         <!-- Mobile Navigation Button -->
-        <button id="mobile-nav-button" class="mobile-nav-button">
+        <button id="mobile-nav-button" class="mobile-nav-button" style="display: none; position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 50px; height: 50px; background: #3b82f6; border: none; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
             <i class="fa-solid fa-chevron-up"></i>
         </button>
 
@@ -1295,69 +1295,55 @@
         });
         }
         
-        // Mobile Navigation System
-        function initMobileNavigation() {
-            const mobileNavButton = document.getElementById('mobile-nav-button');
-            const mobileNavMenu = document.getElementById('mobile-nav-menu');
-            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+        // Mobile Navigation System - Ultra Simple
+        function setupMobileNav() {
+            const button = document.getElementById('mobile-nav-button');
+            const menu = document.getElementById('mobile-nav-menu');
             
-            if (!mobileNavButton || !mobileNavMenu) {
-                console.error('Mobile navigation elements not found');
+            if (!button || !menu) {
+                console.log('Mobile nav not found');
                 return;
             }
             
-            function checkMobileView() {
+            // Show button on mobile screens
+            function toggleButton() {
                 if (window.innerWidth <= 768) {
-                    mobileNavButton.style.display = 'flex';
-                    console.log('Mobile view: Button shown');
+                    button.style.display = 'flex';
+                    console.log('Button shown on mobile');
                 } else {
-                    mobileNavButton.style.display = 'none';
-                    mobileNavMenu.classList.remove('show');
-                    mobileNavButton.classList.remove('rotated');
-                    console.log('Desktop view: Button hidden');
+                    button.style.display = 'none';
+                    menu.classList.remove('show');
                 }
             }
             
-            // Initialize
-            checkMobileView();
+            // Initial check
+            toggleButton();
             
-            // Event listeners
-            window.addEventListener('resize', checkMobileView);
+            // Listen for resize
+            window.addEventListener('resize', toggleButton);
             
-            mobileNavButton.addEventListener('click', (e) => {
+            // Button click
+            button.addEventListener('click', function(e) {
                 e.preventDefault();
-                e.stopPropagation();
-                mobileNavMenu.classList.toggle('show');
-                mobileNavButton.classList.toggle('rotated');
-                console.log('Mobile nav button clicked');
+                menu.classList.toggle('show');
+                console.log('Menu toggled');
             });
             
-            document.addEventListener('click', (e) => {
-                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
-                    mobileNavMenu.classList.remove('show');
-                    mobileNavButton.classList.remove('rotated');
+            // Close on outside click
+            document.addEventListener('click', function(e) {
+                if (!menu.contains(e.target) && !button.contains(e.target)) {
+                    menu.classList.remove('show');
                 }
             });
             
-            // Set active page
-            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-            mobileNavItems.forEach(item => {
-                const pageName = item.getAttribute('data-page');
-                if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            
-            console.log('Mobile navigation initialized successfully');
+            console.log('Mobile nav setup complete');
         }
         
-        // Initialize when DOM is ready
+        // Run when page loads
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMobileNavigation);
+            document.addEventListener('DOMContentLoaded', setupMobileNav);
         } else {
-            initMobileNavigation();
+            setupMobileNav();
         }
     </script>
 </body>
