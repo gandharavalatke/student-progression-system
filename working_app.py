@@ -92,8 +92,13 @@ def login():
     username = data.get('username')
     password = data.get('password')
     
-    # Simple mock authentication for testing
-    if username == 'admin' and password == 'admin':
+    # Accept the actual credentials from the login page
+    if username == 'gandharvalatke' and password == 'Gandharva@2004':
+        session['user_id'] = username
+        session['username'] = username
+        return jsonify({"message": "Login successful", "username": username}), 200
+    # Also accept admin credentials for testing
+    elif username == 'admin' and password == 'admin':
         session['user_id'] = 'admin'
         session['username'] = username
         return jsonify({"message": "Login successful", "username": username}), 200
