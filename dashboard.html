@@ -721,10 +721,17 @@
                 padding: 1rem !important;
             }
             
-            .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-6 {
+            .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-6 {
                 grid-template-columns: 1fr !important;
                 gap: 1rem !important;
                 padding: 0.5rem !important;
+            }
+            
+            /* Force single column for mobile KPI grid */
+            .mobile-kpi-grid {
+                grid-template-columns: 1fr !important;
+                display: grid !important;
+                gap: 1rem !important;
             }
             
             .kpi-card {
