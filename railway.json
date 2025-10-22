@@ -4,7 +4,7 @@
     "buildTimeout": 1800
   },
   "deploy": {
-    "startCommand": "python app.py",
+    "startCommand": "python test_app.py",
     "healthcheckPath": "/",
     "healthcheckTimeout": 30,
     "restartPolicyType": "ON_FAILURE",
