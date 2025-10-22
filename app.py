@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 # --- Flask App Initialization ---
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 # A more robust CORS configuration
 # Ensure TLS verification uses an up-to-date CA bundle (fixes SSL errors on some Windows setups)
 os.environ.setdefault('SSL_CERT_FILE', certifi.where())
@@ -1135,6 +1135,72 @@ def delete_result_file(file_id):
         
     except Exception as e:
         return jsonify({"message": f"Error deleting file: {str(e)}"}), 500
+
+# Serve HTML files
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+@app.route('/<path:filename>')
+def serve_html(filename):
+    if filename.endswith('.html'):
+        return app.send_static_file(filename)
+    return jsonify({"error": "File not found"}), 404
+
+# Health check endpoint for Railway
+@app.route('/api/dashboard-summary', methods=['GET', 'OPTIONS'])
+def dashboard_summary():
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        # Get KPI data
+        kpis = {}
+        
+        # Get sanctioned intake from intake files
+        intake_files = list(db.intake_files.find())
+        if intake_files:
+            latest_intake = intake_files[0]  # Most recent intake file
+            kpis['sanctioned_intake'] = latest_intake.get('sanctioned_intake', 0)
+            kpis['total_admitted'] = latest_intake.get('total_admitted', 0)
+            kpis['dse'] = latest_intake.get('dse', 0)
+        
+        # Get academic performance data from result files
+        result_files = list(db.result_files.find())
+        if result_files:
+            # Calculate total students passed without backlog
+            total_passed = 0
+            for file in result_files:
+                total_passed += file.get('without_backlog', 0)
+            kpis['successfully_completed'] = total_passed
+            
+            # Calculate placement and higher education percentages
+            kpis['placed_percentage'] = 0  # Placeholder - would need placement data
+            kpis['higher_ed_percentage'] = 0  # Placeholder - would need higher ed data
+        
+        # Get semester data for charts
+        semesters = []
+        for file in result_files:
+            semester_data = {
+                'semester': file.get('semester', ''),
+                'total': file.get('total', 0),
+                'without_backlog': file.get('without_backlog', 0),
+                'with_backlog': file.get('with_backlog', 0),
+                'avg_cgpa': file.get('avg_cgpa', 0)
+            }
+            semesters.append(semester_data)
+        
+        return jsonify({
+            'kpis': kpis,
+            'semesters': semesters
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"message": f"Error fetching dashboard data: {str(e)}"}), 500
+
+@app.route('/health')
+def health_check():
+    return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'create-admin':
