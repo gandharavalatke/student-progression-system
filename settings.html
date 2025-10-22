@@ -629,7 +629,7 @@
                     return;
                 }
                 try {
-                    const response = await fetch(`http://127.0.0.1:5001/api/user/${loggedInUser}`);
+                    const response = await fetch(`/api/user/${loggedInUser}`);
                     if (!response.ok) throw new Error('Failed to fetch user data');
                     const userData = await response.json();
                     usernameInput.value = userData.username || 'N/A';
@@ -655,7 +655,7 @@
                 profileSpinner.classList.remove('hidden');
 
                 try {
-                    const response = await fetch(`http://127.0.0.1:5001/api/user/${currentUsername}`, {
+                    const response = await fetch(`/api/user/${currentUsername}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ new_username: newUsername })
@@ -700,7 +700,7 @@
                 
                 try {
                     // Check if email exists in admin uploaded file
-                    const response = await fetch('http://127.0.0.1:5001/api/check-email', {
+                    const response = await fetch('/api/check-email', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email })
@@ -712,7 +712,7 @@
                     }
                     
                     // Send OTP
-                    const otpRes = await fetch('http://127.0.0.1:5001/api/send-password-otp', {
+                    const otpRes = await fetch('/api/send-password-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email })
@@ -759,7 +759,7 @@
                 }
                 
                 try {
-                    const response = await fetch('http://127.0.0.1:5001/api/verify-password-otp', {
+                    const response = await fetch('/api/verify-password-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
@@ -810,7 +810,7 @@
                 }
                 
                 try {
-                    const response = await fetch('http://127.0.0.1:5001/api/reset-password', {
+                    const response = await fetch('/api/reset-password', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 

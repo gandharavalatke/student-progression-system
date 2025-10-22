@@ -1136,6 +1136,11 @@ def delete_result_file(file_id):
     except Exception as e:
         return jsonify({"message": f"Error deleting file: {str(e)}"}), 500
 
+# Health check endpoint for Railway
+@app.route('/')
+def health_check():
+    return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
+
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'create-admin':
         create_admin_user()
