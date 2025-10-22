@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement & Higher Ed - Student Progression System</title>
+    <link rel="icon" href="gitlogosite.jpg" type="image/jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .mobile-nav-item i {
+            font-size: inherit !important;
+            line-height: 1 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-nav-item {
+                font-size: 0.75rem !important;
+                padding: 0.5rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <img src="gitlogosite.jpg" alt="GIT Logo" class="h-8 w-auto mr-3">
+                    <h1 class="text-xl font-semibold">Placement & Higher Ed</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Hi, Gandharva</span>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h2 class="text-2xl font-bold mb-6">Placement & Higher Education</h2>
+            
+            <!-- Coming Soon Message -->
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Coming Soon</h3>
+                <p class="text-gray-600 dark:text-gray-400">Placement and Higher Education tracking features are under development.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 md:hidden">
+        <div class="grid grid-cols-2 gap-1 p-2">
+            <button onclick="navigateToPage('dashboard')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                <i class="fas fa-tachometer-alt mb-1"></i>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="navigateToPage('studentprogression')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                <i class="fas fa-graduation-cap mb-1"></i>
+                <span>Academic</span>
+            </button>
+            <button onclick="navigateToPage('placement')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900 rounded">
+                <i class="fas fa-briefcase mb-1"></i>
+                <span>Placement</span>
+            </button>
+            <button onclick="navigateToPage('extracurricular')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                <i class="fas fa-star mb-1"></i>
+                <span>Extracurricular</span>
+            </button>
+            <button onclick="navigateToPage('reports')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                <i class="fas fa-chart-bar mb-1"></i>
+                <span>Reports</span>
+            </button>
+            <button onclick="navigateToPage('settings')" class="mobile-nav-item flex flex-col items-center p-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                <i class="fas fa-cog mb-1"></i>
+                <span>Settings</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+    <script>
+        // Navigation function
+        function navigateToPage(page) {
+            window.location.href = `/${page}.html`;
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    console.error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/';
+            }
+        }
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('/api/check-auth');
+                const data = await response.json();
+                
+                if (!data.authenticated) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = '/';
+            }
+        });
+    </script>
+</body>
+</html>
