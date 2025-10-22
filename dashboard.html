@@ -710,6 +710,22 @@
                 gap: 1rem !important;
             }
             
+            /* Override all responsive grid classes for mobile */
+            .grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Force single column for any grid with responsive classes */
+            div[class*="grid-cols"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Specific override for KPI grid */
+            div.mobile-kpi-grid {
+                grid-template-columns: 1fr !important;
+                display: grid !important;
+            }
+            
             .mobile-kpi-grid {
                 grid-template-columns: 1fr !important;
                 display: grid !important;
