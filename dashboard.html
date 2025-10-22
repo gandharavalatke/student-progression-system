@@ -548,32 +548,117 @@
             z-index: 9999 !important;
         }
         
-        /* Mobile Navigation System - Rebuilt from Scratch */
+        /* Mobile Navigation System */
+        .mobile-nav-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .mobile-nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+        }
+
+        .mobile-nav-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 200px;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .mobile-nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mobile-nav-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #e2e8f0;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .mobile-nav-link:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: white;
+        }
+
+        .mobile-nav-link.active {
+            background: rgba(59, 130, 246, 0.3);
+            color: white;
+        }
+
+        .mobile-nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Mobile Responsive Design */
         @media (max-width: 768px) {
-            /* Hide sidebar on mobile */
             aside {
                 display: none !important;
             }
-            
-            /* Make main content full width */
             main {
                 width: 100% !important;
                 margin-left: 0 !important;
                 padding: 0 !important;
             }
             
-            /* Mobile KPI Grid - 2 columns */
-            .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-6 {
+            .mobile-nav-btn {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            
+            /* Mobile Dashboard Redesign */
+            .p-8 {
+                padding: 1rem !important;
+            }
+            
+            .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-6 {
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 0.75rem !important;
             }
             
-            /* Mobile KPI Cards */
             .kpi-card {
-                padding: 0.75rem !important;
+                padding: 1rem !important;
                 min-height: 100px !important;
-                flex-direction: column !important;
-                text-align: center !important;
             }
             
             .kpi-card p:first-child {
@@ -586,20 +671,14 @@
                 font-weight: 700 !important;
             }
             
-            /* Mobile KPI Icons */
             .kpi-card .bg-blue-600\\/20 {
                 width: 2.5rem !important;
                 height: 2.5rem !important;
                 padding: 0.5rem !important;
-                margin: 0.5rem auto 0 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
             }
             
             .kpi-card .bg-blue-600\\/20 i {
                 font-size: 1rem !important;
-                color: #3b82f6 !important;
             }
             
             /* Mobile Charts */
@@ -613,138 +692,151 @@
                 margin-bottom: 1rem !important;
             }
             
-            /* Mobile Header */
+            /* Mobile Headers */
             .h-16 {
+                height: 3rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            .text-2xl {
+                font-size: 1.25rem !important;
+            }
+            
+            .text-3xl {
+                font-size: 1.5rem !important;
+            }
+            
+            
+            /* Mobile Dashboard Content */
+            .mobile-dashboard-content {
+                padding: 0.75rem !important;
+                margin-bottom: 80px !important;
+            }
+            
+            .mobile-title {
+                font-size: 1.125rem !important;
+                margin-bottom: 1rem !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+            
+            .mobile-title i {
+                margin-bottom: 0.25rem !important;
+                margin-right: 0 !important;
+            }
+            
+            .mobile-title-text {
+                font-size: 1rem !important;
+                font-weight: 600 !important;
+            }
+            
+            .mobile-kpi-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.75rem !important;
+                margin-bottom: 1.5rem !important;
+                justify-items: center !important;
+                align-items: stretch !important;
+            }
+            
+            /* Mobile Card Improvements */
+            .kpi-card {
+                flex-direction: column !important;
+                text-align: center !important;
+                padding: 0.75rem !important;
+                min-height: 90px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+            
+            .kpi-card .flex-1 {
+                flex: none !important;
+                width: 100% !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .kpi-card .bg-blue-600\\/20 {
+                align-self: center !important;
+                margin-top: 0.25rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
+            }
+            
+            /* Fix KPI card icon alignment */
+            .kpi-card .bg-blue-600\\/20 i {
+                font-size: 1.5rem !important;
+                color: #3b82f6 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            
+            /* Mobile Chart Section */
+            .grid.grid-cols-1.lg\\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            
+            .chart-container {
+                background: rgba(30, 41, 59, 0.8) !important;
+                border-radius: 0.75rem !important;
+                padding: 1rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            /* Mobile Header Improvements */
+            header.h-16 {
+                padding: 0.5rem 1rem !important;
+                flex-wrap: wrap !important;
+            }
+            
+            .mobile-title-center {
+                text-align: center !important;
+                width: 100% !important;
+                font-size: 1rem !important;
+            }
+            
+            /* Mobile Header Redesign */
+            header.h-16 {
+                flex-direction: column !important;
                 height: auto !important;
                 padding: 0.75rem !important;
-                flex-direction: column !important;
                 gap: 0.5rem !important;
             }
             
-            .h-16 h2 {
+            header h2 {
                 font-size: 1rem !important;
                 text-align: center !important;
                 width: 100% !important;
                 margin-bottom: 0.5rem !important;
             }
             
-            .h-16 .flex.items-center.space-x-4 {
+            header .flex.items-center.space-x-4 {
                 justify-content: center !important;
                 flex-wrap: wrap !important;
                 gap: 0.75rem !important;
             }
             
-            .h-16 .w-48,
-            .h-16 .w-40 {
+            header .w-48 {
                 width: auto !important;
                 padding: 0.25rem 0.5rem !important;
                 font-size: 0.75rem !important;
             }
             
-            /* Mobile Content Padding */
-            .p-8 {
-                padding: 1rem !important;
-                margin-bottom: 80px !important;
+            header .w-40 {
+                width: auto !important;
+                padding: 0.25rem 0.5rem !important;
+                font-size: 0.75rem !important;
             }
             
-            /* Mobile Navigation Button */
-            .mobile-nav-button {
-                position: fixed !important;
-                bottom: 20px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                z-index: 1000 !important;
-                width: 50px !important;
-                height: 50px !important;
-                background: #3b82f6 !important;
-                border: none !important;
-                border-radius: 50% !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                cursor: pointer !important;
-                transition: all 0.3s ease !important;
-                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
-            }
-            
-            .mobile-nav-button:hover {
-                background: #2563eb !important;
-                transform: translateX(-50%) scale(1.05) !important;
-            }
-            
-            .mobile-nav-button i {
-                font-size: 16px !important;
-                color: white !important;
-            }
-            
-            /* Mobile Navigation Menu */
-            .mobile-nav-menu {
-                position: fixed !important;
-                bottom: 80px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                z-index: 999 !important;
-                background: rgba(30, 41, 59, 0.95) !important;
-                backdrop-filter: blur(20px) !important;
-                border: 1px solid rgba(59, 130, 246, 0.3) !important;
-                border-radius: 15px !important;
-                padding: 15px !important;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-                opacity: 0 !important;
-                visibility: hidden !important;
-                transition: all 0.3s ease !important;
-                width: 280px !important;
-                max-width: 90vw !important;
-            }
-            
-            .mobile-nav-menu.show {
-                opacity: 1 !important;
-                visibility: visible !important;
-            }
-            
-            .mobile-nav-grid {
-                display: grid !important;
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 10px !important;
-                align-items: center !important;
-            }
-            
-            .mobile-nav-item {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                padding: 10px 5px !important;
-                min-height: 50px !important;
-                background: rgba(59, 130, 246, 0.1) !important;
-                border: 1px solid rgba(59, 130, 246, 0.2) !important;
-                border-radius: 8px !important;
-                text-decoration: none !important;
-                color: #e2e8f0 !important;
-                transition: all 0.3s ease !important;
-                text-align: center !important;
-            }
-            
-            .mobile-nav-item:hover {
-                background: rgba(59, 130, 246, 0.2) !important;
-                border-color: rgba(59, 130, 246, 0.4) !important;
-                color: white !important;
-            }
-            
-            .mobile-nav-item.active {
-                background: rgba(59, 130, 246, 0.3) !important;
-                border-color: rgba(59, 130, 246, 0.5) !important;
-                color: white !important;
-            }
-            
-            .mobile-nav-item i {
-                font-size: 16px !important;
-                margin-bottom: 2px !important;
-            }
-            
-            .mobile-nav-item span {
-                font-size: 10px !important;
-                font-weight: 500 !important;
+            /* Mobile Dropdown */
+            .dropdown-panel {
+                width: 100% !important;
+                right: 0 !important;
+                left: 0 !important;
             }
         }
         
@@ -785,36 +877,40 @@
         </aside>
 
         <!-- Mobile Navigation Button -->
-        <button id="mobile-nav-button" class="mobile-nav-button">
-            <i class="fa-solid fa-chevron-up"></i>
+        <button id="mobile-nav-btn" class="mobile-nav-btn">
+            <i class="fa-solid fa-bars"></i>
         </button>
 
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
-            <div class="mobile-nav-grid">
-                <a href="dashboard.html" class="mobile-nav-item active" data-page="dashboard">
+            <div class="mobile-nav-content">
+                <a href="dashboard.html" class="mobile-nav-link active">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="studentprogression.html" class="mobile-nav-item" data-page="academic">
+                <a href="studentprogression.html" class="mobile-nav-link">
                     <i class="fa-solid fa-arrow-trend-up"></i>
                     <span>Academic</span>
                 </a>
-                <a href="placement.html" class="mobile-nav-item" data-page="placement">
+                <a href="placement.html" class="mobile-nav-link">
                     <i class="fa-solid fa-graduation-cap"></i>
                     <span>Placement</span>
                 </a>
-                <a href="extracurricular.html" class="mobile-nav-item" data-page="extracurricular">
+                <a href="extracurricular.html" class="mobile-nav-link">
                     <i class="fa-solid fa-trophy"></i>
                     <span>Extracurricular</span>
                 </a>
-                <a href="reports.html" class="mobile-nav-item" data-page="reports">
+                <a href="reports.html" class="mobile-nav-link">
                     <i class="fa-solid fa-file-alt"></i>
                     <span>Reports</span>
                 </a>
-                <a href="settings.html" class="mobile-nav-item" data-page="settings">
+                <a href="settings.html" class="mobile-nav-link">
                     <i class="fa-solid fa-cog"></i>
                     <span>Settings</span>
+                </a>
+                <a href="index.html" class="mobile-nav-link">
+                    <i class="fa-solid fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </a>
             </div>
         </div>
@@ -1340,59 +1436,53 @@
         });
         }
         
-        // Mobile Navigation System - Rebuilt from Scratch
+        // Mobile Navigation System
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavBtn = document.getElementById('mobile-nav-btn');
             const mobileNavMenu = document.getElementById('mobile-nav-menu');
-            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
             
-            if (!mobileNavButton || !mobileNavMenu) {
-                console.log('Mobile navigation elements not found');
-                return;
+            if (mobileNavBtn && mobileNavMenu) {
+                // Show/hide mobile nav based on screen size
+                function toggleMobileNav() {
+                    if (window.innerWidth <= 768) {
+                        mobileNavBtn.style.display = 'flex';
+                    } else {
+                        mobileNavBtn.style.display = 'none';
+                        mobileNavMenu.classList.remove('show');
+                    }
+                }
+                
+                // Initial check
+                toggleMobileNav();
+                
+                // Listen for resize
+                window.addEventListener('resize', toggleMobileNav);
+                
+                // Toggle menu on button click
+                mobileNavBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mobileNavMenu.classList.toggle('show');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mobileNavMenu.contains(e.target) && !mobileNavBtn.contains(e.target)) {
+                        mobileNavMenu.classList.remove('show');
+                    }
+                });
+                
+                // Set active page
+                const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+                const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+                mobileNavLinks.forEach(link => {
+                    const pageName = link.getAttribute('href').replace('.html', '');
+                    if (pageName === currentPage || (currentPage === 'dashboard' && pageName === 'dashboard')) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
             }
-            
-            // Show/hide mobile navigation based on screen size
-            function toggleMobileNav() {
-                if (window.innerWidth <= 768) {
-                    mobileNavButton.style.display = 'flex';
-                } else {
-                    mobileNavButton.style.display = 'none';
-                    mobileNavMenu.classList.remove('show');
-                }
-            }
-            
-            // Initial check
-            toggleMobileNav();
-            
-            // Listen for window resize
-            window.addEventListener('resize', toggleMobileNav);
-            
-            // Mobile navigation button click
-            mobileNavButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                mobileNavMenu.classList.toggle('show');
-            });
-            
-            // Close menu when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
-                    mobileNavMenu.classList.remove('show');
-                }
-            });
-            
-            // Set active page
-            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-            mobileNavItems.forEach(item => {
-                const pageName = item.getAttribute('data-page');
-                if (pageName === currentPage || (currentPage === 'dashboard' && pageName === 'dashboard')) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            
-            console.log('Mobile navigation initialized successfully');
         });
         
     </script>
