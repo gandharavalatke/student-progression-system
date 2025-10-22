@@ -547,6 +547,150 @@
             bottom: 0 !important;
             z-index: 9999 !important;
         }
+        
+        /* Mobile Navigation System */
+        @media (max-width: 768px) {
+            aside {
+                display: none !important;
+            }
+            main {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+        }
+        
+        /* Mobile Navigation Button */
+        .mobile-nav-button {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 60px;
+            height: 60px;
+            background: rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+        
+        .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .mobile-nav-button i {
+            font-size: 20px;
+            color: #3b82f6;
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-nav-button.rotated i {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Navigation Menu */
+        .mobile-nav-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            z-index: 999;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 320px;
+            max-width: 90vw;
+        }
+        
+        .mobile-nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .mobile-nav-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .mobile-nav-row {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .mobile-nav-row:first-child {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .mobile-nav-row:last-child {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            min-height: 80px;
+        }
+        
+        .mobile-nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .mobile-nav-item span {
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.2;
+        }
+        
+        /* Light theme mobile navigation */
+        .light .mobile-nav-menu {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
     </style>
 </head>
 <body class="text-white">
@@ -582,6 +726,49 @@
                 </a>
             </div>
         </aside>
+
+        <!-- Mobile Navigation Button -->
+        <button id="mobile-nav-button" class="mobile-nav-button hidden">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav-menu" class="mobile-nav-menu">
+            <div class="mobile-nav-grid">
+                <div class="mobile-nav-row">
+                    <a href="dashboard.html" class="mobile-nav-item active" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="studentprogression.html" class="mobile-nav-item" data-page="academic">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>Academic</span>
+                    </a>
+                    <a href="placement.html" class="mobile-nav-item" data-page="placement">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Placement</span>
+                    </a>
+                    <a href="extracurricular.html" class="mobile-nav-item" data-page="extracurricular">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Extracurricular</span>
+                    </a>
+                </div>
+                <div class="mobile-nav-row">
+                    <a href="reports.html" class="mobile-nav-item" data-page="reports">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="settings.html" class="mobile-nav-item" data-page="settings">
+                        <i class="fa-solid fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <a href="index.html" class="mobile-nav-item" data-page="logout">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
@@ -847,6 +1034,52 @@
                 html.classList.remove('light');
                 html.classList.add('dark');
             }
+            
+            // Mobile Navigation System
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            // Show mobile navigation on mobile devices
+            function checkMobileView() {
+                if (window.innerWidth <= 768) {
+                    mobileNavButton.classList.remove('hidden');
+                } else {
+                    mobileNavButton.classList.add('hidden');
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            }
+            
+            // Initialize mobile view check
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+            
+            // Toggle mobile navigation
+            mobileNavButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileNavMenu.classList.toggle('show');
+                mobileNavButton.classList.toggle('rotated');
+            });
+            
+            // Close mobile navigation when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            });
+            
+            // Set active page indicator
+            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+            mobileNavItems.forEach(item => {
+                const pageName = item.getAttribute('data-page');
+                if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
             
             const headerTitle = document.getElementById('header-title');
             

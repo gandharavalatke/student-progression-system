@@ -1,0 +1,43 @@
+<!-- Mobile Navigation Button -->
+<button id="mobile-nav-button" class="mobile-nav-button hidden">
+    <i class="fa-solid fa-chevron-up"></i>
+</button>
+
+<!-- Mobile Navigation Menu -->
+<div id="mobile-nav-menu" class="mobile-nav-menu">
+    <div class="mobile-nav-grid">
+        <div class="mobile-nav-row">
+            <a href="dashboard.html" class="mobile-nav-item" data-page="dashboard">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="studentprogression.html" class="mobile-nav-item" data-page="academic">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+                <span>Academic</span>
+            </a>
+            <a href="placement.html" class="mobile-nav-item" data-page="placement">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Placement</span>
+            </a>
+            <a href="extracurricular.html" class="mobile-nav-item" data-page="extracurricular">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Extracurricular</span>
+            </a>
+        </div>
+        <div class="mobile-nav-row">
+            <a href="reports.html" class="mobile-nav-item" data-page="reports">
+                <i class="fa-solid fa-file-alt"></i>
+                <span>Reports</span>
+            </a>
+            <a href="settings.html" class="mobile-nav-item" data-page="settings">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="index.html" class="mobile-nav-item" data-page="logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</div>
+
