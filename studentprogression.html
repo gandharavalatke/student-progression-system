@@ -1216,6 +1216,27 @@
             flex-direction: row !important;
             align-items: center !important;
             justify-content: space-between !important;
+            padding: 1rem !important;
+            background: rgba(30, 41, 59, 0.5) !important;
+            border-radius: 8px !important;
+            border: 1px solid rgba(59, 130, 246, 0.2) !important;
+        }
+        
+        /* Desktop file item content layout */
+        .file-item .flex.items-center.space-x-4 {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 1rem !important;
+            flex: 1 !important;
+        }
+        
+        .file-item .flex.space-x-2 {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 0.5rem !important;
+            align-items: center !important;
+            flex-shrink: 0 !important;
         }
         
         /* ULTRA AGGRESSIVE - Force vertical stacking */
@@ -1374,6 +1395,26 @@
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
             color: #ffffff !important;
             box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+        }
+        
+        /* Light theme desktop file items */
+        .light .file-item {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light .file-item:hover {
+            background: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .light .file-item h5 {
+            color: #1e293b !important;
+        }
+        
+        .light .file-item p {
+            color: #64748b !important;
         }
         
         /* Mobile Navigation Button */
