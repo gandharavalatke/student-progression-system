@@ -1037,16 +1037,29 @@
             
             /* Mobile file management */
             .file-management {
-                flex-direction: column !important;
-                gap: 0.75rem !important;
+                flex-direction: row !important;
+                gap: 0.5rem !important;
                 margin-bottom: 1rem !important;
+                align-items: center !important;
+                flex-wrap: wrap !important;
             }
             
-            .file-management select,
-            .file-management button {
-                width: 100% !important;
+            .file-management select {
+                flex: 1 !important;
+                min-width: 120px !important;
                 padding: 0.75rem !important;
                 font-size: 1rem !important;
+            }
+            
+            .file-management button {
+                flex: 1 !important;
+                min-width: 120px !important;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.5rem !important;
             }
             
             /* Mobile uploaded files section */
