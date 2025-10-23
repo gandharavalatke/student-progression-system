@@ -1201,7 +1201,8 @@
         .upload-box i {
             font-size: 3rem !important;
             margin-bottom: 1rem !important;
-            align-self: center !important;
+            align-self: flex-start !important;
+            margin-top: 0 !important;
         }
         
         .upload-box p {
@@ -1230,7 +1231,8 @@
         .upload-area i {
             font-size: 3rem !important;
             margin-bottom: 1rem !important;
-            align-self: center !important;
+            align-self: flex-start !important;
+            margin-top: 0 !important;
         }
         
         .upload-area p {
@@ -1259,7 +1261,8 @@
         .intake-upload-area i {
             font-size: 3rem !important;
             margin-bottom: 1rem !important;
-            align-self: center !important;
+            align-self: flex-start !important;
+            margin-top: 0 !important;
         }
         
         .intake-upload-area p {
@@ -1285,13 +1288,45 @@
         }
         
         .upload-container i {
-            align-self: center !important;
+            align-self: flex-start !important;
             margin-bottom: 1rem !important;
+            margin-top: 0 !important;
         }
         
         .upload-container p {
             text-align: center !important;
             align-self: center !important;
+        }
+        
+        /* ULTRA AGGRESSIVE - Fix upload area icon alignment */
+        .upload-box,
+        .upload-area,
+        .intake-upload-area,
+        .upload-container {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+            gap: 1rem !important;
+        }
+        
+        .upload-box i,
+        .upload-area i,
+        .intake-upload-area i,
+        .upload-container i {
+            align-self: flex-start !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .upload-box p,
+        .upload-area p,
+        .intake-upload-area p,
+        .upload-container p {
+            align-self: flex-start !important;
+            margin-top: 0.5rem !important;
+            text-align: left !important;
         }
         
         .file-management select {
