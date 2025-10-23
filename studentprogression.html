@@ -1503,12 +1503,21 @@
                 justify-content: space-between !important;
                 gap: 0.75rem !important;
                 width: 100% !important;
+                position: relative !important;
+                z-index: 10 !important; /* keep buttons above files list */
+                padding-bottom: 0.25rem !important;
             }
 
             /* Icon alignment */
             #refresh-files-btn i,
             #download-summary-btn i {
                 margin-right: 0.5rem !important;
+            }
+
+            /* Make download icon slightly larger for emphasis */
+            #download-summary-btn i {
+                font-size: 22px !important;
+                line-height: 1 !important;
             }
 
             /* Text styling for Refresh button */
@@ -1526,23 +1535,12 @@
                 text-align: center !important;
                 gap: 0.125rem !important;
             }
-            
+
             /* Fix border overlap with file list */
             #files-list {
-                margin-top: 1.5rem !important;
+                margin-top: 2.25rem !important; /* push files down more to avoid overlap */
                 border-top: 1px solid rgba(59, 130, 246, 0.2) !important;
                 padding-top: 1rem !important;
-            }
-
-            /* Icon spacing in buttons */
-            #refresh-files-btn i,
-            #download-summary-btn i {
-                margin-right: 0.5rem !important;
-            }
-
-            /* Files list spacing */
-            #files-list {
-                margin-top: 1rem !important;
                 position: relative !important;
                 z-index: 1 !important;
             }
