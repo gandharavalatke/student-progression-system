@@ -975,11 +975,26 @@
                 margin-bottom: 0.5rem !important;
             }
             
-            /* Mobile file cards alignment */
+            /* Mobile file cards alignment - VERTICAL STACK */
             .upload-card {
                 padding: 1rem !important;
                 margin-bottom: 0.75rem !important;
                 border-radius: 8px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            
+            /* Force file items to stack vertically */
+            .files-list-container {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            
+            .file-item {
+                width: 100% !important;
+                margin-bottom: 0.75rem !important;
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 0.75rem !important;
@@ -1113,6 +1128,22 @@
             align-items: center !important;
             width: auto !important;
             flex-wrap: nowrap !important;
+        }
+        
+        /* Force file items to stack vertically on desktop */
+        .files-list-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+        }
+        
+        .file-item {
+            width: 100% !important;
+            margin-bottom: 0.75rem !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
         }
         
         /* ULTRA AGGRESSIVE - Force buttons in one row */
