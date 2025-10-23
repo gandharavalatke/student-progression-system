@@ -799,6 +799,7 @@
                 margin: 0 !important;
                 position: relative !important;
                 order: 2 !important;
+                align-self: center !important;
             }
             
             .kpi-card .bg-blue-600\\/20 i {
@@ -807,6 +808,24 @@
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
+            }
+            
+            /* Force mobile KPI cards to be horizontal */
+            @media (max-width: 768px) {
+                .kpi-card {
+                    flex-direction: row !important;
+                    align-items: center !important;
+                }
+                
+                .kpi-card .flex-1 {
+                    order: 1 !important;
+                    flex: 1 !important;
+                }
+                
+                .kpi-card .bg-blue-600\\/20 {
+                    order: 2 !important;
+                    flex-shrink: 0 !important;
+                }
             }
             
             .mobile-nav-button {
@@ -963,41 +982,14 @@
                 align-items: stretch !important;
             }
             
-            /* Mobile Card Improvements */
-            .kpi-card {
-                flex-direction: column !important;
-                text-align: center !important;
-                padding: 0.75rem !important;
-                min-height: 90px !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                justify-content: center !important;
-                align-items: center !important;
-            }
+            /* REMOVED CONFLICTING CSS BLOCK
             
-            .kpi-card .flex-1 {
-                flex: none !important;
-                width: 100% !important;
-                margin-bottom: 0.5rem !important;
-            }
+            The block of CSS rules that was here (from line 720-748 in the original file)
+            was forcing the .kpi-card to use "flex-direction: column".
+            By removing it, the earlier CSS rules (around line 630 and 670)
+            which use "flex-direction: row" (matching your image) will now apply correctly.
             
-            .kpi-card .bg-blue-600\\/20 {
-                align-self: center !important;
-                margin-top: 0.25rem !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                width: 100% !important;
-            }
-            
-            /* Fix KPI card icon alignment */
-            .kpi-card .bg-blue-600\\/20 i {
-                font-size: 1.5rem !important;
-                color: #3b82f6 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-            }
+            */
             
             /* Mobile Chart Section */
             .grid.grid-cols-1.lg\\:grid-cols-2 {
@@ -1069,7 +1061,6 @@
 </head>
 <body class="text-white">
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
         <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
             <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
                  <img src="GIT Logo.jpg" alt="GIT Logo" class="h-full w-auto">
@@ -1101,12 +1092,10 @@
             </div>
         </aside>
 
-        <!-- Mobile Navigation Button -->
         <button id="mobile-nav-button" class="mobile-nav-button">
             <i class="fa-solid fa-chevron-up"></i>
         </button>
 
-        <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <div class="mobile-nav-grid">
                 <div class="mobile-nav-row">
@@ -1144,19 +1133,16 @@
             </div>
         </div>
 
-        <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
             <header class="h-16 glass-card shadow-md flex items-center justify-between px-6 sticky top-0 z-10 border-b border-slate-600">
                 <h2 id="header-title" class="text-lg font-semibold text-white">CSE(AIML) Dept - Academic Year</h2>
                 
                 <div class="flex items-center space-x-4">
-                    <!-- Department Label (Static) -->
                     <div class="flex items-center w-48 h-10 px-4 text-slate-300 text-sm">
                         <i class="fa-solid fa-building text-blue-400 mr-2"></i>
                         CSE(AIML)
                     </div>
 
-                    <!-- Year Dropdown -->
                     <div class="relative">
                         <button id="year-button" class="flex items-center justify-between w-40 h-10 px-4 bg-slate-800/50 text-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-slate-700/50 border border-slate-600 backdrop-blur-sm">
                             <i class="fa-solid fa-calendar-alt text-blue-400 mr-2"></i>
@@ -1174,7 +1160,6 @@
             </header>
 
             <div class="p-8 mobile-dashboard-content">
-                <!-- Top Section: Summary Cards -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center mobile-title">
                         <i class="fa-solid fa-chart-line text-blue-400 mr-3"></i>
@@ -1238,7 +1223,6 @@
                     </div>
                 </div>
 
-                <!-- Middle Section: Academic Performance -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
                         <i class="fa-solid fa-chart-bar text-blue-400 mr-3"></i>
@@ -1269,14 +1253,12 @@
                     </div>
                 </div>
 
-                <!-- Lower Section: Additional Insights -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
                         <i class="fa-solid fa-lightbulb text-blue-400 mr-3"></i>
                         Additional Insights
                     </h2>
                     
-                    <!-- Extracurricular Highlights -->
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
                             <i class="fa-solid fa-trophy text-yellow-400 mr-2" style="font-size: 1.125rem;"></i>
@@ -1322,7 +1304,6 @@
                         </div>
                     </div>
 
-                    <!-- Academic Charts -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="glass-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                             <h3 class="text-white font-semibold mb-4 flex items-center">
@@ -1349,7 +1330,6 @@
             </div>
         </main>
     </div>
-    <!-- Centered Alert Modal -->
     <div id="alert-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-md p-6 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 mb-3">
@@ -1360,7 +1340,6 @@
             <button id="alert-ok" class="px-5 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600">OK</button>
         </div>
     </div>
-    <!-- Standardized Logout Confirmation Modal -->
     <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
@@ -1379,7 +1358,6 @@
         </div>
     </div>
 
-    <!-- Logout Success Modal -->
     <div id="logout-success-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3">
@@ -1678,4 +1656,3 @@
     </script>
 </body>
 </html>
-
