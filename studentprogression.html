@@ -1486,14 +1486,29 @@
             #refresh-files-btn,
             #download-summary-btn {
                 flex: 1 !important;
-                min-height: 2.75rem !important; /* Taller buttons */
-                padding: 0.625rem 1rem !important;
+                min-height: 3.25rem !important;
+                padding: 0.5rem !important;
                 font-size: 0.875rem !important;
                 margin: 0 !important;
-                white-space: nowrap !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
+                text-align: center !important;
+                line-height: 1.2 !important;
+            }
+
+            /* Specific styling for download summary button text wrap */
+            #download-summary-btn span {
+                display: inline-block !important;
+                white-space: normal !important;
+                max-width: 90px !important;
+            }
+            
+            /* Fix border overlap with file list */
+            #files-list {
+                margin-top: 1.5rem !important;
+                border-top: 1px solid rgba(59, 130, 246, 0.2) !important;
+                padding-top: 1rem !important;
             }
 
             /* Icon spacing in buttons */
