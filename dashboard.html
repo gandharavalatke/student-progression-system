@@ -703,6 +703,28 @@
                 padding: 0 !important;
             }
             
+            /* Protect mobile navigation from grid overrides */
+            .mobile-nav-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+                align-items: center !important;
+            }
+            
+            .mobile-nav-row {
+                display: grid !important;
+                gap: 12px !important;
+                justify-items: center !important;
+            }
+            
+            .mobile-nav-row:first-child {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+            
+            .mobile-nav-row:last-child {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+            
             /* Force single column for mobile KPI grid */
             .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-6 {
                 grid-template-columns: 1fr !important;
