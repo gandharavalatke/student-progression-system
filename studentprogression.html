@@ -1458,54 +1458,62 @@
         /* Fix: ensure semester select and action buttons stack on small screens
            and neutralize earlier absolute/float rules that caused overlap. */
         @media (max-width: 480px) {
-            .upload-card .mb-4 {
-                display: grid !important;
-                grid-template-columns: 1fr !important;
-                gap: 0.5rem !important;
-                align-items: stretch !important;
-                position: static !important;
-                clear: both !important;
+            /* Container styling */
+            .upload-card {
+                padding: 1rem !important;
             }
 
-            /* Full width select on top */
-            .upload-card .mb-4 select {
-                width: 100% !important;
-                grid-column: 1 / -1 !important;
-                margin-bottom: 0 !important;
+            .mb-4 {
+                margin-bottom: 1rem !important;
             }
 
-            /* Two column grid for side-by-side buttons */
-            .file-management > div {
-                display: grid !important;
-                grid-template-columns: 1fr !important;
-                gap: 0.5rem !important;
-            }
-
-            /* Make buttons side by side */
+            /* Select dropdown styling */
             #view-semester-select {
                 width: 100% !important;
+                margin-bottom: 0.75rem !important;
+                padding: 0.75rem !important;
             }
 
-            /* Button container for side-by-side buttons */
-            .file-management .btn-container {
+            /* Button container styling */
+            .btn-container {
                 display: flex !important;
-                gap: 0.5rem !important;
-                margin-top: 0.5rem !important;
+                gap: 0.75rem !important; /* Increased gap between buttons */
+                padding: 0 0.5rem !important; /* Added side padding */
+                margin-bottom: 1rem !important;
             }
 
+            /* Individual button styling */
             #refresh-files-btn,
             #download-summary-btn {
-                width: 50% !important;
-                margin: 0 !important;
-                padding: 0.5rem !important;
+                flex: 1 !important;
+                min-height: 2.75rem !important; /* Taller buttons */
+                padding: 0.625rem 1rem !important;
                 font-size: 0.875rem !important;
+                margin: 0 !important;
+                white-space: nowrap !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
 
-            /* Ensure files list sits below the controls */
+            /* Icon spacing in buttons */
+            #refresh-files-btn i,
+            #download-summary-btn i {
+                margin-right: 0.5rem !important;
+            }
+
+            /* Files list spacing */
             #files-list {
-                margin-top: 0.5rem !important;
+                margin-top: 1rem !important;
                 position: relative !important;
                 z-index: 1 !important;
+            }
+
+            /* Clear any floats */
+            .clearfix::after {
+                content: "" !important;
+                display: table !important;
+                clear: both !important;
             }
         }
     </style>
@@ -1655,23 +1663,27 @@
                     </h4>
                     
                     <div class="mb-4">
-                        <select id="view-semester-select" class="px-4 py-2 bg-orange-50 text-gray-800 rounded-lg border border-orange-200 focus:outline-none focus:border-orange-400">
-                            <option value="">All Semesters</option>
-                            <option value="sem1">Semester 1</option>
-                            <option value="sem2">Semester 2</option>
-                            <option value="sem3">Semester 3</option>
-                            <option value="sem4">Semester 4</option>
-                            <option value="sem5">Semester 5</option>
-                            <option value="sem6">Semester 6</option>
-                            <option value="sem7">Semester 7</option>
-                            <option value="sem8">Semester 8</option>
-                        </select>
-                        <div class="btn-container">
-                            <button id="refresh-files-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg">
-                                <i class="fa-solid fa-refresh mr-2"></i>Refresh
+                        <div class="w-full">
+                            <select id="view-semester-select" class="w-full px-4 py-3 bg-orange-50 text-gray-800 rounded-lg border border-orange-200 focus:outline-none focus:border-orange-400">
+                                <option value="">All Semesters</option>
+                                <option value="sem1">Semester 1</option>
+                                <option value="sem2">Semester 2</option>
+                                <option value="sem3">Semester 3</option>
+                                <option value="sem4">Semester 4</option>
+                                <option value="sem5">Semester 5</option>
+                                <option value="sem6">Semester 6</option>
+                                <option value="sem7">Semester 7</option>
+                                <option value="sem8">Semester 8</option>
+                            </select>
+                        </div>
+                        <div class="btn-container mt-3">
+                            <button id="refresh-files-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg flex items-center justify-center">
+                                <i class="fa-solid fa-refresh mr-2"></i>
+                                <span>Refresh</span>
                             </button>
-                            <button id="download-summary-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg">
-                                <i class="fa-solid fa-file-excel mr-2"></i>Download Summary
+                            <button id="download-summary-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg flex items-center justify-center">
+                                <i class="fa-solid fa-file-excel mr-2"></i>
+                                <span>Download Summary</span>
                             </button>
                         </div>
                     </div>
