@@ -1062,6 +1062,37 @@
                 gap: 0.5rem !important;
             }
             
+            /* ULTRA AGGRESSIVE - Force buttons side by side */
+            .file-management > div {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                align-items: center !important;
+                width: 100% !important;
+            }
+            
+            .file-management > div button {
+                flex: 1 !important;
+                min-width: 0 !important;
+                max-width: 200px !important;
+                margin: 0 !important;
+            }
+            
+            /* Target specific button containers */
+            .file-management .flex {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                align-items: center !important;
+                width: 100% !important;
+            }
+            
+            .file-management .flex button {
+                flex: 1 !important;
+                min-width: 0 !important;
+                max-width: 200px !important;
+            }
+            
             /* Mobile uploaded files section */
             .uploaded-files-section {
                 padding: 1rem !important;
