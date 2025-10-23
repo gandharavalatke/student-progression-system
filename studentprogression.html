@@ -1459,38 +1459,49 @@
            and neutralize earlier absolute/float rules that caused overlap. */
         @media (max-width: 480px) {
             .upload-card .mb-4 {
-                display: flex !important;
-                flex-direction: column !important;
+                display: grid !important;
+                grid-template-columns: 1fr !important;
                 gap: 0.5rem !important;
                 align-items: stretch !important;
                 position: static !important;
                 clear: both !important;
             }
 
+            /* Full width select on top */
             .upload-card .mb-4 select {
                 width: 100% !important;
+                grid-column: 1 / -1 !important;
                 margin-bottom: 0 !important;
             }
 
-            .upload-card .mb-4 button {
+            /* Two column grid for side-by-side buttons */
+            .file-management > div {
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                gap: 0.5rem !important;
+            }
+
+            /* Make buttons side by side */
+            #view-semester-select {
                 width: 100% !important;
-                min-width: 0 !important;
-                max-width: none !important;
+            }
+
+            /* Button container for side-by-side buttons */
+            .file-management .btn-container {
+                display: flex !important;
+                gap: 0.5rem !important;
+                margin-top: 0.5rem !important;
+            }
+
+            #refresh-files-btn,
+            #download-summary-btn {
+                width: 50% !important;
                 margin: 0 !important;
-                float: none !important;
-                position: static !important;
-                display: block !important;
-                box-sizing: border-box !important;
+                padding: 0.5rem !important;
+                font-size: 0.875rem !important;
             }
 
-            /* Cancel any absolute positioning applied earlier to specific button selectors */
-            .upload-card .mb-4 button:first-of-type,
-            .upload-card .mb-4 button:last-of-type {
-                position: static !important;
-                float: none !important;
-            }
-
-            /* Ensure files list sits below the controls and is not covered */
+            /* Ensure files list sits below the controls */
             #files-list {
                 margin-top: 0.5rem !important;
                 position: relative !important;
@@ -1655,12 +1666,14 @@
                             <option value="sem7">Semester 7</option>
                             <option value="sem8">Semester 8</option>
                         </select>
-                        <button id="refresh-files-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg">
-                            <i class="fa-solid fa-refresh mr-2"></i>Refresh
-                        </button>
-                        <button id="download-summary-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg">
-                            <i class="fa-solid fa-file-excel mr-2"></i>Download Summary
-                        </button>
+                        <div class="btn-container">
+                            <button id="refresh-files-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg">
+                                <i class="fa-solid fa-refresh mr-2"></i>Refresh
+                            </button>
+                            <button id="download-summary-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg">
+                                <i class="fa-solid fa-file-excel mr-2"></i>Download Summary
+                            </button>
+                        </div>
                     </div>
 
                     <div id="files-list" class="space-y-3">
