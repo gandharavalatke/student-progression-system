@@ -1455,42 +1455,50 @@
         .light .mobile-nav-button:hover {
             background: rgba(59, 130, 246, 0.2);
         }
-        /* Fix: ensure semester select and action buttons stack on small screens
-           and neutralize earlier absolute/float rules that caused overlap. */
+        /* Mobile small-screen layout: keep select full-width and place the two
+           action buttons side-by-side (non-overlapping). This overrides any
+           earlier float/absolute rules for the buttons on narrow viewports. */
         @media (max-width: 480px) {
             .upload-card .mb-4 {
-                display: flex !important;
-                flex-direction: column !important;
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
                 gap: 0.5rem !important;
-                align-items: stretch !important;
+                align-items: center !important;
                 position: static !important;
                 clear: both !important;
             }
 
+            /* Semester select spans both columns (full width) */
             .upload-card .mb-4 select {
+                grid-column: 1 / -1 !important;
                 width: 100% !important;
-                margin-bottom: 0 !important;
+                margin: 0 !important;
+                padding: 0.6rem 0.75rem !important;
+                font-size: 1rem !important;
             }
 
+            /* Buttons occupy the second row, one per column */
             .upload-card .mb-4 button {
+                grid-column: auto !important;
                 width: 100% !important;
                 min-width: 0 !important;
-                max-width: none !important;
                 margin: 0 !important;
                 float: none !important;
                 position: static !important;
-                display: block !important;
+                display: inline-flex !important;
+                justify-content: center !important;
+                padding: 0.5rem 0.75rem !important;
                 box-sizing: border-box !important;
             }
 
-            /* Cancel any absolute positioning applied earlier to specific button selectors */
+            /* Safety reset for first/last selectors */
             .upload-card .mb-4 button:first-of-type,
             .upload-card .mb-4 button:last-of-type {
                 position: static !important;
                 float: none !important;
             }
 
-            /* Ensure files list sits below the controls and is not covered */
+            /* Keep files list below controls */
             #files-list {
                 margin-top: 0.5rem !important;
                 position: relative !important;
