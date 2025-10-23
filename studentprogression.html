@@ -1093,27 +1093,32 @@
                 max-width: 200px !important;
             }
             
-            /* NUCLEAR OPTION - Target the actual HTML structure */
+            /* SIMPLE APPROACH - Force column layout with buttons side-by-side */
             .upload-card .mb-4 {
                 display: flex !important;
-                flex-direction: row !important;
-                gap: 0.5rem !important;
-                align-items: center !important;
-                flex-wrap: wrap !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+                align-items: stretch !important;
             }
             
+            /* Select semester takes full width on top */
             .upload-card .mb-4 select {
-                flex: 1 !important;
-                min-width: 120px !important;
-                margin-right: 0.5rem !important;
+                width: 100% !important;
+                margin-bottom: 0.75rem !important;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+                order: 1 !important;
             }
             
+            /* Buttons side-by-side below select */
             .upload-card .mb-4 button {
+                display: inline-flex !important;
                 flex: 1 !important;
                 min-width: 120px !important;
                 max-width: 200px !important;
-                margin-left: 0 !important;
+                margin: 0 !important;
                 margin-right: 0.5rem !important;
+                order: 2 !important;
             }
             
             /* Override ml-3 class */
@@ -1121,9 +1126,30 @@
                 margin-left: 0 !important;
             }
             
-            /* Force all buttons in mb-4 to be side by side */
-            .upload-card .mb-4 button:not(:first-child) {
-                margin-left: 0.5rem !important;
+            /* Force buttons to be side by side */
+            .upload-card .mb-4 button:first-of-type {
+                margin-right: 0.5rem !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
+            }
+            
+            /* Create a button row using flexbox */
+            .upload-card .mb-4 {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            /* Make buttons appear in a row */
+            .upload-card .mb-4 button {
+                display: inline-block !important;
+                width: calc(50% - 0.25rem) !important;
+                margin-right: 0.5rem !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
             }
             
             /* Mobile uploaded files section */
