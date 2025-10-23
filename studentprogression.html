@@ -1458,20 +1458,27 @@
         /* Fix: ensure semester select and action buttons stack on small screens
            and neutralize earlier absolute/float rules that caused overlap. */
         @media (max-width: 480px) {
+            /* Keep the semester select full-width on top and place the two action
+               buttons side-by-side beneath it using CSS Grid. This avoids overlap
+               while keeping compact buttons for mobile. */
             .upload-card .mb-4 {
-                display: flex !important;
-                flex-direction: column !important;
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                grid-auto-rows: auto !important;
                 gap: 0.5rem !important;
-                align-items: stretch !important;
+                align-items: center !important;
                 position: static !important;
                 clear: both !important;
             }
 
+            /* Make select span both columns (full width) */
             .upload-card .mb-4 select {
+                grid-column: 1 / -1 !important;
                 width: 100% !important;
-                margin-bottom: 0 !important;
+                margin: 0 !important;
             }
 
+            /* Buttons share the second row, each filling its grid column */
             .upload-card .mb-4 button {
                 width: 100% !important;
                 min-width: 0 !important;
@@ -1479,18 +1486,20 @@
                 margin: 0 !important;
                 float: none !important;
                 position: static !important;
-                display: block !important;
+                display: inline-flex !important;
+                justify-content: center !important;
                 box-sizing: border-box !important;
+                padding: 0.5rem 0.75rem !important;
             }
 
-            /* Cancel any absolute positioning applied earlier to specific button selectors */
+            /* Explicit reset for first/last buttons (safety) */
             .upload-card .mb-4 button:first-of-type,
             .upload-card .mb-4 button:last-of-type {
                 position: static !important;
                 float: none !important;
             }
 
-            /* Ensure files list sits below the controls and is not covered */
+            /* Ensure files list sits below controls and isn't covered */
             #files-list {
                 margin-top: 0.5rem !important;
                 position: relative !important;
