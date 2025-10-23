@@ -854,18 +854,6 @@
                 }
             }
             
-            .mobile-nav-button {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                z-index: 1001 !important;
-                position: fixed !important;
-                bottom: 15px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-            }
             
             /* Mobile Dashboard Redesign */
             .p-8 {
@@ -1118,7 +1106,7 @@
             </div>
         </aside>
 
-        <button id="mobile-nav-button" class="mobile-nav-button">
+        <button id="mobile-nav-button" class="mobile-nav-button hidden">
             <i class="fa-solid fa-chevron-up"></i>
         </button>
 
@@ -1637,11 +1625,9 @@
             
             function checkMobileView() {
                 if (window.innerWidth <= 768) {
-                    mobileNavButton.style.display = 'flex';
-                    mobileNavButton.style.visibility = 'visible';
-                    mobileNavButton.style.opacity = '1';
+                    mobileNavButton.classList.remove('hidden');
                 } else {
-                    mobileNavButton.style.display = 'none';
+                    mobileNavButton.classList.add('hidden');
                     mobileNavMenu.classList.remove('show');
                     mobileNavButton.classList.remove('rotated');
                 }
