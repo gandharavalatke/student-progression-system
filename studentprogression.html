@@ -1177,36 +1177,63 @@
                 margin-right: 0 !important;
             }
             
-            /* Alternative approach - use flexbox for button row */
+            /* FINAL NUCLEAR OPTION - Use float to force side-by-side */
             .upload-card .mb-4 {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 0.75rem !important;
+                display: block !important;
             }
             
             .upload-card .mb-4 select {
                 width: 100% !important;
-            }
-            
-            /* Create a flex container for buttons */
-            .upload-card .mb-4::after {
-                content: '';
-                display: flex;
-                flex-direction: row;
-                gap: 0.5rem;
-                width: 100%;
+                display: block !important;
+                margin-bottom: 0.75rem !important;
             }
             
             .upload-card .mb-4 button {
-                display: inline-flex !important;
-                flex: 1 !important;
-                width: auto !important;
-                margin: 0 !important;
-                margin-right: 0.5rem !important;
+                display: inline-block !important;
+                width: 48% !important;
+                float: left !important;
+                margin-right: 2% !important;
+                margin-bottom: 0 !important;
+                box-sizing: border-box !important;
             }
             
             .upload-card .mb-4 button:last-of-type {
                 margin-right: 0 !important;
+                float: right !important;
+            }
+            
+            /* Clear float after buttons */
+            .upload-card .mb-4::after {
+                content: '';
+                display: table;
+                clear: both;
+            }
+            
+            /* Alternative: Use absolute positioning */
+            .upload-card .mb-4 {
+                position: relative !important;
+                display: block !important;
+            }
+            
+            .upload-card .mb-4 select {
+                width: 100% !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            .upload-card .mb-4 button:first-of-type {
+                position: absolute !important;
+                left: 0 !important;
+                top: auto !important;
+                width: 48% !important;
+                margin: 0 !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                position: absolute !important;
+                right: 0 !important;
+                top: auto !important;
+                width: 48% !important;
+                margin: 0 !important;
             }
             
             /* Mobile uploaded files section */
