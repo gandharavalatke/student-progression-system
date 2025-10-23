@@ -833,6 +833,24 @@
                     margin-left: auto !important;
                     position: absolute !important;
                     right: 1.5rem !important;
+                    top: 50% !important;
+                    transform: translateY(-50%) !important;
+                }
+                
+                /* NUCLEAR OPTION - Force all icon containers to right */
+                .kpi-card > div:last-child {
+                    position: absolute !important;
+                    right: 1.5rem !important;
+                    top: 50% !important;
+                    transform: translateY(-50%) !important;
+                }
+                
+                /* ULTRA NUCLEAR - Target any div with bg-blue-600 class */
+                div[class*="bg-blue-600"] {
+                    position: absolute !important;
+                    right: 1.5rem !important;
+                    top: 50% !important;
+                    transform: translateY(-50%) !important;
                 }
             }
             
