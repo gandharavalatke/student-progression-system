@@ -1184,6 +1184,29 @@
             flex-wrap: wrap !important;
         }
         
+        /* Fix upload container to fit properly */
+        .upload-box {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 2rem !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+        }
+        
+        .upload-box i {
+            font-size: 3rem !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .upload-box p {
+            font-size: 1rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .upload-box .text-sm {
+            font-size: 0.875rem !important;
+        }
+        
         .file-management select {
             flex: 1 !important;
             min-width: 120px !important;
@@ -1222,13 +1245,14 @@
             border: 1px solid rgba(59, 130, 246, 0.2) !important;
         }
         
-        /* Desktop file item content layout */
+        /* Desktop file item content layout - FORCE ONE ROW */
         .file-item .flex.items-center.space-x-4 {
             display: flex !important;
             flex-direction: row !important;
             align-items: center !important;
             gap: 1rem !important;
             flex: 1 !important;
+            min-width: 0 !important;
         }
         
         .file-item .flex.space-x-2 {
@@ -1237,6 +1261,26 @@
             gap: 0.5rem !important;
             align-items: center !important;
             flex-shrink: 0 !important;
+            margin-left: auto !important;
+        }
+        
+        /* Force file item content to be in one row */
+        .file-item > div:first-child {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 1rem !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        
+        .file-item > div:last-child {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 0.5rem !important;
+            align-items: center !important;
+            flex-shrink: 0 !important;
+            margin-left: 1rem !important;
         }
         
         /* ULTRA AGGRESSIVE - Force vertical stacking */
