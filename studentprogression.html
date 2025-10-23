@@ -1141,10 +1141,67 @@
                 flex-direction: column !important;
             }
             
-            /* Make buttons appear in a row */
+            /* FORCE buttons to be side by side using CSS Grid */
+            .upload-card .mb-4 {
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                grid-template-rows: auto auto !important;
+                gap: 0.75rem !important;
+            }
+            
+            .upload-card .mb-4 select {
+                grid-row: 1 !important;
+                width: 100% !important;
+            }
+            
             .upload-card .mb-4 button {
                 display: inline-block !important;
                 width: calc(50% - 0.25rem) !important;
+                margin-right: 0.5rem !important;
+                grid-row: 2 !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
+            }
+            
+            /* ULTRA AGGRESSIVE - Force buttons side by side */
+            .upload-card .mb-4 button {
+                display: inline-block !important;
+                width: 48% !important;
+                margin-right: 2% !important;
+                vertical-align: top !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
+            }
+            
+            /* Alternative approach - use flexbox for button row */
+            .upload-card .mb-4 {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            
+            .upload-card .mb-4 select {
+                width: 100% !important;
+            }
+            
+            /* Create a flex container for buttons */
+            .upload-card .mb-4::after {
+                content: '';
+                display: flex;
+                flex-direction: row;
+                gap: 0.5rem;
+                width: 100%;
+            }
+            
+            .upload-card .mb-4 button {
+                display: inline-flex !important;
+                flex: 1 !important;
+                width: auto !important;
+                margin: 0 !important;
                 margin-right: 0.5rem !important;
             }
             
