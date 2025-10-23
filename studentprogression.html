@@ -1042,7 +1042,7 @@
                 line-height: 1.2 !important;
             }
             
-            /* Mobile button alignment */
+            /* Mobile button alignment - side by side */
             .upload-card .flex-shrink-0 {
                 display: flex !important;
                 flex-direction: row !important;
@@ -1050,6 +1050,83 @@
                 width: 100% !important;
                 justify-content: flex-end !important;
             }
+            
+            .upload-card button {
+                flex: 1 !important;
+                min-width: 0 !important;
+                padding: 0.5rem 0.75rem !important;
+                font-size: 0.875rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.375rem !important;
+            }
+        }
+        
+        /* Desktop and mobile button improvements */
+        .upload-card .flex-shrink-0 {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 0.5rem !important;
+            align-items: center !important;
+        }
+        
+        .upload-card button {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.375rem !important;
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.875rem !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        /* Download button styling */
+        .upload-card button[onclick*="download"] {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        .upload-card button[onclick*="download"]:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        /* Delete button styling */
+        .upload-card button[onclick*="delete"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+        }
+        
+        .upload-card button[onclick*="delete"]:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        /* Icon improvements for both themes */
+        .upload-card button i {
+            font-size: 0.875rem !important;
+            line-height: 1 !important;
+        }
+        
+        /* Light theme button improvements */
+        .light .upload-card button[onclick*="download"] {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        .light .upload-card button[onclick*="delete"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
         }
         
         /* Mobile Navigation Button */
