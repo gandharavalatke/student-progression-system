@@ -1637,12 +1637,9 @@
             window.addEventListener('resize', checkMobileView);
             
             mobileNavButton.addEventListener('click', (e) => {
-                e.preventDefault();
                 e.stopPropagation();
-                console.log('Mobile nav button clicked');
                 mobileNavMenu.classList.toggle('show');
                 mobileNavButton.classList.toggle('rotated');
-                console.log('Menu classes:', mobileNavMenu.className);
             });
             
             document.addEventListener('click', (e) => {
