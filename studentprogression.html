@@ -1632,17 +1632,17 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
-                /* Reports icon styles with strong visibility */
+                /* Reports icon styles matching sidebar */
                 .mobile-nav-item[data-page="reports"] {
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
                     flex-direction: column !important;
                     position: relative !important;
-                    background: #2563eb !important;
+                    background: transparent !important;
                     border-radius: 0.5rem !important;
                     padding: 0.75rem !important;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+                    z-index: 50 !important;
                 }
                 
                 .mobile-nav-item[data-page="reports"] i {
@@ -1650,29 +1650,35 @@
                     font-weight: 900 !important;
                     display: inline-block !important;
                     font-style: normal !important;
-                    font-variant: normal !important;
                     line-height: 1 !important;
-                    font-size: 1.75rem !important;
-                    margin-bottom: 0.5rem !important;
-                    color: white !important;
+                    font-size: 1.5rem !important;
+                    margin-bottom: 0.25rem !important;
+                    color: #60a5fa !important; /* text-blue-400 */
                 }
                 
                 .mobile-nav-item[data-page="reports"] span {
-                    color: white !important;
-                    font-size: 0.875rem !important;
-                    font-weight: 600 !important;
+                    color: #64748b !important; /* text-slate-500 */
+                    font-size: 0.75rem !important;
+                    font-weight: 500 !important;
+                }
+
+                /* Reset any potential overlays */
+                .mobile-nav-item[data-page="reports"]::before,
+                .mobile-nav-item[data-page="reports"]::after {
+                    display: none !important;
                 }
 
                 /* Hover state */
                 .mobile-nav-item[data-page="reports"]:hover {
-                    background: #1d4ed8 !important;
-                    transform: translateY(-1px) !important;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+                    background: rgba(51, 65, 85, 0.04) !important;
                 }
 
-                .mobile-nav-item[data-page="reports"]:hover i,
+                .mobile-nav-item[data-page="reports"]:hover i {
+                    color: #3b82f6 !important; /* text-blue-500 */
+                }
+
                 .mobile-nav-item[data-page="reports"]:hover span {
-                    color: white !important;
+                    color: #475569 !important; /* text-slate-600 */
                 }
             </style>
             <div class="mobile-nav-grid">
@@ -1696,7 +1702,7 @@
                 </div>
                 <div class="mobile-nav-row">
                     <a href="reports.html" class="mobile-nav-item" data-page="reports">
-                        <i class="fa-solid fa-file-invoice"></i>
+                        <i class="fa-solid fa-file-alt"></i>
                         <span>Reports</span>
                     </a>
                     <a href="settings.html" class="mobile-nav-item" data-page="settings">
