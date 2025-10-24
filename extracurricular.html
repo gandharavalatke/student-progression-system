@@ -286,27 +286,31 @@
 
         <!-- Logout Confirmation Modal -->
     <div id="logoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="glass-card p-8 rounded-xl max-w-sm w-full mx-4 text-center">
-            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-900 mb-4">
-                <i class="fa-solid fa-sign-out-alt text-blue-400 text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold mb-4">Confirm Logout</h3>
-            <p class="text-slate-300 mb-8">Are you sure you want to logout from the system?</p>
-            <div class="flex gap-4 justify-center">
-                <button id="confirmLogout" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">Confirm</button>
-                <button id="cancelLogout" class="px-6 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors">Cancel</button>
+        <div class="glass-card p-8 rounded-2xl max-w-sm w-full mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-600/20 mb-4">
+                    <i class="fa-solid fa-sign-out-alt text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Confirm Logout</h3>
+                <p class="text-slate-400 mb-8">Are you sure you want to logout from the system?</p>
+                <div class="flex gap-4 justify-center">
+                    <button id="confirmLogout" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium">Confirm</button>
+                    <button id="cancelLogout" class="px-6 py-2.5 bg-slate-600/50 hover:bg-slate-600 rounded-lg transition-colors font-medium text-slate-300">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Success Modal -->
     <div id="successModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="glass-card p-8 rounded-xl max-w-sm w-full mx-4 text-center">
-            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-900 mb-4">
-                <i class="fa-solid fa-check text-green-400 text-2xl"></i>
+        <div class="glass-card p-8 rounded-2xl max-w-sm w-full mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-600/20 mb-4">
+                    <i class="fa-solid fa-check text-green-500 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Logout Successful</h3>
+                <p class="text-slate-400">You have been successfully logged out.</p>
             </div>
-            <h3 class="text-xl font-semibold mb-4">Logout Successful</h3>
-            <p class="text-slate-300">You have been successfully logged out.</p>
         </div>
     </div>
     
