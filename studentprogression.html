@@ -1632,47 +1632,31 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
-                /* Reset any potential overlays */
-                .mobile-nav-menu::before,
-                .mobile-nav-menu::after {
-                    display: none !important;
-                }
-                
-                /* Specific styles for reports icon and its container */
+                /* Simple, direct styles for the reports icon */
                 .mobile-nav-item[data-page="reports"] {
-                    position: relative;
-                    z-index: 20;
-                    background: transparent !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    flex-direction: column !important;
                 }
                 
                 .mobile-nav-item[data-page="reports"] i {
-                    position: relative;
-                    z-index: 25;
-                    mix-blend-mode: normal !important;
+                    font-family: "Font Awesome 6 Free" !important;
+                    font-weight: 900 !important;
+                    -webkit-font-smoothing: antialiased !important;
                     display: inline-block !important;
+                    font-style: normal !important;
+                    font-variant: normal !important;
+                    line-height: 1 !important;
+                    text-rendering: auto !important;
+                    font-size: 1.5rem !important;
+                    margin-bottom: 0.25rem !important;
                     color: #1a1a1a !important;
-                    opacity: 1 !important;
-                    visibility: visible !important;
                 }
                 
-                /* Override any theme-specific styles */
-                .light .mobile-nav-item[data-page="reports"] i,
-                .dark .mobile-nav-item[data-page="reports"] i,
-                body:not(.dark) .mobile-nav-item[data-page="reports"] i {
-                    color: currentColor !important;
-                    pointer-events: auto !important;
-                }
-                
-                /* Remove any backgrounds or overlays */
-                .mobile-nav-item[data-page="reports"]::before,
-                .mobile-nav-item[data-page="reports"]::after {
-                    display: none !important;
-                }
-                
-                /* Ensure the icon and text are both visible */
-                .mobile-nav-item[data-page="reports"] * {
-                    opacity: 1 !important;
-                    visibility: visible !important;
+                .mobile-nav-item[data-page="reports"] span {
+                    color: #1a1a1a !important;
+                    font-size: 0.75rem !important;
                 }
             </style>
             <div class="mobile-nav-grid">
@@ -1696,7 +1680,7 @@
                 </div>
                 <div class="mobile-nav-row">
                     <a href="reports.html" class="mobile-nav-item" data-page="reports">
-                        <i class="fa-solid fa-file-alt"></i>
+                        <i class="fa-solid fa-file-lines"></i>
                         <span>Reports</span>
                     </a>
                     <a href="settings.html" class="mobile-nav-item" data-page="settings">
