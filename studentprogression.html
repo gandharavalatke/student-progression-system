@@ -1632,31 +1632,47 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
-                /* Simple, direct styles for the reports icon */
+                /* Reports icon styles with strong visibility */
                 .mobile-nav-item[data-page="reports"] {
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
                     flex-direction: column !important;
+                    position: relative !important;
+                    background: #2563eb !important;
+                    border-radius: 0.5rem !important;
+                    padding: 0.75rem !important;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
                 }
                 
                 .mobile-nav-item[data-page="reports"] i {
                     font-family: "Font Awesome 6 Free" !important;
                     font-weight: 900 !important;
-                    -webkit-font-smoothing: antialiased !important;
                     display: inline-block !important;
                     font-style: normal !important;
                     font-variant: normal !important;
                     line-height: 1 !important;
-                    text-rendering: auto !important;
-                    font-size: 1.5rem !important;
-                    margin-bottom: 0.25rem !important;
-                    color: #1a1a1a !important;
+                    font-size: 1.75rem !important;
+                    margin-bottom: 0.5rem !important;
+                    color: white !important;
                 }
                 
                 .mobile-nav-item[data-page="reports"] span {
-                    color: #1a1a1a !important;
-                    font-size: 0.75rem !important;
+                    color: white !important;
+                    font-size: 0.875rem !important;
+                    font-weight: 600 !important;
+                }
+
+                /* Hover state */
+                .mobile-nav-item[data-page="reports"]:hover {
+                    background: #1d4ed8 !important;
+                    transform: translateY(-1px) !important;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+                }
+
+                .mobile-nav-item[data-page="reports"]:hover i,
+                .mobile-nav-item[data-page="reports"]:hover span {
+                    color: white !important;
                 }
             </style>
             <div class="mobile-nav-grid">
@@ -1680,7 +1696,7 @@
                 </div>
                 <div class="mobile-nav-row">
                     <a href="reports.html" class="mobile-nav-item" data-page="reports">
-                        <i class="fa-solid fa-file-lines"></i>
+                        <i class="fa-solid fa-file-invoice"></i>
                         <span>Reports</span>
                     </a>
                     <a href="settings.html" class="mobile-nav-item" data-page="settings">
