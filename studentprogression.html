@@ -1632,54 +1632,37 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
-                /* Reports icon styles matching sidebar */
-                .mobile-nav-item[data-page="reports"] {
+                /* Basic mobile nav styles */
+                .mobile-nav-item {
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
                     flex-direction: column !important;
-                    position: relative !important;
-                    background: transparent !important;
-                    border-radius: 0.5rem !important;
                     padding: 0.75rem !important;
-                    z-index: 50 !important;
                 }
-                
-                .mobile-nav-item[data-page="reports"] i {
-                    font-family: "Font Awesome 6 Free" !important;
-                    font-weight: 900 !important;
-                    display: inline-block !important;
-                    font-style: normal !important;
-                    line-height: 1 !important;
+
+                .mobile-nav-item i {
                     font-size: 1.5rem !important;
                     margin-bottom: 0.25rem !important;
-                    color: #60a5fa !important; /* text-blue-400 */
+                    color: #1d4ed8 !important;
                 }
-                
-                .mobile-nav-item[data-page="reports"] span {
-                    color: #64748b !important; /* text-slate-500 */
+
+                .mobile-nav-item span {
                     font-size: 0.75rem !important;
-                    font-weight: 500 !important;
+                    color: #1d4ed8 !important;
                 }
 
-                /* Reset any potential overlays */
-                .mobile-nav-item[data-page="reports"]::before,
-                .mobile-nav-item[data-page="reports"]::after {
-                    display: none !important;
+                /* Active state */
+                .mobile-nav-item.active {
+                    background: #dbeafe !important;
+                    border-radius: 0.5rem !important;
                 }
 
-                /* Hover state */
-                .mobile-nav-item[data-page="reports"]:hover {
-                    background: rgba(51, 65, 85, 0.04) !important;
+                .mobile-nav-item.active i,
+                .mobile-nav-item.active span {
+                    color: #1d4ed8 !important;
                 }
-
-                .mobile-nav-item[data-page="reports"]:hover i {
-                    color: #3b82f6 !important; /* text-blue-500 */
-                }
-
-                .mobile-nav-item[data-page="reports"]:hover span {
-                    color: #475569 !important; /* text-slate-600 */
-                }
+                </style>
             </style>
             <div class="mobile-nav-grid">
                 <div class="mobile-nav-row">
