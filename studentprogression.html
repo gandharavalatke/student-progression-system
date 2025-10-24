@@ -1632,37 +1632,48 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
-                /* Basic mobile nav styles */
-                .mobile-nav-item {
+                /* Reports icon styles with strong visibility */
+                .mobile-nav-item[data-page="reports"] {
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
                     flex-direction: column !important;
-                    padding: 0.75rem !important;
-                }
-
-                .mobile-nav-item i {
-                    font-size: 1.5rem !important;
-                    margin-bottom: 0.25rem !important;
-                    color: #1d4ed8 !important;
-                }
-
-                .mobile-nav-item span {
-                    font-size: 0.75rem !important;
-                    color: #1d4ed8 !important;
-                }
-
-                /* Active state */
-                .mobile-nav-item.active {
-                    background: #dbeafe !important;
+                    position: relative !important;
+                    background: #2563eb !important;
                     border-radius: 0.5rem !important;
+                    padding: 0.75rem !important;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+                }
+                
+                .mobile-nav-item[data-page="reports"] i {
+                    font-family: "Font Awesome 6 Free" !important;
+                    font-weight: 900 !important;
+                    display: inline-block !important;
+                    font-style: normal !important;
+                    font-variant: normal !important;
+                    line-height: 1 !important;
+                    font-size: 1.75rem !important;
+                    margin-bottom: 0.5rem !important;
+                    color: white !important;
+                }
+                
+                .mobile-nav-item[data-page="reports"] span {
+                    color: white !important;
+                    font-size: 0.875rem !important;
+                    font-weight: 600 !important;
                 }
 
-                .mobile-nav-item.active i,
-                .mobile-nav-item.active span {
-                    color: #1d4ed8 !important;
+                /* Hover state */
+                .mobile-nav-item[data-page="reports"]:hover {
+                    background: #1d4ed8 !important;
+                    transform: translateY(-1px) !important;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
                 }
-                </style>
+
+                .mobile-nav-item[data-page="reports"]:hover i,
+                .mobile-nav-item[data-page="reports"]:hover span {
+                    color: white !important;
+                }
             </style>
             <div class="mobile-nav-grid">
                 <div class="mobile-nav-row">
