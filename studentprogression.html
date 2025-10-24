@@ -1632,15 +1632,35 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
+                /* Base styles for reports icon */
+                .mobile-nav-item[data-page="reports"] {
+                    position: relative;
+                    z-index: 10;
+                }
+                
                 .mobile-nav-item[data-page="reports"] i {
-                    color: #ffffff !important;
-                }
-                .light .mobile-nav-item[data-page="reports"] i {
-                    color: #ffffff !important;
-                }
-                #mobile-nav-menu .mobile-nav-item[data-page="reports"] i {
+                    display: inline-block !important;
                     color: #ffffff !important;
                     opacity: 1 !important;
+                    visibility: visible !important;
+                    text-shadow: 0 0 1px rgba(0,0,0,0.5) !important;
+                }
+                
+                /* Light theme overrides */
+                .light .mobile-nav-item[data-page="reports"] i,
+                body:not(.dark) .mobile-nav-item[data-page="reports"] i {
+                    color: #1a1a1a !important;
+                }
+                
+                /* Ensure icon container is visible */
+                .mobile-nav-item[data-page="reports"] span {
+                    color: inherit !important;
+                    opacity: 1 !important;
+                }
+                
+                /* Force icon display */
+                .fa-file-alt.fa-solid {
+                    display: inline-block !important;
                     visibility: visible !important;
                 }
             </style>
