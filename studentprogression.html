@@ -1452,9 +1452,25 @@
         .mobile-nav-item .fa,
         .light .mobile-nav-item i,
         .light .mobile-nav-item .fa,
-        .mobile-nav-item .fa-file-alt,
-        .light .mobile-nav-item .fa-file-alt {
+        .mobile-nav-item[data-page="reports"] i,
+        .light .mobile-nav-item[data-page="reports"] i,
+        .mobile-nav-item[data-page="reports"] .fa-file-alt,
+        .light .mobile-nav-item[data-page="reports"] .fa-file-alt,
+        /* Extra specific selectors for reports icon */
+        .mobile-nav-menu .mobile-nav-item[data-page="reports"] i,
+        .light .mobile-nav-menu .mobile-nav-item[data-page="reports"] i {
             color: #ffffff !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Force reports icon to be visible */
+        .mobile-nav-item[data-page="reports"] {
+            color: #ffffff !important;
+        }
+        
+        .mobile-nav-item[data-page="reports"] i {
+            display: inline-block !important;
         }
         
         .mobile-nav-item span {
