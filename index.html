@@ -65,6 +65,23 @@
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
         }
+
+        /* Input icon alignment & sharpness fix (applies to absolute icons inside inputs) */
+        .relative > i[class*="fa-"], .relative i.input-icon, .absolute i {
+            top: 50% !important;
+            transform: translateY(-50%) translateZ(0) !important;
+            -webkit-transform: translateY(-50%) translateZ(0) !important;
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: optimizeLegibility !important;
+            line-height: 1 !important;
+            font-size: 16px !important; /* use whole pixel size to avoid subpixel blur */
+            backface-visibility: hidden !important;
+            will-change: transform !important;
+            transform-origin: center center !important;
+            display: inline-block !important;
+            pointer-events: none !important;
+        }
         
         /* Fix text blurriness */
         input, button, span, div, p, h1, h2, h3, h4, h5, h6 {
