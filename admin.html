@@ -181,7 +181,7 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <a href="index.html" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Return to Login Page</a>
+                <a href="index" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Return to Login Page</a>
             </div>
         </div>
     </div>
@@ -201,21 +201,39 @@
     </div>
     <script>
     (function(){
-        function genId(len){
-            len = len || 17;
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            const arr = new Uint8Array(len);
-            window.crypto.getRandomValues(arr);
-            return Array.from(arr).map(v=>chars[v % chars.length]).join('');
+        function genId(){
+            // Generate multiple random values and combine them
+            const values = new Uint8Array(64); // Using 64 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 92 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 92 chars
+            while(base64.length < 92) {
+                const extra = new Uint8Array(8);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 92 - base64.length);
+            }
+            
+            return base64.slice(0, 92); // Ensure exactly 92 chars
         }
-        // always generate a new id for this visit and replace the URL
+
+        // Always generate a new id for this visit and replace the URL
         try{
-            const id = genId(17);
-            const newUrl = window.location.pathname + '?id=' + id;
+            const id = genId();
+            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
             history.replaceState({}, '', newUrl);
         }catch(e){ /* ignore */ }
 
-        // intercept clicks to html pages and navigate with a fresh id
+        // Intercept clicks to html pages and navigate with a fresh id
         document.addEventListener('click', function(e){
             const a = e.target.closest('a');
             if(!a) return;
@@ -223,8 +241,8 @@
             if(!href) return;
             if(/\.html($|[?#])/.test(href)){
                 e.preventDefault();
-                const target = href.split('?')[0].split('#')[0];
-                const id = genId(17);
+                const target = href.split('?')[0].split('#')[0].replace('.html', '');
+                const id = genId();
                 window.location.href = target + '?id=' + id;
             }
         }, true);

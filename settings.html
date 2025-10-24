@@ -457,27 +457,27 @@
                  <img src="GIT Logo.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-                <a href="dashboard.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="dashboard" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
-                <a href="studentprogression.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="studentprogression" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="placement" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="extracurricular" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                 <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="reports" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                 </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
-                 <a href="settings.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
+                 <a href="settings" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="index" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -492,33 +492,33 @@
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <div class="mobile-nav-grid">
                 <div class="mobile-nav-row">
-                    <a href="dashboard.html" class="mobile-nav-item" data-page="dashboard">
+                    <a href="dashboard" class="mobile-nav-item" data-page="dashboard">
                         <i class="fa-solid fa-chart-pie"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="studentprogression.html" class="mobile-nav-item" data-page="academic">
+                    <a href="studentprogression" class="mobile-nav-item" data-page="academic">
                         <i class="fa-solid fa-arrow-trend-up"></i>
                         <span>Academic</span>
                     </a>
-                    <a href="placement.html" class="mobile-nav-item" data-page="placement">
+                    <a href="placement" class="mobile-nav-item" data-page="placement">
                         <i class="fa-solid fa-graduation-cap"></i>
                         <span>Placement</span>
                     </a>
-                    <a href="extracurricular.html" class="mobile-nav-item" data-page="extracurricular">
+                    <a href="extracurricular" class="mobile-nav-item" data-page="extracurricular">
                         <i class="fa-solid fa-trophy"></i>
                         <span>Extracurricular</span>
                     </a>
                 </div>
                 <div class="mobile-nav-row">
-                    <a href="reports.html" class="mobile-nav-item" data-page="reports">
+                    <a href="reports" class="mobile-nav-item" data-page="reports">
                         <i class="fa-solid fa-file-alt"></i>
                         <span>Reports</span>
                     </a>
-                    <a href="settings.html" class="mobile-nav-item active" data-page="settings">
+                    <a href="settings" class="mobile-nav-item active" data-page="settings">
                         <i class="fa-solid fa-cog"></i>
                         <span>Settings</span>
                     </a>
-                    <a href="index.html" class="mobile-nav-item" data-page="logout">
+                    <a href="index" class="mobile-nav-item" data-page="logout">
                         <i class="fa-solid fa-sign-out-alt"></i>
                         <span>Logout</span>
                     </a>
@@ -712,45 +712,59 @@
     </div>
 
     <script>
-        // Function to generate random ID
-        function genId() {
-            const array = new Uint8Array(8);
-            crypto.getRandomValues(array);
-            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        function genId(){
+            // Generate multiple random values and combine them
+            const values = new Uint8Array(64); // Using 64 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 92 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 92 chars
+            while(base64.length < 92) {
+                const extra = new Uint8Array(8);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 92 - base64.length);
+            }
+            
+            return base64.slice(0, 92); // Ensure exactly 92 chars
         }
-        
-        // Add ID to URL on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const url = new URL(window.location.href);
-            if (!url.searchParams.has('id')) {
-                url.searchParams.set('id', genId());
-                const newUrl = url.pathname + '?' + url.searchParams.toString();
-                window.history.replaceState({}, '', newUrl);
-            }
-        });
 
-        // Intercept link clicks
-        document.addEventListener('click', e => {
-            const link = e.target.closest('a');
-            if (link) {
+        // Always generate a new id for this visit and replace the URL
+        try{
+            const id = genId();
+            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
+            history.replaceState({}, '', newUrl);
+        }catch(e){ /* ignore */ }
+
+        // Intercept clicks to html pages and navigate with a fresh id
+        document.addEventListener('click', function(e){
+            const a = e.target.closest('a');
+            if(!a) return;
+            const href = a.getAttribute('href');
+            if(!href) return;
+            if(/\.html($|[?#])/.test(href)){
                 e.preventDefault();
-                const url = new URL(link.href);
-                if (!url.searchParams.has('id')) {
-                    url.searchParams.set('id', genId());
-                }
-                window.location.href = url.toString();
+                const target = href.split('?')[0].split('#')[0].replace('.html', '');
+                const id = genId();
+                window.location.href = target + '?id=' + id;
             }
-        });
+        }, true);
         
         document.addEventListener('DOMContentLoaded', () => {
             // Check if user is logged in
             const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
-            if (!loggedInUser) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            // Initialize theme from localStorage
+                if (!loggedInUser) {
+                    window.location.href = `index?id=${genId()}`;
+                    return;
+                }            // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
             const html = document.documentElement;
             if (savedTheme === 'light') {
@@ -1091,7 +1105,7 @@
             document.getElementById('logout-success-ok').addEventListener('click', () => {
                 localStorage.removeItem('loggedInUser');
                 sessionStorage.removeItem('sps_user');
-                window.location.href = 'index.html';
+                window.location.href = `index?id=${genId()}`;
             });
 
 
