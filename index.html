@@ -400,5 +400,36 @@
             }
         });
     </script>
+    <script>
+    (function(){
+        function genId(len){
+            len = len || 17;
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const arr = new Uint8Array(len);
+            window.crypto.getRandomValues(arr);
+            return Array.from(arr).map(v=>chars[v % chars.length]).join('');
+        }
+        // always generate a new id for this visit and replace the URL
+        try{
+            const id = genId(17);
+            const newUrl = window.location.pathname + '?id=' + id;
+            history.replaceState({}, '', newUrl);
+        }catch(e){ /* ignore */ }
+
+        // intercept clicks to html pages and navigate with a fresh id
+        document.addEventListener('click', function(e){
+            const a = e.target.closest('a');
+            if(!a) return;
+            const href = a.getAttribute('href');
+            if(!href) return;
+            if(/\.html($|[?#])/.test(href)){
+                e.preventDefault();
+                const target = href.split('?')[0].split('#')[0];
+                const id = genId(17);
+                window.location.href = target + '?id=' + id;
+            }
+        }, true);
+    })();
+    </script>
 </body>
 </html>

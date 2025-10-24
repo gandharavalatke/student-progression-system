@@ -1589,6 +1589,38 @@
             }
         }
     </style>
+    
+    <script>
+        // Function to generate random ID
+        function genId() {
+            const array = new Uint8Array(8);
+            crypto.getRandomValues(array);
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+        
+        // Add ID to URL on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const url = new URL(window.location.href);
+            if (!url.searchParams.has('id')) {
+                url.searchParams.set('id', genId());
+                const newUrl = url.pathname + '?' + url.searchParams.toString();
+                window.history.replaceState({}, '', newUrl);
+            }
+        });
+
+        // Intercept link clicks
+        document.addEventListener('click', e => {
+            const link = e.target.closest('a');
+            if (link) {
+                e.preventDefault();
+                const url = new URL(link.href);
+                if (!url.searchParams.has('id')) {
+                    url.searchParams.set('id', genId());
+                }
+                window.location.href = url.toString();
+            }
+        });
+    </script>
 </head>
 <body class="text-white">
     <div class="flex h-screen overflow-hidden">
@@ -1599,27 +1631,27 @@
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
                 <a href="dashboard.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                    <i class="fa-solid fa-chart-pie mr-3 text-blue-500 text-lg"></i> Dashboard
+                    <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
                 <a href="studentprogression.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
-                    <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-500 text-lg"></i> Academic Records
+                    <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
                 <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                    <i class="fa-solid fa-graduation-cap mr-3 text-blue-500 text-lg"></i> Placement & Higher Ed
+                    <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
                 <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                    <i class="fa-solid fa-trophy mr-3 text-blue-500 text-lg"></i> Extracurricular
+                    <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
                   <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                      <i class="fa-solid fa-file-alt mr-3 text-blue-500 text-lg"></i> Reports
+                      <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                   </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
                  <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                    <i class="fa-solid fa-cog mr-3 text-blue-500 text-lg"></i> Settings
+                    <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
                  <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
-                    <i class="fa-solid fa-sign-out-alt mr-3 text-blue-500 text-lg"></i> Logout
+                    <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
         </aside>
@@ -1632,47 +1664,16 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
-                /* Reports icon styles with strong visibility */
-                .mobile-nav-item[data-page="reports"] {
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    flex-direction: column !important;
-                    position: relative !important;
-                    background: #2563eb !important;
-                    border-radius: 0.5rem !important;
-                    padding: 0.75rem !important;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-                }
-                
                 .mobile-nav-item[data-page="reports"] i {
-                    font-family: "Font Awesome 6 Free" !important;
-                    font-weight: 900 !important;
-                    display: inline-block !important;
-                    font-style: normal !important;
-                    font-variant: normal !important;
-                    line-height: 1 !important;
-                    font-size: 1.75rem !important;
-                    margin-bottom: 0.5rem !important;
-                    color: white !important;
+                    color: #ffffff !important;
                 }
-                
-                .mobile-nav-item[data-page="reports"] span {
-                    color: white !important;
-                    font-size: 0.875rem !important;
-                    font-weight: 600 !important;
+                .light .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
                 }
-
-                /* Hover state */
-                .mobile-nav-item[data-page="reports"]:hover {
-                    background: #1d4ed8 !important;
-                    transform: translateY(-1px) !important;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-                }
-
-                .mobile-nav-item[data-page="reports"]:hover i,
-                .mobile-nav-item[data-page="reports"]:hover span {
-                    color: white !important;
+                #mobile-nav-menu .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
                 }
             </style>
             <div class="mobile-nav-grid">
@@ -1792,7 +1793,7 @@
                                 <option value="sem8">Semester 8</option>
                             </select>
                         </div>
-                        <div class="btn-container mt-3 flex gap-4">
+                        <div class="btn-container mt-3">
                             <button id="refresh-files-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg flex items-center justify-center">
                                 <i class="fa-solid fa-refresh mr-2"></i>
                                 <span>Refresh</span>
