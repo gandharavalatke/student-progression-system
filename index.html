@@ -344,14 +344,28 @@
     <script>
         // Define genId globally so it's available everywhere
         function genId() {
-            // Generate 69 bytes of random data (will become 92 base64 chars)
-            const array = new Uint8Array(69);
-            crypto.getRandomValues(array);
-            // Convert to base64 and make URL safe
-            return btoa(String.fromCharCode.apply(null, array))
+            // Generate multiple random values and combine them
+            const values = new Uint8Array(64); // Using 64 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 92 characters
+            let base64 = btoa(String.fromCharCode(...values))
                 .replace(/\+/g, '-')
                 .replace(/\//g, '_')
-                .replace(/=+$/, '');
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 92 chars
+            while(base64.length < 92) {
+                const extra = new Uint8Array(8);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 92 - base64.length);
+            }
+            
+            return base64.slice(0, 92); // Ensure exactly 92 chars
         }
         
         document.addEventListener('DOMContentLoaded', () => {
