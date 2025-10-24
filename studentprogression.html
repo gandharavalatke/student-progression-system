@@ -1431,6 +1431,16 @@
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
+
+        /* Special styling for logout button */
+        .mobile-nav-item[data-page="logout"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+        }
+        
+        .mobile-nav-item[data-page="logout"]:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+        }
         
         .mobile-nav-item i {
             font-size: 18px;
@@ -1441,7 +1451,9 @@
         .mobile-nav-item i,
         .mobile-nav-item .fa,
         .light .mobile-nav-item i,
-        .light .mobile-nav-item .fa {
+        .light .mobile-nav-item .fa,
+        .mobile-nav-item .fa-file-alt,
+        .light .mobile-nav-item .fa-file-alt {
             color: #ffffff !important;
         }
         
