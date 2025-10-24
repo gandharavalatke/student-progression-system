@@ -1632,35 +1632,46 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
             <style>
-                /* Base styles for reports icon */
+                /* Reset any potential overlays */
+                .mobile-nav-menu::before,
+                .mobile-nav-menu::after {
+                    display: none !important;
+                }
+                
+                /* Specific styles for reports icon and its container */
                 .mobile-nav-item[data-page="reports"] {
                     position: relative;
-                    z-index: 10;
+                    z-index: 20;
+                    background: transparent !important;
                 }
                 
                 .mobile-nav-item[data-page="reports"] i {
+                    position: relative;
+                    z-index: 25;
+                    mix-blend-mode: normal !important;
                     display: inline-block !important;
-                    color: #ffffff !important;
+                    color: #1a1a1a !important;
                     opacity: 1 !important;
                     visibility: visible !important;
-                    text-shadow: 0 0 1px rgba(0,0,0,0.5) !important;
                 }
                 
-                /* Light theme overrides */
+                /* Override any theme-specific styles */
                 .light .mobile-nav-item[data-page="reports"] i,
+                .dark .mobile-nav-item[data-page="reports"] i,
                 body:not(.dark) .mobile-nav-item[data-page="reports"] i {
-                    color: #1a1a1a !important;
+                    color: currentColor !important;
+                    pointer-events: auto !important;
                 }
                 
-                /* Ensure icon container is visible */
-                .mobile-nav-item[data-page="reports"] span {
-                    color: inherit !important;
+                /* Remove any backgrounds or overlays */
+                .mobile-nav-item[data-page="reports"]::before,
+                .mobile-nav-item[data-page="reports"]::after {
+                    display: none !important;
+                }
+                
+                /* Ensure the icon and text are both visible */
+                .mobile-nav-item[data-page="reports"] * {
                     opacity: 1 !important;
-                }
-                
-                /* Force icon display */
-                .fa-file-alt.fa-solid {
-                    display: inline-block !important;
                     visibility: visible !important;
                 }
             </style>
