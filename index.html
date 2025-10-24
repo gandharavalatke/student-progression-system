@@ -408,11 +408,20 @@
                     });
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.message || 'Login failed');
-                    // Persist logged in user for other pages (e.g., settings)
+                    
+                    // Store credentials first
                     sessionStorage.setItem('sps_user', username.value);
                     localStorage.setItem('loggedInUser', username.value);
-                    window.location.href = 'dashboard?' + genId();
+                    
+                    // Generate secure ID and construct URL
+                    const id = genId();
+                    const dashboardUrl = 'dashboard?id=' + id;
+                    
+                    // Redirect to dashboard
+                    console.log('Login successful, redirecting to:', dashboardUrl);
+                    window.location.href = dashboardUrl;
                 } catch (err) {
+                    console.error('Login error:', err);
                     error.textContent = err.message;
                 } finally {
                     setLoading(false);
@@ -428,14 +437,19 @@
     </script>
     <script>
         // URL handling - uses the global genId() function defined above
-        // Always generate a new id for this visit and replace the URL
-        try {
-            const id = genId();
-            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
-            history.replaceState({}, '', newUrl);
-        } catch(e) { 
-            console.error('Error updating URL:', e);
+        function updateURL() {
+            try {
+                const id = genId();
+                const path = window.location.pathname.replace('.html', '');
+                const newUrl = path + '?id=' + id;
+                history.replaceState({}, '', newUrl);
+            } catch(e) { 
+                console.error('Error updating URL:', e);
+            }
         }
+
+        // Update URL on page load
+        updateURL();
 
         // Intercept clicks to html pages and navigate with a fresh id
         document.addEventListener('click', function(e) {
@@ -445,13 +459,22 @@
             const href = a.getAttribute('href');
             if(!href) return;
             
-            if(/\.html($|[?#])/.test(href)){
+            // Handle navigation to other pages
+            if(href.includes('.html') || !href.includes('?')) {
                 e.preventDefault();
                 const target = href.split('?')[0].split('#')[0].replace('.html', '');
                 const id = genId();
                 window.location.href = target + '?id=' + id;
             }
         }, true);
+
+        // Check if user is logged in before allowing access to dashboard
+        if(window.location.pathname.includes('dashboard')) {
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
+            if(!loggedInUser) {
+                window.location.href = 'index';
+            }
+        }
     </script>
 </body>
 </html>
