@@ -1240,6 +1240,10 @@ def dashboard_summary():
 def health_check():
     return jsonify({"status": "healthy", "message": "Student Progression System is running"}), 200
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return app.send_static_file('404.html'), 404
+
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'create-admin':
         create_admin_user()
