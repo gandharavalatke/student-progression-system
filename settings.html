@@ -1121,13 +1121,8 @@
                 // Generate a new ID for the login page
                 const id = genId();
                 
-                // Construct absolute path to index page
-                const origin = window.location.origin;
-                const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-                const fullPath = `${origin}${basePath}index?id=${id}`;
-                
                 // Redirect to login page with generated ID
-                window.location.href = fullPath;
+                window.location.href = `/?id=${id}`;
             });
 
 
