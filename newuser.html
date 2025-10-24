@@ -83,29 +83,6 @@
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
         }
-
-        /* Input icon alignment & sharpness fix (center without transforms to avoid subpixel blur) */
-        .relative > i[class*="fa-"], .relative i.input-icon, .absolute i {
-            position: absolute !important;
-            left: 1rem !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            margin: auto 0 !important; /* centers vertically without transforms */
-            transform: none !important;
-            -webkit-transform: none !important;
-            -webkit-font-smoothing: antialiased !important;
-            -moz-osx-font-smoothing: grayscale !important;
-            text-rendering: optimizeLegibility !important;
-            font-size: 16px !important; /* integer pixel size */
-            height: 16px !important;
-            line-height: 16px !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            backface-visibility: hidden !important;
-            will-change: auto !important;
-            pointer-events: none !important;
-        }
         
         /* Fix text blurriness */
         input, button, span, div, p, h1, h2, h3, h4, h5, h6 {
