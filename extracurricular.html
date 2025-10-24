@@ -284,7 +284,33 @@
             </div>
         </div>
 
-        <div class="mobile-nav-buttons fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 hidden">
+        <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-card p-8 rounded-xl max-w-sm w-full mx-4 text-center">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-900 mb-4">
+                <i class="fa-solid fa-sign-out-alt text-blue-400 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4">Confirm Logout</h3>
+            <p class="text-slate-300 mb-8">Are you sure you want to logout from the system?</p>
+            <div class="flex gap-4 justify-center">
+                <button id="confirmLogout" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">Confirm</button>
+                <button id="cancelLogout" class="px-6 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-card p-8 rounded-xl max-w-sm w-full mx-4 text-center">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-900 mb-4">
+                <i class="fa-solid fa-check text-green-400 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4">Logout Successful</h3>
+            <p class="text-slate-300">You have been successfully logged out.</p>
+        </div>
+    </div>
+    
+    <div class="mobile-nav-buttons fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 hidden">
             <button id="mobile-nav-up" class="mobile-nav-btn"><i class="fa-solid fa-chevron-up"></i></button>
             <button id="mobile-nav-down" class="mobile-nav-btn hidden"><i class="fa-solid fa-chevron-down"></i></button>
         </div>
@@ -424,8 +450,40 @@
                     item.classList.remove('active');
                 }
             });
-        });
 
+            // Logout handling
+            const logoutModal = document.getElementById('logoutModal');
+            const successModal = document.getElementById('successModal');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogout = document.getElementById('mobile-logout');
+            const confirmLogout = document.getElementById('confirmLogout');
+            const cancelLogout = document.getElementById('cancelLogout');
+
+            function showLogoutModal(e) {
+                e.preventDefault();
+                logoutModal.style.display = 'flex';
+            }
+
+            function hideLogoutModal() {
+                logoutModal.style.display = 'none';
+            }
+
+            function performLogout() {
+                localStorage.clear();
+                sessionStorage.clear();
+                hideLogoutModal();
+                successModal.style.display = 'flex';
+                setTimeout(() => {
+                    const id = genId();
+                    window.location.href = '/?id=' + id;
+                }, 1500);
+            }
+
+            logoutLink.addEventListener('click', showLogoutModal);
+            mobileLogout.addEventListener('click', showLogoutModal);
+            confirmLogout.addEventListener('click', performLogout);
+            cancelLogout.addEventListener('click', hideLogoutModal);
+        });
     </script>
 </body>
 </html>
