@@ -461,38 +461,39 @@
                 }
             });
 
-            // Logout handling
-            const logoutModal = document.getElementById('logoutModal');
-            const successModal = document.getElementById('successModal');
+            // Add event listeners for logout buttons
             const logoutLink = document.getElementById('logout-link');
-            const mobileLogout = document.getElementById('mobile-logout');
-            const confirmLogout = document.getElementById('confirmLogout');
-            const cancelLogout = document.getElementById('cancelLogout');
+            const mobileLogout = document.querySelector('[data-page="logout"]');
 
             function showLogoutModal(e) {
                 e.preventDefault();
-                logoutModal.style.display = 'flex';
+                e.stopPropagation();
+                mobileNavMenu.classList.remove('show');
+                mobileNavButton.classList.remove('rotated');
+                document.getElementById('logoutModal').classList.remove('hidden');
+                document.getElementById('logoutModal').classList.add('flex');
             }
 
-            function hideLogoutModal() {
-                logoutModal.style.display = 'none';
-            }
-
-            function performLogout() {
-                localStorage.clear();
-                sessionStorage.clear();
-                hideLogoutModal();
-                successModal.style.display = 'flex';
-                setTimeout(() => {
-                    const id = genId();
-                    window.location.href = '/?id=' + id;
-                }, 1500);
-            }
-
+            // Add click handlers for all logout buttons
             logoutLink.addEventListener('click', showLogoutModal);
             mobileLogout.addEventListener('click', showLogoutModal);
-            confirmLogout.addEventListener('click', performLogout);
-            cancelLogout.addEventListener('click', hideLogoutModal);
+
+            document.getElementById('cancelLogout').addEventListener('click', () => {
+                document.getElementById('logoutModal').classList.add('hidden');
+                document.getElementById('logoutModal').classList.remove('flex');
+            });
+
+            document.getElementById('confirmLogout').addEventListener('click', () => {
+                document.getElementById('logoutModal').classList.add('hidden');
+                document.getElementById('logoutModal').classList.remove('flex');
+                document.getElementById('successModal').classList.remove('hidden');
+                document.getElementById('successModal').classList.add('flex');
+                setTimeout(() => {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('sps_user');
+                    window.location.href = 'index.html';
+                }, 1500);
+            });
         });
     </script>
 </body>
