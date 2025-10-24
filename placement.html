@@ -334,9 +334,12 @@
         }catch(e){ /* ignore */ }
 
         // Intercept clicks to html pages and navigate with a fresh id
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
         document.addEventListener('click', function(e){
             const a = e.target.closest('a');
             if(!a) return;
+            if (e.defaultPrevented) return;
+            if (a.hasAttribute('data-no-nav') || a.hasAttribute('data-action') || a.id === 'logout-link' || a.dataset.page === 'logout') return;
             const href = a.getAttribute('href');
             if(!href) return;
             if(/\.html($|[?#])/.test(href)){
@@ -345,7 +348,7 @@
                 const id = genId();
                 window.location.href = target + '?id=' + id;
             }
-        }, true);
+        });
         
         // Initialize theme from localStorage
         document.addEventListener('DOMContentLoaded', () => {

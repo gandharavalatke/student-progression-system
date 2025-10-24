@@ -1614,15 +1614,26 @@
             }
         });
 
-        // Intercept all link clicks 
+        // Intercept all link clicks
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
         document.addEventListener('click', e => {
             const link = e.target.closest('a');
-            if (link) {
-                e.preventDefault();
-                const url = new URL(link.href);
-                // Always generate new ID for navigation
-                url.searchParams.set('id', genId());
-                window.location.href = url.toString();
+            if (!link) return;
+            if (e.defaultPrevented) return; // some handlers (modals) may prevent navigation
+            if (link.hasAttribute('data-no-nav') || link.hasAttribute('data-action') || link.id === 'logout-link' || link.dataset.page === 'logout') return;
+            const href = link.getAttribute('href');
+            if (!href) return;
+            try {
+                // Only auto-navigate for explicit .html links to preserve intent for other href formats
+                if (/\.html($|[?#])/.test(href)) {
+                    e.preventDefault();
+                    const url = new URL(link.href);
+                    // Always generate new ID for navigation
+                    url.searchParams.set('id', genId());
+                    window.location.href = url.toString();
+                }
+            } catch (err) {
+                // If URL parsing fails, skip
             }
         });
     </script>
