@@ -413,11 +413,8 @@
                     sessionStorage.setItem('sps_user', username.value);
                     localStorage.setItem('loggedInUser', username.value);
                     
-                    // Generate secure ID and construct URL
-                    const id = genId();
-                    const dashboardUrl = 'dashboard?id=' + id;
-                    
-                    // Redirect to dashboard
+                    // Generate and navigate to dashboard URL
+                    const dashboardUrl = generatePageUrl('dashboard');
                     console.log('Login successful, redirecting to:', dashboardUrl);
                     window.location.href = dashboardUrl;
                 } catch (err) {
@@ -437,34 +434,45 @@
     </script>
     <script>
         // URL handling - uses the global genId() function defined above
-        function updateURL() {
+        function generatePageUrl(page) {
+            const id = genId();
+            // Handle root/index page specially
+            if (page === 'index' || page === '' || page === '/') {
+                return '/?id=' + id;
+            }
+            // Remove .html and ensure clean page name
+            page = page.replace('.html', '').replace(/^\/+/, '');
+            return '/' + page + '?id=' + id;
+        }
+
+        // Update current page URL
+        function updateCurrentURL() {
             try {
-                const id = genId();
-                const path = window.location.pathname.replace('.html', '');
-                const newUrl = path + '?id=' + id;
+                const currentPage = window.location.pathname.replace('.html', '').replace(/^\/+/, '');
+                const newUrl = generatePageUrl(currentPage);
                 history.replaceState({}, '', newUrl);
-            } catch(e) { 
+            } catch(e) {
                 console.error('Error updating URL:', e);
             }
         }
 
         // Update URL on page load
-        updateURL();
+        updateCurrentURL();
 
-        // Intercept clicks to html pages and navigate with a fresh id
+        // Intercept clicks to pages and navigate with a fresh id
         document.addEventListener('click', function(e) {
             const a = e.target.closest('a');
-            if(!a) return;
+            if (!a) return;
             
             const href = a.getAttribute('href');
-            if(!href) return;
+            if (!href) return;
             
             // Handle navigation to other pages
-            if(href.includes('.html') || !href.includes('?')) {
+            if (!href.startsWith('http') && !href.startsWith('#')) {
                 e.preventDefault();
-                const target = href.split('?')[0].split('#')[0].replace('.html', '');
-                const id = genId();
-                window.location.href = target + '?id=' + id;
+                const newUrl = generatePageUrl(href);
+                console.log('Navigating to:', newUrl);
+                window.location.href = newUrl;
             }
         }, true);
 

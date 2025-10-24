@@ -1141,11 +1141,49 @@ def delete_result_file(file_id):
 def index():
     return app.send_static_file('index.html')
 
+@app.route('/dashboard')
+def dashboard():
+    return app.send_static_file('dashboard.html')
+
+@app.route('/studentprogression')
+def student_progression():
+    return app.send_static_file('studentprogression.html')
+
+@app.route('/placement')
+def placement():
+    return app.send_static_file('placement.html')
+
+@app.route('/extracurricular')
+def extracurricular():
+    return app.send_static_file('extracurricular.html')
+
+@app.route('/reports')
+def reports():
+    return app.send_static_file('reports.html')
+
+@app.route('/settings')
+def settings():
+    return app.send_static_file('settings.html')
+
+@app.route('/admin')
+def admin():
+    return app.send_static_file('admin.html')
+
+@app.route('/newuser')
+def newuser():
+    return app.send_static_file('newuser.html')
+
+@app.route('/forgot_password')
+def forgot_password():
+    return app.send_static_file('forgot_password.html')
+
+# Catch-all route for static files
 @app.route('/<path:filename>')
-def serve_html(filename):
-    if filename.endswith('.html'):
+def serve_static(filename):
+    try:
         return app.send_static_file(filename)
-    return jsonify({"error": "File not found"}), 404
+    except:
+        return jsonify({"error": "File not found"}), 404
 
 # Health check endpoint for Railway
 @app.route('/api/dashboard-summary', methods=['GET', 'OPTIONS'])
