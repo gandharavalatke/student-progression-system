@@ -1507,17 +1507,15 @@
         </div>
     </div>
 
-    <div id="logout-success-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3">
-                <i class="fa-solid fa-check text-green-400 text-xl"></i>
-            </div>
-            <h3 class="text-white text-lg font-semibold mb-2">Logout Successful</h3>
-            <p class="text-slate-300 mb-5">You have been logged out successfully.</p>
-            <div class="space-x-3">
-                <button id="logout-success-ok" class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-colors">
-                    <i class="fa-solid fa-check mr-2"></i>OK
-                </button>
+    <!-- Logout Success Modal -->
+    <div id="logout-success-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-card rounded-2xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="text-center p-6">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-600 mb-4">
+                    <i class="fa-solid fa-check text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Logout Successful</h3>
+                <p class="text-slate-400 text-sm">You have been successfully logged out.</p>
             </div>
         </div>
     </div>
@@ -1689,13 +1687,12 @@
                 document.getElementById('logout-overlay').classList.add('hidden');
                 document.getElementById('logout-success-overlay').classList.remove('hidden');
                 document.getElementById('logout-success-overlay').classList.add('flex');
-            });
-
-            // Logout success modal
-            document.getElementById('logout-success-ok').addEventListener('click', () => {
-                localStorage.removeItem('loggedInUser');
-                sessionStorage.removeItem('sps_user');
-                window.location.href = 'index.html';
+                // Auto-close after 1.5 seconds and redirect
+                setTimeout(() => {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('sps_user');
+                    window.location.href = 'index.html';
+                }, 1500);
             });
 
             // Close dropdowns if clicking anywhere else
