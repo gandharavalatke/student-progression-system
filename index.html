@@ -326,8 +326,8 @@
                         </button>
                     </div>
                     <div class="flex items-center justify-between text-sm">
-                        <a href="forgot_password.html" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">Forgot Password?</a>
-                        <a href="newuser.html" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">New User?</a>
+                        <a href="forgot_password" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">Forgot Password?</a>
+                        <a href="newuser" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">New User?</a>
                     </div>
                     <p id="error-message" class="text-red-400 text-sm text-center h-5"></p>
                     <button type="submit" id="login-button" class="w-full h-12 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 flex items-center justify-center shadow-lg transition-all transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-500/20">
@@ -336,12 +336,38 @@
                     </button>
                 </form>
                 <div class="text-center mt-6 pt-4 border-t border-slate-600">
-                    <a href="admin.html" class="text-sm text-slate-400 hover:text-blue-400 hover:underline transition-colors">Admin Login</a>
+                    <a href="admin" class="text-sm text-slate-400 hover:text-blue-400 hover:underline transition-colors">Admin Login</a>
                 </div>
             </div>
         </div>
     </div>
     <script>
+        // Define genId globally so it's available everywhere
+        function genId() {
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -382,11 +408,17 @@
                     });
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.message || 'Login failed');
-                    // Persist logged in user for other pages (e.g., settings)
+                    
+                    // Store credentials first
                     sessionStorage.setItem('sps_user', username.value);
                     localStorage.setItem('loggedInUser', username.value);
-                    window.location.href = 'dashboard.html';
+                    
+                    // Generate and navigate to dashboard URL
+                    const dashboardUrl = generatePageUrl('dashboard');
+                    console.log('Login successful, redirecting to:', dashboardUrl);
+                    window.location.href = dashboardUrl;
                 } catch (err) {
+                    console.error('Login error:', err);
                     error.textContent = err.message;
                 } finally {
                     setLoading(false);
@@ -399,6 +431,58 @@
                 buttonText.classList.toggle('hidden', is);
             }
         });
+    </script>
+    <script>
+        // URL handling - uses the global genId() function defined above
+        function generatePageUrl(page) {
+            const id = genId();
+            // Handle root/index page specially
+            if (page === 'index' || page === '' || page === '/') {
+                return '/?id=' + id;
+            }
+            // Remove .html and ensure clean page name
+            page = page.replace('.html', '').replace(/^\/+/, '');
+            return '/' + page + '?id=' + id;
+        }
+
+        // Update current page URL
+        function updateCurrentURL() {
+            try {
+                const currentPage = window.location.pathname.replace('.html', '').replace(/^\/+/, '');
+                const newUrl = generatePageUrl(currentPage);
+                history.replaceState({}, '', newUrl);
+            } catch(e) {
+                console.error('Error updating URL:', e);
+            }
+        }
+
+        // Update URL on page load
+        updateCurrentURL();
+
+        // Intercept clicks to pages and navigate with a fresh id
+        document.addEventListener('click', function(e) {
+            const a = e.target.closest('a');
+            if (!a) return;
+            
+            const href = a.getAttribute('href');
+            if (!href) return;
+            
+            // Handle navigation to other pages
+            if (!href.startsWith('http') && !href.startsWith('#')) {
+                e.preventDefault();
+                const newUrl = generatePageUrl(href);
+                console.log('Navigating to:', newUrl);
+                window.location.href = newUrl;
+            }
+        }, true);
+
+        // Check if user is logged in before allowing access to dashboard
+        if(window.location.pathname.includes('dashboard')) {
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
+            if(!loggedInUser) {
+                window.location.href = 'index';
+            }
+        }
     </script>
 </body>
 </html>

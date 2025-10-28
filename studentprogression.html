@@ -1431,10 +1431,46 @@
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
+
+        /* Special styling for logout button */
+        .mobile-nav-item[data-page="logout"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+        }
+        
+        .mobile-nav-item[data-page="logout"]:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+        }
         
         .mobile-nav-item i {
             font-size: 18px;
             margin-bottom: 0;
+        }
+
+        /* Ensure mobile nav icons are white in both themes */
+        .mobile-nav-item i,
+        .mobile-nav-item .fa,
+        .light .mobile-nav-item i,
+        .light .mobile-nav-item .fa,
+        .mobile-nav-item[data-page="reports"] i,
+        .light .mobile-nav-item[data-page="reports"] i,
+        .mobile-nav-item[data-page="reports"] .fa-file-alt,
+        .light .mobile-nav-item[data-page="reports"] .fa-file-alt,
+        /* Extra specific selectors for reports icon */
+        .mobile-nav-menu .mobile-nav-item[data-page="reports"] i,
+        .light .mobile-nav-menu .mobile-nav-item[data-page="reports"] i {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Force reports icon to be visible */
+        .mobile-nav-item[data-page="reports"] {
+            color: #ffffff !important;
+        }
+        
+        .mobile-nav-item[data-page="reports"] i {
+            display: inline-block !important;
         }
         
         .mobile-nav-item span {
@@ -1455,7 +1491,166 @@
         .light .mobile-nav-button:hover {
             background: rgba(59, 130, 246, 0.2);
         }
+        /* Fix: ensure semester select and action buttons stack on small screens
+           and neutralize earlier absolute/float rules that caused overlap. */
+        @media (max-width: 480px) {
+            /* Container styling */
+            .upload-card {
+                padding: 1rem !important;
+            }
+
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+
+            /* Select dropdown styling */
+            #view-semester-select {
+                width: 100% !important;
+                margin-bottom: 0.75rem !important;
+                padding: 0.75rem !important;
+            }
+
+            /* Button container styling */
+            .btn-container {
+                display: flex !important;
+                gap: 0.75rem !important; /* Increased gap between buttons */
+                padding: 0 0.5rem !important; /* Added side padding */
+                margin-bottom: 1rem !important;
+            }
+
+            /* Individual button styling */
+            #refresh-files-btn,
+            #download-summary-btn {
+                flex: none !important;
+                width: calc(50% - 0.375rem) !important;
+                height: 80px !important; /* Increased height */
+                padding: 0.5rem !important;
+                font-size: 0.875rem !important;
+                margin: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }
+
+            /* Make buttons container flex with proper gap */
+            .btn-container {
+                display: flex !important;
+                justify-content: space-between !important;
+                gap: 0.75rem !important;
+                width: 100% !important;
+                position: relative !important;
+                z-index: 10 !important; /* keep buttons above files list */
+                padding-bottom: 0.25rem !important;
+            }
+
+            /* Icon alignment */
+            #refresh-files-btn i,
+            #download-summary-btn i {
+                margin-right: 0.5rem !important;
+            }
+
+            /* Make download icon slightly larger for emphasis */
+            #download-summary-btn i {
+                font-size: 22px !important;
+                line-height: 1 !important;
+            }
+
+            /* Text styling for Refresh button */
+            #refresh-files-btn span {
+                font-size: 0.95rem !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+            }
+
+            /* Special styling for download summary button text */
+            #download-summary-btn span {
+                font-size: 0.95rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                text-align: center !important;
+                gap: 0.125rem !important;
+            }
+
+            /* Fix border overlap with file list */
+            #files-list {
+                margin-top: 2.25rem !important; /* push files down more to avoid overlap */
+                border-top: 1px solid rgba(59, 130, 246, 0.2) !important;
+                padding-top: 1rem !important;
+                position: relative !important;
+                z-index: 1 !important;
+            }
+
+            /* Clear any floats */
+            .clearfix::after {
+                content: "" !important;
+                display: table !important;
+                clear: both !important;
+            }
+        }
     </style>
+    
+    <script>
+        // Function to generate secure random ID
+        function genId() {
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+
+        // Add ID to URL on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const url = new URL(window.location.href);
+            // Only add ID if not already present
+            if (!url.searchParams.has('id')) {
+                url.searchParams.set('id', genId());
+                const newUrl = url.pathname + '?' + url.searchParams.toString(); 
+                window.history.replaceState({}, '', newUrl);
+            }
+        });
+
+        // Intercept all link clicks
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
+        document.addEventListener('click', e => {
+            const link = e.target.closest('a');
+            if (!link) return;
+            if (e.defaultPrevented) return; // some handlers (modals) may prevent navigation
+            if (link.hasAttribute('data-no-nav') || link.hasAttribute('data-action') || link.id === 'logout-link' || link.dataset.page === 'logout') return;
+            const href = link.getAttribute('href');
+            if (!href) return;
+            try {
+                // Only auto-navigate for explicit .html links to preserve intent for other href formats
+                if (/\.html($|[?#])/.test(href)) {
+                    e.preventDefault();
+                    const url = new URL(link.href);
+                    // Always generate new ID for navigation
+                    url.searchParams.set('id', genId());
+                    window.location.href = url.toString();
+                }
+            } catch (err) {
+                // If URL parsing fails, skip
+            }
+        });
+    </script>
 </head>
 <body class="text-white">
     <div class="flex h-screen overflow-hidden">
@@ -1498,6 +1693,19 @@
 
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav-menu" class="mobile-nav-menu">
+            <style>
+                .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
+                }
+                .light .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
+                }
+                #mobile-nav-menu .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                }
+            </style>
             <div class="mobile-nav-grid">
                 <div class="mobile-nav-row">
                     <a href="dashboard.html" class="mobile-nav-item" data-page="dashboard">
@@ -1602,23 +1810,29 @@
                     </h4>
                     
                     <div class="mb-4">
-                        <select id="view-semester-select" class="px-4 py-2 bg-orange-50 text-gray-800 rounded-lg border border-orange-200 focus:outline-none focus:border-orange-400">
-                            <option value="">All Semesters</option>
-                            <option value="sem1">Semester 1</option>
-                            <option value="sem2">Semester 2</option>
-                            <option value="sem3">Semester 3</option>
-                            <option value="sem4">Semester 4</option>
-                            <option value="sem5">Semester 5</option>
-                            <option value="sem6">Semester 6</option>
-                            <option value="sem7">Semester 7</option>
-                            <option value="sem8">Semester 8</option>
-                        </select>
-                        <button id="refresh-files-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg">
-                            <i class="fa-solid fa-refresh mr-2"></i>Refresh
-                        </button>
-                        <button id="download-summary-btn" class="ml-3 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg">
-                            <i class="fa-solid fa-file-excel mr-2"></i>Download Summary
-                        </button>
+                        <div class="w-full">
+                            <select id="view-semester-select" class="w-full px-4 py-3 bg-orange-50 text-gray-800 rounded-lg border border-orange-200 focus:outline-none focus:border-orange-400">
+                                <option value="">All Semesters</option>
+                                <option value="sem1">Semester 1</option>
+                                <option value="sem2">Semester 2</option>
+                                <option value="sem3">Semester 3</option>
+                                <option value="sem4">Semester 4</option>
+                                <option value="sem5">Semester 5</option>
+                                <option value="sem6">Semester 6</option>
+                                <option value="sem7">Semester 7</option>
+                                <option value="sem8">Semester 8</option>
+                            </select>
+                        </div>
+                        <div class="btn-container mt-3">
+                            <button id="refresh-files-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg flex items-center justify-center">
+                                <i class="fa-solid fa-refresh mr-2"></i>
+                                <span>Refresh</span>
+                            </button>
+                            <button id="download-summary-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg flex items-center justify-center">
+                                <i class="fa-solid fa-file-excel mr-2"></i>
+                                <span>Download Summary</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div id="files-list" class="space-y-3">
@@ -1767,7 +1981,42 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- Standardized Logout Confirmation Modal -->
+    <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9998]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-sign-out-alt text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Logout</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to logout?</p>
+            <div class="space-x-3">
+                <button id="logout-cancel" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">
+                    <i class="fa-solid fa-times mr-2"></i>Cancel
+                </button>
+                <button id="logout-confirm" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                    <i class="fa-solid fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Success Modal -->
+    <div id="logout-success-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3">
+                <i class="fa-solid fa-check text-green-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Logout Successful</h3>
+            <p class="text-slate-300 mb-5">You have been logged out successfully.</p>
+            <div class="space-x-3">
+                <button id="logout-success-ok" class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-colors">
+                    <i class="fa-solid fa-check mr-2"></i>OK
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme from localStorage
@@ -1823,6 +2072,42 @@
                 } else {
                     item.classList.remove('active');
                 }
+
+                // Add logout handling for mobile nav logout item
+                if (pageName === 'logout') {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('logout-overlay').classList.remove('hidden');
+                        document.getElementById('logout-overlay').classList.add('flex');
+                        mobileNavMenu.classList.remove('show');
+                        mobileNavButton.classList.remove('rotated');
+                    });
+                }
+            });
+
+            // Add event listeners for logout buttons
+            document.getElementById('logout-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('logout-overlay').classList.remove('hidden');
+                document.getElementById('logout-overlay').classList.add('flex');
+            });
+
+            document.getElementById('logout-cancel').addEventListener('click', () => {
+                document.getElementById('logout-overlay').classList.add('hidden');
+                document.getElementById('logout-overlay').classList.remove('flex');
+            });
+
+            document.getElementById('logout-confirm').addEventListener('click', () => {
+                document.getElementById('logout-overlay').classList.add('hidden');
+                document.getElementById('logout-success-overlay').classList.remove('hidden');
+                document.getElementById('logout-success-overlay').classList.add('flex');
+            });
+
+            document.getElementById('logout-success-ok').addEventListener('click', () => {
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('sps_user');
+                window.location.href = 'index.html';
             });
             
             // Element references
