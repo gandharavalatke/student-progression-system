@@ -361,7 +361,7 @@
                 </button>
             </form>
             <div class="text-center mt-6">
-                <a href="index.html" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Already have an account? Login</a>
+                <a href="javascript:void(0);" id="back-to-login" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors cursor-pointer">Already have an account? Login</a>
             </div>
         </div>
     </div>
@@ -461,6 +461,24 @@
             modalOverlay.addEventListener('click', (e) => {
                 if (e.target === modalOverlay) modalOverlay.classList.add('hidden');
             });
+
+            // Back to login handler
+            document.getElementById('back-to-login').addEventListener('click', () => {
+                // Generate dynamic ID
+                const values = new Uint8Array(120);
+                window.crypto.getRandomValues(values);
+                let id = btoa(String.fromCharCode(...values))
+                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                while(id.length < 152) {
+                    const extra = new Uint8Array(16);
+                    window.crypto.getRandomValues(extra);
+                    id += btoa(String.fromCharCode(...extra))
+                        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                        .slice(0, 152 - id.length);
+                }
+                window.location.href = '/?id=' + id.slice(0, 152);
+            });
+
             let currentStep = 1;
             const registerForm = document.getElementById('register-form');
             const statusMessage = document.getElementById('status-message');
