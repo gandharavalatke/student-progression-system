@@ -712,6 +712,56 @@
     </div>
 
     <script>
+    // ===== AUTHENTICATION & INACTIVITY TIMEOUT =====
+    (function() {
+        // Check authentication before page loads
+        const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
+        if (!loggedInUser) {
+            window.location.href = '/?id=' + generateQuickId();
+            return;
+        }
+
+        // 15-minute inactivity timeout (900000 milliseconds)
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                // Auto logout after 15 minutes of inactivity
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('sps_user');
+                alert('Session expired due to inactivity. Please login again.');
+                window.location.href = '/?id=' + generateQuickId();
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Track user activity
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+
+        // Start the inactivity timer
+        resetInactivityTimer();
+
+        function generateQuickId() {
+            const values = new Uint8Array(120);
+            window.crypto.getRandomValues(values);
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            return base64.slice(0, 152);
+        }
+    })();
+    </script>
+
+    <script>
         function genId(){
             // Generate multiple random values and combine them for 152 characters
             const values = new Uint8Array(120); // Using 120 bytes for extra randomness

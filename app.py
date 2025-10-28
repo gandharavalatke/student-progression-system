@@ -1136,7 +1136,7 @@ def delete_result_file(file_id):
     except Exception as e:
         return jsonify({"message": f"Error deleting file: {str(e)}"}), 500
 
-# Serve HTML files
+# Serve HTML files - Block direct .html access
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
@@ -1177,13 +1177,17 @@ def newuser():
 def forgot_password():
     return app.send_static_file('forgot_password.html')
 
-# Catch-all route for static files
+# Block all direct .html file access - redirect to 404
 @app.route('/<path:filename>')
 def serve_static(filename):
+    # If someone tries to access .html files directly, redirect to 404
+    if filename.endswith('.html'):
+        return app.send_static_file('404.html'), 404
+    # Allow other static files (CSS, JS, images, etc.)
     try:
         return app.send_static_file(filename)
     except:
-        return jsonify({"error": "File not found"}), 404
+        return app.send_static_file('404.html'), 404
 
 # Health check endpoint for Railway
 @app.route('/api/dashboard-summary', methods=['GET', 'OPTIONS'])
