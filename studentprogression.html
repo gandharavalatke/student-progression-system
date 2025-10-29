@@ -1593,14 +1593,28 @@
     <script>
         // Function to generate secure random ID
         function genId() {
-            // Generate 69 bytes of random data (will become 92 base64 chars)
-            const array = new Uint8Array(69);
-            crypto.getRandomValues(array);
-            // Convert to base64 and make URL safe
-            return btoa(String.fromCharCode.apply(null, array))
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
                 .replace(/\+/g, '-')
                 .replace(/\//g, '_')
-                .replace(/=+$/, '');
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
         }
 
         // Add ID to URL on page load
