@@ -2156,7 +2156,7 @@
                 setTimeout(() => {
                     localStorage.removeItem('loggedInUser');
                     sessionStorage.removeItem('sps_user');
-                    window.location.href = 'index.html';
+                    window.location.href = '/';
                 }, 1500);
             });
             
@@ -2303,7 +2303,7 @@
                 localStorage.removeItem('loggedInUser');
                 sessionStorage.removeItem('sps_user');
                 console.log('Session cleared, redirecting...');
-                window.location.href = 'index.html';
+                window.location.href = '/';
             });
             
             // Duplicate modal events
