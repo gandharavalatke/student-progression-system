@@ -119,6 +119,22 @@
             filter: none !important;
         }
         
+        /* Fix blurry icons - crisp rendering */
+        i.fa-solid, i.fa-regular, i.fa-brands {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-smooth: always;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+        
+        /* Ensure eye icon is crisp */
+        #toggle-admin-password i {
+            font-size: 18px !important;
+            line-height: 1;
+        }
+        
         /* Ensure icons are sharp after autofill */
         .input-group i {
             -webkit-font-smoothing: antialiased !important;
@@ -152,7 +168,7 @@
             <div id="password-section">
                 <form id="admin-login-form" class="space-y-4">
                     <div class="relative">
-                        <i class="fa-solid fa-shield-halved absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
+                        <i class="fa-solid fa-shield-halved absolute left-4 top-1/2 text-blue-400" style="transform: translateY(-50%) translateZ(0); font-size: 18px;"></i>
                         <input type="password" id="admin-password" placeholder="Admin Password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
                         <button type="button" id="toggle-admin-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors focus:outline-none">
                             <i class="fa-solid fa-eye text-lg"></i>
