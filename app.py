@@ -62,6 +62,20 @@ def create_admin_user():
     )
     print("SUCCESS: Admin user 'admin' created/updated successfully with password 'Admin@123'.")
 
+# --- Block direct .html access middleware ---
+@app.before_request
+def block_html_access():
+    """Block all direct .html file access before processing the request."""
+    # Get the requested path
+    path = request.path
+    
+    # If path ends with .html (case insensitive), return 404
+    if path.lower().endswith('.html'):
+        return app.send_static_file('404.html'), 404
+    
+    # Allow all other requests to proceed
+    return None
+
 # --- API Endpoints ---
 
 @app.route('/api/admin/login', methods=['POST'])
