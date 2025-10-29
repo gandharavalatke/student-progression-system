@@ -343,14 +343,20 @@
                         <label for="password" class="block text-sm font-medium text-slate-300 mb-1">Create a Password</label>
                         <div class="relative">
                             <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-blue-400" style="font-size: 1rem;"></i>
-                            <input id="password" type="password" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                            <input id="password" type="password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye text-lg"></i>
+                            </button>
                         </div>
                     </div>
                     <div>
                         <label for="confirm-password" class="block text-sm font-medium text-slate-300 mb-1">Confirm Password</label>
                         <div class="relative">
                             <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-blue-400" style="font-size: 1rem;"></i>
-                            <input id="confirm-password" type="password" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                            <input id="confirm-password" type="password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                            <button type="button" id="toggle-confirm-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye text-lg"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -493,6 +499,30 @@
             const regKeyInput = document.getElementById('registration-key');
             const passwordInput = document.getElementById('password');
             const confirmPasswordInput = document.getElementById('confirm-password');
+
+            // Password visibility toggles
+            const togglePassword = document.getElementById('toggle-password');
+            const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+            
+            if (togglePassword) {
+                togglePassword.addEventListener('click', () => {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    const icon = togglePassword.querySelector('i');
+                    icon.classList.toggle('fa-eye');
+                    icon.classList.toggle('fa-eye-slash');
+                });
+            }
+            
+            if (toggleConfirmPassword) {
+                toggleConfirmPassword.addEventListener('click', () => {
+                    const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    confirmPasswordInput.setAttribute('type', type);
+                    const icon = toggleConfirmPassword.querySelector('i');
+                    icon.classList.toggle('fa-eye');
+                    icon.classList.toggle('fa-eye-slash');
+                });
+            }
 
             // Prevent HTML5 validation on hidden inputs
             [codeInput, regKeyInput, passwordInput, confirmPasswordInput].forEach((el) => {
