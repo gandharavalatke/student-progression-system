@@ -129,21 +129,29 @@
             filter: none !important;
         }
         
-        /* Fix blurry icons - crisp rendering */
+        /* Fix blurry icons - MAXIMUM crisp rendering */
         i.fa-solid, i.fa-regular, i.fa-brands {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            font-smooth: always;
-            backface-visibility: hidden;
-            transform: translateZ(0);
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: geometricPrecision !important;
+            font-smooth: never !important;
+            image-rendering: -webkit-optimize-contrast !important;
+            image-rendering: crisp-edges !important;
         }
         
-        /* Ensure eye icon is crisp */
+        /* Ensure all icons in inputs are crisp and large */
+        .relative i {
+            font-size: 24px !important;
+            line-height: 1 !important;
+            font-weight: 900 !important;
+        }
+        
+        /* Ensure eye icon is extra crisp */
         #toggle-password i {
-            font-size: 20px !important;
+            font-size: 24px !important;
             line-height: 1 !important;
             display: block !important;
+            font-weight: 900 !important;
         }
         
         /* Ensure icons are sharp after autofill */
@@ -332,11 +340,11 @@
                 <p class="text-slate-300 text-center mb-8">Enter your credentials to access the dashboard.</p>
                 <form id="login-form" class="space-y-6">
                     <div class="relative">
-                        <i class="fa-solid fa-user absolute left-4 text-blue-400 pointer-events-none" style="top: 14px; font-size: 20px; line-height: 1;"></i>
+                        <i class="fa-solid fa-user absolute left-4 text-blue-400 pointer-events-none" style="top: 12px; font-size: 24px; line-height: 1;"></i>
                         <input id="username" type="text" placeholder="Username" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm placeholder-slate-400">
                     </div>
                     <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-4 text-blue-400 pointer-events-none" style="top: 14px; font-size: 20px; line-height: 1;"></i>
+                        <i class="fa-solid fa-lock absolute left-4 text-blue-400 pointer-events-none" style="top: 12px; font-size: 24px; line-height: 1;"></i>
                         <input id="password" type="password" placeholder="Password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm placeholder-slate-400">
                         <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors focus:outline-none">
                             <i id="eye-icon" class="fa-solid fa-eye text-lg"></i>
