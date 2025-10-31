@@ -1755,7 +1755,10 @@
             const link = e.target.closest('a');
             if (!link) return;
             if (e.defaultPrevented) return; // some handlers (modals) may prevent navigation
+            // Skip navigation interception for download links, blob URLs, and marked links
             if (link.hasAttribute('data-no-nav') || link.hasAttribute('data-action')) return;
+            // Skip blob URLs
+            if (link.href && link.href.startsWith('blob:')) return;
             
             // Handle logout separately - redirect to root with new ID
             if (link.id === 'logout-link' || link.dataset.page === 'logout') {
@@ -2451,19 +2454,56 @@
                         throw new Error('Server returned HTML page instead of file. Please check authentication.');
                     }
                     
+                    // Create blob URL and download link
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = 'Result_Summary.xlsx';
                     a.style.display = 'none';
+                    // Mark with data attribute to prevent navigation interception
+                    a.setAttribute('data-no-nav', 'true');
+                    a.setAttribute('data-action', 'download');
                     document.body.appendChild(a);
-                    a.click();
                     
-                    // Clean up after a short delay
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
-                    }, 100);
+                    // Use a more reliable download method
+                    try {
+                        // Trigger download
+                        a.click();
+                        
+                        // Wait a bit to ensure download started, then clean up
+                        setTimeout(() => {
+                            try {
+                                if (document.body.contains(a)) {
+                                    document.body.removeChild(a);
+                                }
+                            } catch (e) {
+                                // Ignore cleanup errors
+                            }
+                            try {
+                                window.URL.revokeObjectURL(url);
+                            } catch (e) {
+                                // Ignore revoke errors
+                            }
+                        }, 500);
+                    } catch (downloadErr) {
+                        // If click() fails, try alternative method
+                        console.warn('Direct click failed, trying alternative download method:', downloadErr);
+                        // Force download by programmatically triggering it
+                        const event = new MouseEvent('click', {
+                            bubbles: true,
+                            cancelable: true,
+                            view: window
+                        });
+                        a.dispatchEvent(event);
+                        setTimeout(() => {
+                            try {
+                                if (document.body.contains(a)) {
+                                    document.body.removeChild(a);
+                                }
+                                window.URL.revokeObjectURL(url);
+                            } catch (e) {}
+                        }, 500);
+                    }
                     
                     // Show success message
                     showResultModal('success', 'Summary downloaded successfully!');
