@@ -6,9 +6,13 @@ import random
 import secrets
 import string
 import sys
+import jwt
+import functools
 from datetime import datetime, timedelta, timezone
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from pymongo import MongoClient
 from gridfs import GridFS
 from bson import ObjectId
@@ -33,6 +37,20 @@ DB_NAME = "StudentProgressionDB"
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', 'SG.your-sendgrid-api-key-here')
 FROM_EMAIL = os.getenv('FROM_EMAIL', 'gandharvacjc@gmail.com') # This MUST be a "Verified Sender" in your SendGrid account
 FROM_NAME = 'SPS Admin - GIT'
+
+# --- JWT Configuration ---
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', secrets.token_urlsafe(64))  # Generate secure random key
+JWT_ALGORITHM = 'HS256'
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES = 60  # 1 hour
+JWT_REFRESH_TOKEN_EXPIRE_DAYS = 7  # 7 days
+
+# --- Rate Limiting Configuration ---
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
 
 # --- Initial Health Check ---
 if 'PASTE_YOUR' in SENDGRID_API_KEY:
@@ -62,12 +80,87 @@ def create_admin_user():
     )
     print("SUCCESS: Admin user 'admin' created/updated successfully with password 'Admin@123'.")
 
+# --- JWT Token Functions ---
+def generate_access_token(username, role='faculty'):
+    """Generate JWT access token."""
+    payload = {
+        'username': username,
+        'role': role,
+        'type': 'access',
+        'exp': datetime.now(timezone.utc) + timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES),
+        'iat': datetime.now(timezone.utc)
+    }
+    return jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+def generate_refresh_token(username):
+    """Generate JWT refresh token."""
+    payload = {
+        'username': username,
+        'type': 'refresh',
+        'exp': datetime.now(timezone.utc) + timedelta(days=JWT_REFRESH_TOKEN_EXPIRE_DAYS),
+        'iat': datetime.now(timezone.utc)
+    }
+    return jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+def verify_token(token):
+    """Verify JWT token and return payload."""
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
+# --- Authentication Decorator ---
+def require_auth(f):
+    """Decorator to require authentication for API endpoints."""
+    @functools.wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Skip auth for OPTIONS requests
+        if request.method == 'OPTIONS':
+            return f(*args, **kwargs)
+        
+        # Get token from Authorization header
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return jsonify({"message": "Authentication required. Please login."}), 401
+        
+        # Extract token from "Bearer <token>"
+        try:
+            token = auth_header.split(' ')[1] if ' ' in auth_header else auth_header
+        except IndexError:
+            return jsonify({"message": "Invalid authorization format. Use 'Bearer <token>'."}), 401
+        
+        # Verify token
+        payload = verify_token(token)
+        if not payload or payload.get('type') != 'access':
+            return jsonify({"message": "Invalid or expired token. Please login again."}), 401
+        
+        # Check if user still exists
+        user = db.users.find_one({"username": payload['username']})
+        if not user:
+            return jsonify({"message": "User not found. Please login again."}), 401
+        
+        # Store user info in Flask's g object for use in route
+        g.current_user = {
+            'username': payload['username'],
+            'role': payload.get('role', 'faculty')
+        }
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
 # --- Block direct .html access middleware ---
 @app.before_request
 def block_html_access():
     """Block all direct .html file access before processing the request."""
     # Get the requested path
     path = request.path
+    
+    # Allow OPTIONS requests for CORS
+    if request.method == 'OPTIONS':
+        return None
     
     # If path ends with .html (case insensitive), return 404
     if path.lower().endswith('.html'):
@@ -78,16 +171,121 @@ def block_html_access():
 
 # --- API Endpoints ---
 
-@app.route('/api/admin/login', methods=['POST'])
+@app.route('/api/admin/login', methods=['POST', 'OPTIONS'])
+@limiter.limit("5 per minute")  # Rate limit admin login
 def admin_login():
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
     data = request.get_json()
+    password = data.get('password', '')
+    
+    if not password:
+        return jsonify({"message": "Password is required"}), 400
+    
     admin_doc = db.users.find_one({"username": "admin", "role": "admin"})
-    if admin_doc and bcrypt.checkpw(data.get('password').encode('utf-8'), admin_doc['password']):
-        return jsonify({"message": "Admin authentication successful!"}), 200
+    if admin_doc and bcrypt.checkpw(password.encode('utf-8'), admin_doc['password']):
+        # Generate tokens for admin
+        access_token = generate_access_token("admin", "admin")
+        refresh_token = generate_refresh_token("admin")
+        
+        db.refresh_tokens.update_one(
+            {"username": "admin"},
+            {"$set": {
+                "token": refresh_token,
+                "created_at": datetime.now(timezone.utc),
+                "expires_at": datetime.now(timezone.utc) + timedelta(days=JWT_REFRESH_TOKEN_EXPIRE_DAYS)
+            }},
+            upsert=True
+        )
+        
+        return jsonify({
+            "message": "Admin authentication successful!",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "expires_in": JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60
+        }), 200
     return jsonify({"message": "Invalid admin credentials"}), 401
 
-@app.route('/api/upload-faculty', methods=['POST'])
+@app.route('/api/refresh-token', methods=['POST', 'OPTIONS'])
+def refresh_token():
+    """Refresh access token using refresh token."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    data = request.get_json()
+    refresh_token_value = data.get('refresh_token')
+    
+    if not refresh_token_value:
+        return jsonify({"message": "Refresh token is required"}), 400
+    
+    # Verify refresh token
+    payload = verify_token(refresh_token_value)
+    if not payload or payload.get('type') != 'refresh':
+        return jsonify({"message": "Invalid or expired refresh token"}), 401
+    
+    username = payload.get('username')
+    
+    # Verify token exists in database (can be revoked)
+    stored_token = db.refresh_tokens.find_one({"username": username, "token": refresh_token_value})
+    if not stored_token:
+        return jsonify({"message": "Refresh token has been revoked"}), 401
+    
+    # Check expiration
+    expires_at = stored_token.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at.replace('Z', '+00:00'))
+    if isinstance(expires_at, datetime) and expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if isinstance(expires_at, datetime) and datetime.now(timezone.utc) > expires_at:
+        db.refresh_tokens.delete_one({"username": username})
+        return jsonify({"message": "Refresh token expired"}), 401
+    
+    # Generate new access token
+    user = db.users.find_one({"username": username})
+    if not user:
+        return jsonify({"message": "User not found"}), 401
+    
+    access_token = generate_access_token(username, user.get('role', 'faculty'))
+    
+    return jsonify({
+        "access_token": access_token,
+        "expires_in": JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60
+    }), 200
+
+@app.route('/api/logout', methods=['POST', 'OPTIONS'])
+@require_auth
+def logout():
+    """Logout user and revoke refresh token."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    username = g.current_user['username']
+    
+    # Revoke refresh token
+    db.refresh_tokens.delete_one({"username": username})
+    
+    # Clear failed login attempts
+    db.login_attempts.delete_one({"_id": f"login_failed:{username}"})
+    
+    return jsonify({"message": "Logged out successfully"}), 200
+
+@app.route('/api/verify-token', methods=['GET', 'OPTIONS'])
+@require_auth
+def verify_token_endpoint():
+    """Verify if current token is valid."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    return jsonify({
+        "valid": True,
+        "user": g.current_user
+    }), 200
+
+@app.route('/api/upload-faculty', methods=['POST', 'OPTIONS'])
+@require_auth
 def upload_faculty_list():
+    # Verify admin role
+    if g.current_user.get('role') != 'admin':
+        return jsonify({"message": "Admin access required"}), 403
     if 'file' not in request.files: return jsonify({"message": "No file part"}), 400
     file = request.files['file']
     try:
@@ -118,13 +316,90 @@ def upload_faculty_list():
         return jsonify({"message": f"An error occurred: {e}"}), 500
 
 @app.route('/api/login', methods=['POST', 'OPTIONS'])
+@limiter.limit("5 per minute")  # Rate limit: 5 login attempts per minute
 def login_user():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
     data = request.get_json()
-    user = db.users.find_one({"username": data.get('username')})
-    if user and 'password' in user and bcrypt.checkpw(data.get('password').encode('utf-8'), user['password']):
-        return jsonify({"message": "Login successful!"}), 200
+    username = data.get('username', '').strip()
+    password = data.get('password', '')
+    
+    if not username or not password:
+        return jsonify({"message": "Username and password are required"}), 400
+    
+    # Check for rate limiting in MongoDB (optional - track failed attempts)
+    failed_attempts_key = f"login_failed:{username}"
+    failed_doc = db.login_attempts.find_one({"_id": failed_attempts_key})
+    
+    if failed_doc:
+        attempts = failed_doc.get('count', 0)
+        last_attempt = failed_doc.get('last_attempt')
+        if attempts >= 5:
+            if last_attempt:
+                last_time = last_attempt if isinstance(last_attempt, datetime) else datetime.fromisoformat(last_attempt.replace('Z', '+00:00')) if isinstance(last_attempt, str) else datetime.now(timezone.utc)
+                if isinstance(last_time, datetime) and last_time.tzinfo is None:
+                    last_time = last_time.replace(tzinfo=timezone.utc)
+                lockout_duration = timedelta(minutes=15)
+                if isinstance(last_time, datetime) and datetime.now(timezone.utc) - last_time < lockout_duration:
+                    remaining = lockout_duration - (datetime.now(timezone.utc) - last_time)
+                    minutes = int(remaining.total_seconds() / 60)
+                    return jsonify({"message": f"Account temporarily locked. Try again in {minutes} minutes."}), 429
+    
+    user = db.users.find_one({"username": username})
+    if user and 'password' in user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        # Successful login - generate tokens
+        access_token = generate_access_token(username, user.get('role', 'faculty'))
+        refresh_token = generate_refresh_token(username)
+        
+        # Store refresh token in database (for revocation if needed)
+        db.refresh_tokens.update_one(
+            {"username": username},
+            {"$set": {
+                "token": refresh_token,
+                "created_at": datetime.now(timezone.utc),
+                "expires_at": datetime.now(timezone.utc) + timedelta(days=JWT_REFRESH_TOKEN_EXPIRE_DAYS)
+            }},
+            upsert=True
+        )
+        
+        # Clear failed attempts
+        db.login_attempts.delete_one({"_id": failed_attempts_key})
+        
+        # Update last login
+        db.users.update_one(
+            {"username": username},
+            {"$set": {"last_login": datetime.now(timezone.utc)}}
+        )
+        
+        return jsonify({
+            "message": "Login successful!",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "expires_in": JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,  # seconds
+            "user": {
+                "username": username,
+                "role": user.get('role', 'faculty'),
+                "email": user.get('email', '')
+            }
+        }), 200
+    
+    # Failed login - track attempts
+    if failed_doc:
+        db.login_attempts.update_one(
+            {"_id": failed_attempts_key},
+            {"$set": {
+                "count": attempts + 1,
+                "last_attempt": datetime.now(timezone.utc)
+            }},
+            upsert=True
+        )
+    else:
+        db.login_attempts.insert_one({
+            "_id": failed_attempts_key,
+            "count": 1,
+            "last_attempt": datetime.now(timezone.utc)
+        })
+    
     return jsonify({"message": "Invalid username or password"}), 401
 
 @app.route('/api/send-registration-code', methods=['POST', 'OPTIONS'])
@@ -305,6 +580,7 @@ def reset_password():
 
 # --- User Profile APIs ---
 @app.route('/api/user/<username>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
+@require_auth
 def user_profile(username):
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -332,6 +608,7 @@ def user_profile(username):
         return jsonify({"message": "Account deleted successfully."}), 200
 
 @app.route('/api/change-password', methods=['POST', 'OPTIONS'])
+@require_auth
 def change_password():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -352,6 +629,7 @@ def change_password():
 
 # --- OTP-based Password Change Flow ---
 @app.route('/api/send-password-change-otp', methods=['POST', 'OPTIONS'])
+@require_auth
 def send_password_change_otp():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -393,6 +671,7 @@ def send_password_change_otp():
     return jsonify({"message": "Verification code sent to your email."}), 200
 
 @app.route('/api/verify-password-change-otp', methods=['POST', 'OPTIONS'])
+@require_auth
 def verify_password_change_otp():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -421,6 +700,7 @@ def verify_password_change_otp():
     return jsonify({"message": "Code verified"}), 200
 
 @app.route('/api/change-password-with-otp', methods=['POST', 'OPTIONS'])
+@require_auth
 def change_password_with_otp():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -769,6 +1049,7 @@ def recompute_dashboard_summary():
 
 
 @app.route('/api/upload-admissions-kpis', methods=['POST', 'OPTIONS'])
+@require_auth
 def upload_admissions_kpis():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -846,7 +1127,8 @@ def upload_admissions_kpis():
         return jsonify({"message": f"Error parsing KPI file: {e}"}), 500
 
 
-@app.route('/api/dashboard-summary', methods=['GET'])
+@app.route('/api/dashboard-summary', methods=['GET', 'OPTIONS'])
+@require_auth
 def get_dashboard_summary():
     # Always recompute so UI reflects latest alignment and metrics
     try:
@@ -862,7 +1144,8 @@ def get_dashboard_summary():
     return jsonify(doc), 200
 
 
-@app.route('/api/export-result-summary', methods=['GET'])
+@app.route('/api/export-result-summary', methods=['GET', 'OPTIONS'])
+@require_auth
 def export_result_summary():
     """Generate and download the combined result summary Excel (master + summary)."""
     try:
@@ -886,6 +1169,7 @@ def export_result_summary():
     except Exception as e:
         return jsonify({"message": f"Error generating export: {e}"}), 500
 @app.route('/api/upload-result-file', methods=['POST', 'OPTIONS'])
+@require_auth
 def upload_result_file():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -944,6 +1228,7 @@ def upload_result_file():
         return jsonify({"message": f"Error uploading file: {str(e)}"}), 500
 
 @app.route('/api/upload-gazette-file', methods=['POST', 'OPTIONS'])
+@require_auth
 def upload_gazette_file():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -996,6 +1281,7 @@ def upload_gazette_file():
         return jsonify({"message": f"Error uploading file: {str(e)}"}), 500
 
 @app.route('/api/get-result-files', methods=['GET', 'OPTIONS'])
+@require_auth
 def get_result_files():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -1021,6 +1307,7 @@ def get_result_files():
         return jsonify({"message": f"Error retrieving files: {str(e)}"}), 500
 
 @app.route('/api/get-intake-files', methods=['GET', 'OPTIONS'])
+@require_auth
 def get_intake_files():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -1041,6 +1328,7 @@ def get_intake_files():
         return jsonify({"message": f"Error retrieving intake files: {str(e)}"}), 500
 
 @app.route('/api/download-intake-file/<file_id>', methods=['GET', 'OPTIONS'])
+@require_auth
 def download_intake_file(file_id):
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -1065,6 +1353,7 @@ def download_intake_file(file_id):
         return jsonify({"message": f"Error downloading intake file: {str(e)}"}), 500
 
 @app.route('/api/delete-intake-file/<file_id>', methods=['DELETE', 'OPTIONS'])
+@require_auth
 def delete_intake_file(file_id):
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -1081,6 +1370,7 @@ def delete_intake_file(file_id):
         return jsonify({"message": f"Error deleting intake file: {str(e)}"}), 500
 
 @app.route('/api/download-result-file/<file_id>', methods=['GET', 'OPTIONS'])
+@require_auth
 def download_result_file(file_id):
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -1122,6 +1412,7 @@ def download_result_file(file_id):
         return jsonify({"message": f"Error downloading file: {str(e)}"}), 500
 
 @app.route('/api/delete-result-file/<file_id>', methods=['DELETE', 'OPTIONS'])
+@require_auth
 def delete_result_file(file_id):
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
@@ -1204,8 +1495,9 @@ def serve_static(filename):
         return app.send_static_file('404.html'), 404
 
 # Health check endpoint for Railway
-@app.route('/api/dashboard-summary', methods=['GET', 'OPTIONS'])
-def dashboard_summary():
+@app.route('/api/dashboard-summary-duplicate', methods=['GET', 'OPTIONS'])
+@require_auth
+def dashboard_summary_duplicate():
     if request.method == 'OPTIONS':
         return jsonify(status='ok'), 200
     

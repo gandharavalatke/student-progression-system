@@ -1522,36 +1522,141 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.umd.min.js"></script>
     <script>
-    // ===== AUTHENTICATION & INACTIVITY TIMEOUT =====
+    // ===== JWT AUTHENTICATION UTILITY =====
     (function() {
-        // Check authentication before page loads
-        const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
-        if (!loggedInUser) {
-            window.location.href = '/?id=' + generateQuickId();
-            return;
+        // Token management
+        function getAccessToken() {
+            return localStorage.getItem('access_token');
         }
 
-        // 15-minute inactivity timeout (900000 milliseconds)
+        function getRefreshToken() {
+            return localStorage.getItem('refresh_token');
+        }
+
+        function isTokenExpired() {
+            const expiresAt = localStorage.getItem('token_expires_at');
+            if (!expiresAt) return true;
+            return Date.now() >= parseInt(expiresAt);
+        }
+
+        async function refreshAccessToken() {
+            const refreshToken = getRefreshToken();
+            if (!refreshToken) {
+                logout();
+                return null;
+            }
+
+            try {
+                const res = await fetch('/api/refresh-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    logout();
+                    return null;
+                }
+
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                return data.access_token;
+            } catch (err) {
+                console.error('Token refresh failed:', err);
+                logout();
+                return null;
+            }
+        }
+
+        async function getValidToken() {
+            if (isTokenExpired()) {
+                return await refreshAccessToken();
+            }
+            return getAccessToken();
+        }
+
+        // Authenticated fetch wrapper
+        window.authFetch = async function(url, options = {}) {
+            const token = await getValidToken();
+            if (!token) {
+                throw new Error('Authentication required');
+            }
+
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+                ...options.headers
+            };
+
+            const response = await fetch(url, { ...options, headers });
+
+            // If token expired, try refresh once
+            if (response.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    headers['Authorization'] = `Bearer ${newToken}`;
+                    return fetch(url, { ...options, headers });
+                }
+                logout();
+            }
+
+            return response;
+        };
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('token_expires_at');
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('user_role');
+            sessionStorage.removeItem('sps_user');
+            window.location.href = '/?id=' + generateQuickId();
+        }
+
+        // Check authentication on page load
+        async function checkAuth() {
+            const token = getAccessToken();
+            if (!token) {
+                logout();
+                return false;
+            }
+
+            // Verify token with server (use direct fetch to avoid circular dependency)
+            try {
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const res = await fetch('/api/verify-token', { headers });
+                if (!res.ok) {
+                    logout();
+                    return false;
+                }
+                return true;
+            } catch (err) {
+                logout();
+                return false;
+            }
+        }
+
+        // Initialize auth check after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            checkAuth();
+        }, 100);
+
+        // 15-minute inactivity timeout
         let inactivityTimer;
-        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
 
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
             inactivityTimer = setTimeout(() => {
-                // Auto logout after 15 minutes of inactivity
-                localStorage.removeItem('loggedInUser');
-                sessionStorage.removeItem('sps_user');
+                logout();
                 alert('Session expired due to inactivity. Please login again.');
-                window.location.href = '/?id=' + generateQuickId();
             }, INACTIVITY_TIMEOUT);
         }
 
-        // Track user activity
         ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
             document.addEventListener(event, resetInactivityTimer, true);
         });
 
-        // Start the inactivity timer
         resetInactivityTimer();
 
         function generateQuickId() {
@@ -1568,6 +1673,16 @@
             }
             return base64.slice(0, 152);
         }
+
+        // Expose logout function globally
+        window.logoutUser = async function() {
+            try {
+                await authFetch('/api/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            logout();
+        };
     })();
 
     (function(){
@@ -1682,16 +1797,25 @@
                 logoutOverlay.classList.add('hidden');
                 logoutOverlay.classList.remove('flex');
             });
-            logoutConfirm.addEventListener('click', () => {
+            logoutConfirm.addEventListener('click', async () => {
                 // Show logout success modal
                 document.getElementById('logout-overlay').classList.add('hidden');
                 document.getElementById('logout-success-overlay').classList.remove('hidden');
                 document.getElementById('logout-success-overlay').classList.add('flex');
-                // Auto-close after 1.5 seconds and redirect
-                setTimeout(() => {
-                    localStorage.removeItem('loggedInUser');
-                    sessionStorage.removeItem('sps_user');
-                    window.location.href = '/';
+                // Auto-close after 1.5 seconds and call logout
+                setTimeout(async () => {
+                    if (window.logoutUser) {
+                        await window.logoutUser();
+                    } else {
+                        // Fallback
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                        localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('user_role');
+                        sessionStorage.removeItem('sps_user');
+                        window.location.href = '/';
+                    }
                 }, 1500);
             });
 
@@ -1722,7 +1846,7 @@
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
             
             // Fetch dashboard data and render
-            fetch('/api/dashboard-summary')
+            authFetch('/api/dashboard-summary')
                 .then(r => r.json())
                 .then(data => {
                     chartData = data?.semesters || [];

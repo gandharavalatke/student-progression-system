@@ -459,9 +459,15 @@
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.message || 'Login failed');
                     
-                    // Store credentials first
-                    sessionStorage.setItem('sps_user', username.value);
-                    localStorage.setItem('loggedInUser', username.value);
+                    // Store JWT tokens securely
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                    localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                    
+                    // Store user info
+                    sessionStorage.setItem('sps_user', data.user.username);
+                    localStorage.setItem('loggedInUser', data.user.username);
+                    localStorage.setItem('user_role', data.user.role || 'faculty');
                     
                     // Generate and navigate to dashboard URL
                     const dashboardUrl = generatePageUrl('dashboard');

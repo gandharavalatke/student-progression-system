@@ -336,6 +336,16 @@
                     });
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.message);
+                    
+                    // Store JWT tokens after admin login
+                    if (data.access_token && data.refresh_token) {
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('refresh_token', data.refresh_token);
+                        localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                        localStorage.setItem('loggedInUser', 'admin');
+                        localStorage.setItem('user_role', 'admin');
+                    }
+                    
                     passwordSection.classList.add('hidden');
                     uploadSection.classList.remove('hidden');
                     subtitle.textContent = 'Upload an Excel file with faculty details.';
@@ -359,10 +369,24 @@
                 const formData = new FormData();
                 formData.append('file', input.files[0]);
                 try {
-                    const res = await fetch('/api/upload-faculty', {
-                        method: 'POST',
-                        body: formData
-                    });
+                    let res;
+                    // Use authFetch for authenticated request
+                    if (window.authFetch) {
+                        res = await window.authFetch('/api/upload-faculty', {
+                            method: 'POST',
+                            body: formData
+                        });
+                    } else {
+                        // Fallback if authFetch not available (shouldn't happen)
+                        const token = localStorage.getItem('access_token');
+                        const headers = {};
+                        if (token) headers['Authorization'] = `Bearer ${token}`;
+                        res = await fetch('/api/upload-faculty', {
+                            method: 'POST',
+                            headers: headers,
+                            body: formData
+                        });
+                    }
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.message || 'Upload failed');
                     await showAlert('File uploaded successfully.');

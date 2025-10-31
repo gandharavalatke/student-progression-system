@@ -1491,6 +1491,21 @@
         .light .mobile-nav-button:hover {
             background: rgba(59, 130, 246, 0.2);
         }
+        /* Desktop button container styling - side by side */
+        .btn-container {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 0.75rem !important;
+            width: 100% !important;
+        }
+
+        /* Desktop button styling - side by side */
+        #refresh-files-btn,
+        #download-summary-btn {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+
         /* Fix: ensure semester select and action buttons stack on small screens
            and neutralize earlier absolute/float rules that caused overlap. */
         @media (max-width: 480px) {
@@ -1591,38 +1606,86 @@
     </style>
     
     <script>
-    // ===== AUTHENTICATION & INACTIVITY TIMEOUT =====
+    // ===== JWT AUTHENTICATION UTILITY =====
     (function() {
-        // Check authentication before page loads
-        const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
-        if (!loggedInUser) {
-            window.location.href = '/?id=' + generateQuickId();
-            return;
+        function getAccessToken() { return localStorage.getItem('access_token'); }
+        function getRefreshToken() { return localStorage.getItem('refresh_token'); }
+        function isTokenExpired() {
+            const expiresAt = localStorage.getItem('token_expires_at');
+            return !expiresAt || Date.now() >= parseInt(expiresAt);
         }
-
-        // 15-minute inactivity timeout (900000 milliseconds)
+        async function refreshAccessToken() {
+            const refreshToken = getRefreshToken();
+            if (!refreshToken) { logout(); return null; }
+            try {
+                const res = await fetch('/api/refresh-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const data = await res.json();
+                if (!res.ok) { logout(); return null; }
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                return data.access_token;
+            } catch (err) {
+                console.error('Token refresh failed:', err);
+                logout();
+                return null;
+            }
+        }
+        async function getValidToken() {
+            if (isTokenExpired()) return await refreshAccessToken();
+            return getAccessToken();
+        }
+        window.authFetch = async function(url, options = {}) {
+            const token = await getValidToken();
+            if (!token) throw new Error('Authentication required');
+            const headers = { 'Authorization': `Bearer ${token}`, ...options.headers };
+            const response = await fetch(url, { ...options, headers });
+            if (response.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    headers['Authorization'] = `Bearer ${newToken}`;
+                    return fetch(url, { ...options, headers });
+                }
+                logout();
+            }
+            return response;
+        };
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('token_expires_at');
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('user_role');
+            sessionStorage.removeItem('sps_user');
+            window.location.href = '/?id=' + generateQuickId();
+        }
+        async function checkAuth() {
+            const token = getAccessToken();
+            if (!token) { logout(); return false; }
+            try {
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const res = await fetch('/api/verify-token', { headers });
+                if (!res.ok) { logout(); return false; }
+                return true;
+            } catch (err) { logout(); return false; }
+        }
+        setTimeout(() => { checkAuth(); }, 100);
         let inactivityTimer;
-        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes
-
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
             inactivityTimer = setTimeout(() => {
-                // Auto logout after 15 minutes of inactivity
-                localStorage.removeItem('loggedInUser');
-                sessionStorage.removeItem('sps_user');
+                logout();
                 alert('Session expired due to inactivity. Please login again.');
-                window.location.href = '/?id=' + generateQuickId();
             }, INACTIVITY_TIMEOUT);
         }
-
-        // Track user activity
         ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
             document.addEventListener(event, resetInactivityTimer, true);
         });
-
-        // Start the inactivity timer
         resetInactivityTimer();
-
         function generateQuickId() {
             const values = new Uint8Array(120);
             window.crypto.getRandomValues(values);
@@ -1637,6 +1700,14 @@
             }
             return base64.slice(0, 152);
         }
+        window.logoutUser = async function() {
+            try {
+                await authFetch('/api/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            logout();
+        };
     })();
     </script>
     
@@ -2243,7 +2314,8 @@
             const downloadSummaryBtn = document.getElementById('download-summary-btn');
             downloadSummaryBtn.addEventListener('click', async () => {
                 try {
-                    const res = await fetch('/api/export-result-summary');
+                    // Use authFetch for authenticated request
+                    const res = await authFetch('/api/export-result-summary');
                     if (!res.ok) {
                         const text = await res.text();
                         throw new Error(text || 'Unable to download');
@@ -2272,16 +2344,24 @@
                 logoutOverlay.classList.add('hidden');
                 logoutOverlay.classList.remove('flex');
             });
-            logoutConfirm.addEventListener('click', () => {
+            logoutConfirm.addEventListener('click', async () => {
                 // Show logout success modal
                 document.getElementById('logout-overlay').classList.add('hidden');
                 document.getElementById('logout-success-overlay').classList.remove('hidden');
                 document.getElementById('logout-success-overlay').classList.add('flex');
-                // Auto-close after 1.5 seconds and redirect
-                setTimeout(() => {
-                    localStorage.removeItem('loggedInUser');
-                    sessionStorage.removeItem('sps_user');
-                    window.location.href = '/';
+                // Auto-close after 1.5 seconds and call logout
+                setTimeout(async () => {
+                    if (window.logoutUser) {
+                        await window.logoutUser();
+                    } else {
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                        localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('user_role');
+                        sessionStorage.removeItem('sps_user');
+                        window.location.href = '/';
+                    }
                 }, 1500);
             });
             
@@ -2305,7 +2385,7 @@
                 confirmDeleteBtn.disabled = true;
                 cancelDeleteBtn.disabled = true;
                 try {
-                    const response = await fetch(`/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
+                    const response = await authFetch(`/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
             const show = (status, msg) => {
                         // Ensure the confirm modal is hidden before showing result
                         deleteConfirmModal.classList.add('hidden');
@@ -2396,7 +2476,7 @@
                 formData.append('semester', semesterSelect.value);
                 formData.append('file_type', 'excel');
                 
-                fetch(`${endpoint}`, {
+                authFetch(`${endpoint}`, {
                     method: 'POST',
                     body: formData
                 })
@@ -2417,7 +2497,7 @@
             // Find existing file for semester+filename
             async function findExistingFile(semester, filename) {
                 try {
-                    const response = await fetch(`/api/get-result-files?semester=${semester}`);
+                    const response = await authFetch(`/api/get-result-files?semester=${semester}`);
                     const files = await response.json();
                     return files.find(f => (f.filename || '').toLowerCase() === filename.toLowerCase());
                 } catch (_) { return null; }
@@ -2428,7 +2508,7 @@
                 try {
                     const existing = await findExistingFile(semesterSelect.value, fileToUpload?.name || '');
                     if (existing) {
-                        await fetch(`/api/delete-result-file/${existing._id}`, { method: 'DELETE' });
+                        await authFetch(`/api/delete-result-file/${existing._id}`, { method: 'DELETE' });
                     }
                     duplicateModal.classList.add('hidden');
                     handleUpload(fileToUpload, uploadEndpoint);
@@ -2442,11 +2522,11 @@
             async function loadFiles() {
                 try {
                     const selectedSemester = viewSemesterSelect.value;
-                    const response = await fetch(`/api/get-result-files?semester=${selectedSemester || ''}`);
+                    const response = await authFetch(`/api/get-result-files?semester=${selectedSemester || ''}`);
                     const files = await response.json();
                     
                     // Also load intake files
-                    const intakeResponse = await fetch('/api/get-intake-files');
+                    const intakeResponse = await authFetch('/api/get-intake-files');
                     const intakeFiles = await intakeResponse.json();
                     
                     if (files.length === 0 && intakeFiles.length === 0) {
@@ -2520,7 +2600,7 @@
             let currentDownloadFileId = null;
             let currentDownloadType = null;
 
-            window.downloadFile = function(fileId) {
+            window.downloadFile = async function(fileId) {
                 currentDownloadFileId = fileId;
                 currentDownloadType = 'result';
                 modalOverlay.classList.remove('hidden');
@@ -2553,7 +2633,7 @@
                         ? `/api/download-result-file/${currentDownloadFileId}`
                         : `/api/download-intake-file/${currentDownloadFileId}`;
                     
-                    const response = await fetch(`${endpoint}`);
+                    const response = await authFetch(`${endpoint}`);
                     if (response.ok) {
                         const blob = await response.blob();
                         const url = window.URL.createObjectURL(blob);
@@ -2607,7 +2687,7 @@
             // Helper function to get file info
             async function getFileInfo(fileId) {
                 try {
-                    const response = await fetch(`/api/get-result-files`);
+                    const response = await authFetch(`/api/get-result-files`);
                     const files = await response.json();
                     return files.find(file => file._id === fileId);
                 } catch (error) {
