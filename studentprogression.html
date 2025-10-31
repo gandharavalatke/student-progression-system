@@ -1678,9 +1678,44 @@
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
             inactivityTimer = setTimeout(() => {
-                logout();
-                alert('Session expired due to inactivity. Please login again.');
+                showInactivityAlert();
             }, INACTIVITY_TIMEOUT);
+        }
+        
+        function showInactivityAlert() {
+            // Show modal before logout
+            const overlay = document.createElement('div');
+            overlay.id = 'inactivity-alert-overlay';
+            overlay.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[10000]';
+            overlay.innerHTML = `
+                <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-yellow-600">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                        <i class="fa-solid fa-clock text-yellow-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-white text-lg font-semibold mb-2">Session Expired</h3>
+                    <p class="text-slate-300 mb-5">Your session has expired due to inactivity. Please login again.</p>
+                    <button id="inactivity-ok-btn" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                        OK
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            
+            const okBtn = document.getElementById('inactivity-ok-btn');
+            okBtn.addEventListener('click', () => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+                logout();
+            });
+            
+            // Auto logout after 3 seconds even if user doesn't click
+            setTimeout(() => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                    logout();
+                }
+            }, 3000);
         }
         ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
             document.addEventListener(event, resetInactivityTimer, true);
@@ -2291,7 +2326,7 @@
             uploadArea.addEventListener('click', () => {
                 const selectedSemester = semesterSelect.value;
                 if (!selectedSemester) {
-                    alert('Please select a semester first.');
+                    showResultModal('error', 'Please select a semester first.', 'Semester Required');
                     return;
                 }
                 fileInput.click();
@@ -2302,7 +2337,8 @@
                     const selectedSemester = semesterSelect.value;
                     
                     if (!selectedSemester) {
-                        alert('Please select a semester first.');
+                        showResultModal('error', 'Please select a semester first.', 'Semester Required');
+                        e.target.value = null;
                         return;
                     }
                     
@@ -2574,9 +2610,44 @@
                 modalOverlay.classList.add('hidden');
                 deleteConfirmModal.classList.add('hidden');
                 fileToDelete = null;
+                intakeFileToDelete = null;
+                // Reset modal message
+                const confirmMsg = deleteConfirmModal.querySelector('p');
+                if (confirmMsg) {
+                    confirmMsg.textContent = 'Are you sure you want to delete this file? This action cannot be undone.';
+                }
             });
             
             confirmDeleteBtn.addEventListener('click', async () => {
+                // Check if this is an intake file deletion
+                if (intakeFileToDelete && fileToDelete !== intakeFileToDelete) {
+                    const fileId = intakeFileToDelete;
+                    intakeFileToDelete = null;
+                    deleteConfirmModal.classList.add('hidden');
+                    modalOverlay.classList.add('hidden');
+                    // Reset modal message
+                    const confirmMsg = deleteConfirmModal.querySelector('p');
+                    if (confirmMsg) {
+                        confirmMsg.textContent = 'Are you sure you want to delete this file? This action cannot be undone.';
+                    }
+                    
+                    try {
+                        const response = await authFetch(`/api/delete-intake-file/${fileId}`, { method: 'DELETE' });
+                        if (response.ok) {
+                            showResultModal('success', 'Intake file deleted successfully', 'Delete Successful');
+                            loadFiles(); // Refresh files list
+                        } else {
+                            const data = await response.json();
+                            showResultModal('error', data.message || 'Error deleting intake file', 'Delete Failed');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting intake file:', error);
+                        showResultModal('error', 'Error deleting intake file: ' + error.message, 'Delete Failed');
+                    }
+                    return;
+                }
+                
+                // Regular result file deletion
                 if (!fileToDelete) return;
                 // Prevent double clicks
                 confirmDeleteBtn.disabled = true;
@@ -2862,22 +2933,15 @@
                 deleteConfirmModal.classList.remove('hidden');
             };
 
-            window.deleteIntakeFile = async function(fileId) {
-                const confirmDelete = confirm('Are you sure you want to delete this intake file?');
-                if (!confirmDelete) return;
-                
-                try {
-                    const response = await fetch(`/api/delete-intake-file/${fileId}`, { method: 'DELETE' });
-                    if (response.ok) {
-                        showResultModal('success', 'Intake file deleted successfully');
-                        loadFiles(); // Refresh files list
-                    } else {
-                        const data = await response.json();
-                        showResultModal('error', data.message || 'Error deleting intake file');
-                    }
-                } catch (error) {
-                    console.error('Error deleting intake file:', error);
-                    showResultModal('error', 'Error deleting intake file: ' + error.message);
+            let intakeFileToDelete = null;
+            window.deleteIntakeFile = function(fileId) {
+                intakeFileToDelete = fileId;
+                modalOverlay.classList.remove('hidden');
+                deleteConfirmModal.classList.remove('hidden');
+                // Update modal message for intake file
+                const confirmMsg = deleteConfirmModal.querySelector('p');
+                if (confirmMsg) {
+                    confirmMsg.textContent = 'Are you sure you want to delete this intake file? This action cannot be undone.';
                 }
             };
 
