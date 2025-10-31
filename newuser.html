@@ -446,6 +446,45 @@
         </div>
     </div>
     <script>
+        // ===== AUTHENTICATION CHECK =====
+        // Redirect logged-in users to dashboard (they don't need to register)
+        (function() {
+            const accessToken = localStorage.getItem('access_token');
+            if (accessToken) {
+                // User is already logged in, redirect to dashboard
+                function generateQuickId() {
+                    const values = new Uint8Array(120);
+                    window.crypto.getRandomValues(values);
+                    let base64 = btoa(String.fromCharCode(...values))
+                        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                    while(base64.length < 152) {
+                        const extra = new Uint8Array(16);
+                        window.crypto.getRandomValues(extra);
+                        base64 += btoa(String.fromCharCode(...extra))
+                            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                            .slice(0, 152 - base64.length);
+                    }
+                    return base64.slice(0, 152);
+                }
+                // Verify token is still valid before redirecting
+                fetch('/api/verify-token', {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                }).then(res => {
+                    if (res.ok) {
+                        // Token is valid, redirect to dashboard
+                        window.location.href = `/dashboard?id=${generateQuickId()}`;
+                    } else {
+                        // Token invalid, clear it and allow registration
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                    }
+                }).catch(() => {
+                    // Network error, allow registration to proceed
+                });
+            }
+        })();
+
         function genId(){
             // Generate multiple random values and combine them for 152 characters
             const values = new Uint8Array(120); // Using 120 bytes for extra randomness

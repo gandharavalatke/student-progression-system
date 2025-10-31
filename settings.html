@@ -715,38 +715,86 @@
     </div>
 
     <script>
-    // ===== AUTHENTICATION & INACTIVITY TIMEOUT =====
+    // ===== JWT AUTHENTICATION UTILITY =====
     (function() {
-        // Check authentication before page loads
-        const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
-        if (!loggedInUser) {
-            window.location.href = '/?id=' + generateQuickId();
-            return;
+        function getAccessToken() { return localStorage.getItem('access_token'); }
+        function getRefreshToken() { return localStorage.getItem('refresh_token'); }
+        function isTokenExpired() {
+            const expiresAt = localStorage.getItem('token_expires_at');
+            return !expiresAt || Date.now() >= parseInt(expiresAt);
         }
-
-        // 15-minute inactivity timeout (900000 milliseconds)
+        async function refreshAccessToken() {
+            const refreshToken = getRefreshToken();
+            if (!refreshToken) { logout(); return null; }
+            try {
+                const res = await fetch('/api/refresh-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const data = await res.json();
+                if (!res.ok) { logout(); return null; }
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                return data.access_token;
+            } catch (err) {
+                console.error('Token refresh failed:', err);
+                logout();
+                return null;
+            }
+        }
+        async function getValidToken() {
+            if (isTokenExpired()) return await refreshAccessToken();
+            return getAccessToken();
+        }
+        window.authFetch = async function(url, options = {}) {
+            const token = await getValidToken();
+            if (!token) throw new Error('Authentication required');
+            const headers = { 'Authorization': `Bearer ${token}`, ...options.headers };
+            const response = await fetch(url, { ...options, headers });
+            if (response.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    headers['Authorization'] = `Bearer ${newToken}`;
+                    return fetch(url, { ...options, headers });
+                }
+                logout();
+            }
+            return response;
+        };
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('token_expires_at');
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('user_role');
+            sessionStorage.removeItem('sps_user');
+            window.location.href = '/?id=' + generateQuickId();
+        }
+        async function checkAuth() {
+            const token = getAccessToken();
+            if (!token) { logout(); return false; }
+            try {
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const res = await fetch('/api/verify-token', { headers });
+                if (!res.ok) { logout(); return false; }
+                return true;
+            } catch (err) { logout(); return false; }
+        }
+        setTimeout(() => { checkAuth(); }, 100);
         let inactivityTimer;
-        const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes
-
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
             inactivityTimer = setTimeout(() => {
-                // Auto logout after 15 minutes of inactivity
-                localStorage.removeItem('loggedInUser');
-                sessionStorage.removeItem('sps_user');
+                logout();
                 alert('Session expired due to inactivity. Please login again.');
-                window.location.href = '/?id=' + generateQuickId();
             }, INACTIVITY_TIMEOUT);
         }
-
-        // Track user activity
         ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
             document.addEventListener(event, resetInactivityTimer, true);
         });
-
-        // Start the inactivity timer
         resetInactivityTimer();
-
         function generateQuickId() {
             const values = new Uint8Array(120);
             window.crypto.getRandomValues(values);
@@ -761,6 +809,14 @@
             }
             return base64.slice(0, 152);
         }
+        window.logoutUser = async function() {
+            try {
+                await authFetch('/api/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            logout();
+        };
     })();
     </script>
 
@@ -948,7 +1004,7 @@
                     return;
                 }
                 try {
-                    const response = await fetch(`/api/user/${loggedInUser}`);
+                    const response = await authFetch(`/api/user/${loggedInUser}`);
                     if (!response.ok) throw new Error('Failed to fetch user data');
                     const userData = await response.json();
                     usernameInput.value = userData.username || 'N/A';
@@ -974,7 +1030,7 @@
                 profileSpinner.classList.remove('hidden');
 
                 try {
-                    const response = await fetch(`/api/user/${currentUsername}`, {
+                    const response = await authFetch(`/api/user/${currentUsername}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ new_username: newUsername })
@@ -1019,7 +1075,7 @@
                 
                 try {
                     // Check if email exists in admin uploaded file
-                    const response = await fetch('/api/check-email', {
+                    const response = await authFetch('/api/check-email', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email })
@@ -1031,7 +1087,7 @@
                     }
                     
                     // Send OTP
-                    const otpRes = await fetch('/api/send-password-otp', {
+                    const otpRes = await authFetch('/api/send-password-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email })
@@ -1078,7 +1134,7 @@
                 }
                 
                 try {
-                    const response = await fetch('/api/verify-password-otp', {
+                    const response = await authFetch('/api/verify-password-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
@@ -1129,7 +1185,7 @@
                 }
                 
                 try {
-                    const response = await fetch('/api/reset-password', {
+                    const response = await authFetch('/api/reset-password', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
@@ -1179,17 +1235,25 @@
                 logoutOverlay.classList.remove('flex');
             });
             
-            logoutConfirm.addEventListener('click', () => {
+            logoutConfirm.addEventListener('click', async () => {
                 // Show logout success modal
                 document.getElementById('logout-overlay').classList.add('hidden');
                 document.getElementById('logout-success-overlay').classList.remove('hidden');
                 document.getElementById('logout-success-overlay').classList.add('flex');
-                // Auto-close after 1.5 seconds and redirect
-                setTimeout(() => {
-                    localStorage.removeItem('loggedInUser');
-                    sessionStorage.removeItem('sps_user');
-                    const id = genId();
-                    window.location.href = `/?id=${id}`;
+                // Auto-close after 1.5 seconds and call logout
+                setTimeout(async () => {
+                    if (window.logoutUser) {
+                        await window.logoutUser();
+                    } else {
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                        localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('user_role');
+                        sessionStorage.removeItem('sps_user');
+                        const id = genId();
+                        window.location.href = `/?id=${id}`;
+                    }
                 }, 1500);
             });
 
