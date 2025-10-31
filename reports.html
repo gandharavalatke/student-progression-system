@@ -339,6 +339,20 @@
         </div>
     </div>
 
+    <!-- Alert Modal -->
+    <div id="alert-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-yellow-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-clock text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Session Expired</h3>
+            <p id="alert-message" class="text-slate-300 mb-5">Your session has expired due to inactivity. Please login again.</p>
+            <button id="alert-ok" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
     <!-- Logout Success Modal -->
     <div id="logout-success-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="glass-card rounded-2xl max-w-md w-full mx-4 overflow-hidden">
@@ -425,9 +439,30 @@
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
             inactivityTimer = setTimeout(() => {
-                logout();
-                alert('Session expired due to inactivity. Please login again.');
+                showInactivityAlert();
             }, INACTIVITY_TIMEOUT);
+        }
+        
+        function showInactivityAlert() {
+            const overlay = document.getElementById('alert-overlay');
+            const msg = document.getElementById('alert-message');
+            const ok = document.getElementById('alert-ok');
+            msg.textContent = 'Your session has expired due to inactivity. Please login again.';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            const close = () => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                ok.removeEventListener('click', close);
+                logout();
+            };
+            ok.addEventListener('click', close);
+            // Auto logout after 3 seconds
+            setTimeout(() => {
+                if (!overlay.classList.contains('hidden')) {
+                    logout();
+                }
+            }, 3000);
         }
         ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
             document.addEventListener(event, resetInactivityTimer, true);

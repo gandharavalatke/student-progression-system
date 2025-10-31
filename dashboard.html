@@ -1648,9 +1648,31 @@
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
             inactivityTimer = setTimeout(() => {
-                logout();
-                alert('Session expired due to inactivity. Please login again.');
+                showInactivityAlert();
             }, INACTIVITY_TIMEOUT);
+        }
+        
+        function showInactivityAlert() {
+            const overlay = document.getElementById('alert-overlay');
+            const msg = document.getElementById('alert-message');
+            const ok = document.getElementById('alert-ok');
+            msg.textContent = 'Session expired due to inactivity. Please login again.';
+            overlay.querySelector('h3').textContent = 'Session Expired';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            const close = () => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                ok.removeEventListener('click', close);
+                logout();
+            };
+            ok.addEventListener('click', close);
+            // Auto logout after 3 seconds
+            setTimeout(() => {
+                if (!overlay.classList.contains('hidden')) {
+                    logout();
+                }
+            }, 3000);
         }
 
         ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
