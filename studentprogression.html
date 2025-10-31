@@ -2042,52 +2042,14 @@
     </div>
 
     <!-- Logout Success Modal -->
-    <div id="logout-success-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
-        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3">
-                <i class="fa-solid fa-check text-green-400 text-xl"></i>
-            </div>
-            <h3 class="text-white text-lg font-semibold mb-2">Logout Successful</h3>
-            <p class="text-slate-300 mb-5">You have been logged out successfully.</p>
-            <div class="space-x-3">
-                <button id="logout-success-ok" class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-colors">
-                    <i class="fa-solid fa-check mr-2"></i>OK
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Standardized Logout Confirmation Modal -->
-    <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9998]">
-        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
-                <i class="fa-solid fa-sign-out-alt text-yellow-400 text-xl"></i>
-            </div>
-            <h3 class="text-white text-lg font-semibold mb-2">Confirm Logout</h3>
-            <p class="text-slate-300 mb-5">Are you sure you want to logout?</p>
-            <div class="space-x-3">
-                <button id="logout-cancel" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">
-                    <i class="fa-solid fa-times mr-2"></i>Cancel
-                </button>
-                <button id="logout-confirm" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
-                    <i class="fa-solid fa-sign-out-alt mr-2"></i>Logout
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Logout Success Modal -->
-    <div id="logout-success-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
-        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3">
-                <i class="fa-solid fa-check text-green-400 text-xl"></i>
-            </div>
-            <h3 class="text-white text-lg font-semibold mb-2">Logout Successful</h3>
-            <p class="text-slate-300 mb-5">You have been logged out successfully.</p>
-            <div class="space-x-3">
-                <button id="logout-success-ok" class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-colors">
-                    <i class="fa-solid fa-check mr-2"></i>OK
-                </button>
+    <div id="logout-success-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-card rounded-2xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="text-center p-6">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-600 mb-4">
+                    <i class="fa-solid fa-check text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Logout Successful</h3>
+                <p class="text-slate-400 text-sm">You have been successfully logged out.</p>
             </div>
         </div>
     </div>
@@ -2221,7 +2183,6 @@
             const logoutCancel = document.getElementById('logout-cancel');
             const logoutConfirm = document.getElementById('logout-confirm');
             const logoutSuccessOverlay = document.getElementById('logout-success-overlay');
-            const logoutSuccessOk = document.getElementById('logout-success-ok');
             const downloadConfirmModal = document.getElementById('download-confirm-modal');
             const cancelDownloadBtn = document.getElementById('cancel-download-btn');
             const confirmDownloadBtn = document.getElementById('confirm-download-btn');
@@ -2312,23 +2273,16 @@
                 logoutOverlay.classList.remove('flex');
             });
             logoutConfirm.addEventListener('click', () => {
-                console.log('Logout confirm clicked');
                 // Show logout success modal
                 document.getElementById('logout-overlay').classList.add('hidden');
-                const successModal = document.getElementById('logout-success-overlay');
-                successModal.classList.remove('hidden');
-                successModal.classList.add('flex');
-                console.log('Success modal classes:', successModal.className);
-                console.log('Success modal should be visible now');
-            });
-
-            // Logout success modal
-            document.getElementById('logout-success-ok').addEventListener('click', () => {
-                console.log('Logout success OK clicked');
-                localStorage.removeItem('loggedInUser');
-                sessionStorage.removeItem('sps_user');
-                console.log('Session cleared, redirecting...');
-                window.location.href = '/';
+                document.getElementById('logout-success-overlay').classList.remove('hidden');
+                document.getElementById('logout-success-overlay').classList.add('flex');
+                // Auto-close after 1.5 seconds and redirect
+                setTimeout(() => {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('sps_user');
+                    window.location.href = '/';
+                }, 1500);
             });
             
             // Duplicate modal events
