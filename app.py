@@ -1148,26 +1148,75 @@ def get_dashboard_summary():
 @require_auth
 def export_result_summary():
     """Generate and download the combined result summary Excel (master + summary)."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
     try:
         import pandas as pd
+        from io import BytesIO
+        from flask import Response
+        
+        # Build master and summary data
         master, summary_rows = build_master_and_summary()
+        
+        # Check if we have any data
+        if master.empty and not any(row.get('total', 0) > 0 for row in summary_rows):
+            return jsonify({"message": "No result data available. Please upload semester result files first."}), 404
+        
         # Apply export-only adjustments to reflect result_parser.py behavior
         master, summary_rows = _adjust_summary_for_export(master, summary_rows)
-        # Build summary dataframe
-        summary_df = pd.DataFrame(summary_rows)
+        
+        # Convert summary_rows to DataFrame with proper column names matching result_parser.py
+        # Map dictionary keys to the column names used in result_parser.py
+        formatted_rows = []
+        for row in summary_rows:
+            semester = row.get('semester', '')
+            # Format semester name (e.g., "sem1" -> "Sem 1", "sem1&sem2" -> "Sem1&Sem2 Combined Avg")
+            if 'Combined Avg' in str(semester):
+                sem_label = str(semester).replace('SEM', 'Sem').replace('_', ' ')
+            else:
+                sem_label = str(semester).replace('sem', 'Sem ').upper().replace('SEM ', 'Sem ')
+            
+            formatted_rows.append([
+                sem_label,
+                row.get('total') if row.get('total') is not None else None,
+                row.get('without_backlog') if row.get('without_backlog') is not None else None,
+                row.get('with_backlog') if row.get('with_backlog') is not None else None,
+                row.get('left') if row.get('left') is not None else None,
+                row.get('avg_cgpa') if row.get('avg_cgpa') is not None else None
+            ])
+        
+        # Create summary DataFrame with column names matching result_parser.py
+        summary_df = pd.DataFrame(
+            formatted_rows,
+            columns=["Semester", "Total Students", "Without Backlog", "With Backlog", "Left Students", "Avg CGPA"]
+        )
+        
+        # Create Excel file in memory
         output = BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            # Write master sheet (Sheet1 in result_parser.py, but using 'Master' for clarity)
             master.to_excel(writer, sheet_name='Master', index=False)
+            # Write summary sheet (Sheet2 in result_parser.py, using 'Summary')
             summary_df.to_excel(writer, sheet_name='Summary', index=False)
+        
         output.seek(0)
-        from flask import Response
+        
+        # Return the Excel file as download
         return Response(
             output.read(),
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            headers={'Content-Disposition': 'attachment; filename="Result_Summary.xlsx"'}
+            headers={
+                'Content-Disposition': 'attachment; filename="Result_Summary.xlsx"',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
         )
     except Exception as e:
-        return jsonify({"message": f"Error generating export: {e}"}), 500
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f"ERROR in export_result_summary: {str(e)}")
+        print(f"Traceback: {error_trace}")
+        return jsonify({"message": f"Error generating export: {str(e)}"}), 500
 @app.route('/api/upload-result-file', methods=['POST', 'OPTIONS'])
 @require_auth
 def upload_result_file():
