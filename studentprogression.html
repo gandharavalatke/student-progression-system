@@ -1684,20 +1684,45 @@
             const link = e.target.closest('a');
             if (!link) return;
             if (e.defaultPrevented) return; // some handlers (modals) may prevent navigation
-            if (link.hasAttribute('data-no-nav') || link.hasAttribute('data-action') || link.id === 'logout-link' || link.dataset.page === 'logout') return;
+            if (link.hasAttribute('data-no-nav') || link.hasAttribute('data-action')) return;
+            
+            // Handle logout separately - redirect to root with new ID
+            if (link.id === 'logout-link' || link.dataset.page === 'logout') {
+                e.preventDefault();
+                window.location.href = '/?id=' + genId();
+                return;
+            }
+            
             const href = link.getAttribute('href');
             if (!href) return;
+            
+            // Skip external links and anchors
+            if (href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+                return;
+            }
+            
             try {
-                // Only auto-navigate for explicit .html links to preserve intent for other href formats
-                if (/\.html($|[?#])/.test(href)) {
+                // Handle relative paths (pages without .html)
+                if (!href.startsWith('http') && !href.startsWith('/') && href !== '/') {
                     e.preventDefault();
-                    const url = new URL(link.href);
-                    // Always generate new ID for navigation
-                    url.searchParams.set('id', genId());
-                    window.location.href = url.toString();
+                    // Remove .html if present, then add dynamic ID
+                    const cleanPath = href.replace(/\.html$/, '');
+                    const newUrl = '/' + cleanPath + '?id=' + genId();
+                    window.location.href = newUrl;
+                } else if (href.startsWith('/') && href !== '/' && !href.includes('?')) {
+                    // Handle absolute paths (like /dashboard)
+                    e.preventDefault();
+                    window.location.href = href + '?id=' + genId();
+                } else if (/\.html($|[?#])/.test(href)) {
+                    // Legacy support for .html links
+                    e.preventDefault();
+                    const url = new URL(link.href, window.location.origin);
+                    const pathWithoutHtml = url.pathname.replace(/\.html$/, '');
+                    window.location.href = pathWithoutHtml + '?id=' + genId();
                 }
             } catch (err) {
                 // If URL parsing fails, skip
+                console.error('Navigation error:', err);
             }
         });
     </script>
@@ -1710,27 +1735,27 @@
                  <img src="GIT Logo.jpg" alt="GIT Logo" class="h-full w-auto">
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-                <a href="dashboard.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="dashboard" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
                 </a>
-                <a href="studentprogression.html" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
+                <a href="studentprogression" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
                     <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
                 </a>
-                <a href="placement.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="placement" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
                 </a>
-                <a href="extracurricular.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                <a href="extracurricular" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
                 </a>
-                  <a href="reports.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                  <a href="reports" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                       <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
                   </a>
             </nav>
             <div class="p-4 border-t border-slate-600">
-                 <a href="settings.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a href="settings" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
                 </a>
-                 <a id="logout-link" href="index.html" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                 <a id="logout-link" href="/" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
                     <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
                 </a>
             </div>
@@ -1758,33 +1783,33 @@
             </style>
             <div class="mobile-nav-grid">
                 <div class="mobile-nav-row">
-                    <a href="dashboard.html" class="mobile-nav-item" data-page="dashboard">
+                    <a href="dashboard" class="mobile-nav-item" data-page="dashboard">
                         <i class="fa-solid fa-chart-pie"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="studentprogression.html" class="mobile-nav-item active" data-page="academic">
+                    <a href="studentprogression" class="mobile-nav-item active" data-page="academic">
                         <i class="fa-solid fa-arrow-trend-up"></i>
                         <span>Academic</span>
                     </a>
-                    <a href="placement.html" class="mobile-nav-item" data-page="placement">
+                    <a href="placement" class="mobile-nav-item" data-page="placement">
                         <i class="fa-solid fa-graduation-cap"></i>
                         <span>Placement</span>
                     </a>
-                    <a href="extracurricular.html" class="mobile-nav-item" data-page="extracurricular">
+                    <a href="extracurricular" class="mobile-nav-item" data-page="extracurricular">
                         <i class="fa-solid fa-trophy"></i>
                         <span>Extracurricular</span>
                     </a>
                 </div>
                 <div class="mobile-nav-row">
-                    <a href="reports.html" class="mobile-nav-item" data-page="reports">
+                    <a href="reports" class="mobile-nav-item" data-page="reports">
                         <i class="fa-solid fa-file-alt"></i>
                         <span>Reports</span>
                     </a>
-                    <a href="settings.html" class="mobile-nav-item" data-page="settings">
+                    <a href="settings" class="mobile-nav-item" data-page="settings">
                         <i class="fa-solid fa-cog"></i>
                         <span>Settings</span>
                     </a>
-                    <a href="index.html" class="mobile-nav-item" data-page="logout">
+                    <a href="/" class="mobile-nav-item" data-page="logout">
                         <i class="fa-solid fa-sign-out-alt"></i>
                         <span>Logout</span>
                     </a>
