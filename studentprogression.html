@@ -1974,7 +1974,7 @@
                                 <i class="fa-solid fa-refresh mr-2"></i>
                                 <span>Refresh</span>
                             </button>
-                            <button id="download-summary-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg flex items-center justify-center">
+                            <button type="button" id="download-summary-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg flex items-center justify-center">
                                 <i class="fa-solid fa-file-excel mr-2"></i>
                                 <span>Download Summary</span>
                             </button>
@@ -2312,25 +2312,127 @@
             viewSemesterSelect.addEventListener('change', loadFiles);
             refreshFilesBtn.addEventListener('click', loadFiles);
             const downloadSummaryBtn = document.getElementById('download-summary-btn');
-            downloadSummaryBtn.addEventListener('click', async () => {
+            downloadSummaryBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Disable button to prevent multiple clicks
+                downloadSummaryBtn.disabled = true;
+                const originalText = downloadSummaryBtn.innerHTML;
+                downloadSummaryBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i><span>Downloading...</span>';
+                
                 try {
-                    // Use authFetch for authenticated request
-                    const res = await authFetch('/api/export-result-summary');
-                    if (!res.ok) {
-                        const text = await res.text();
-                        throw new Error(text || 'Unable to download');
+                    // Check if authFetch is available
+                    if (!window.authFetch) {
+                        throw new Error('Authentication system not initialized. Please refresh the page.');
                     }
+                    
+                    // Use authFetch for authenticated request
+                    const res = await window.authFetch('/api/export-result-summary', {
+                        method: 'GET'
+                    });
+                    
+                    // Check for authentication errors first
+                    if (res.status === 401) {
+                        throw new Error('Authentication failed. Please login again.');
+                    }
+                    
+                    // Check if response is an error page (404)
+                    if (res.status === 404) {
+                        const clonedRes = res.clone();
+                        const text = await clonedRes.text();
+                        if (text.includes('404') || text.includes('Not Found') || text.includes('<!DOCTYPE') || text.includes('<html')) {
+                            throw new Error('Export endpoint not found (404). Please check server configuration.');
+                        }
+                        throw new Error('Request returned 404. Please verify the endpoint.');
+                    }
+                    
+                    // Check content type to ensure it's a file, not HTML
+                    const contentType = res.headers.get('content-type') || '';
+                    if (contentType.includes('text/html')) {
+                        const clonedRes = res.clone();
+                        const text = await clonedRes.text();
+                        if (text.includes('404') || text.includes('Not Found')) {
+                            throw new Error('Server returned 404 page instead of file. Please check authentication.');
+                        }
+                        throw new Error('Server returned HTML instead of file. Please check authentication.');
+                    }
+                    
+                    if (!res.ok) {
+                        // Try to get error message - clone response so we can read it
+                        let errorMsg = 'Unable to download';
+                        try {
+                            const clonedRes = res.clone();
+                            const text = await clonedRes.text();
+                            // Check if the response is HTML (likely a 404 page)
+                            if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html') || text.includes('404')) {
+                                errorMsg = 'Server returned an error page (404). Please check authentication and try again.';
+                            } else {
+                                // Try to parse as JSON
+                                try {
+                                    const json = JSON.parse(text);
+                                    if (json && json.message) {
+                                        errorMsg = json.message;
+                                    } else {
+                                        errorMsg = text.substring(0, 100) || `Server error (${res.status})`;
+                                    }
+                                } catch {
+                                    errorMsg = text.substring(0, 100) || `Server error (${res.status})`;
+                                }
+                            }
+                        } catch (parseErr) {
+                            errorMsg = `Server error (${res.status})`;
+                        }
+                        throw new Error(errorMsg);
+                    }
+                    
+                    // Verify it's an Excel file
+                    if (!contentType.includes('excel') && !contentType.includes('spreadsheet') && !contentType.includes('application/vnd')) {
+                        console.warn('Unexpected content type:', contentType);
+                    }
+                    
                     const blob = await res.blob();
+                    
+                    // Verify blob is not empty and not HTML
+                    if (blob.size === 0) {
+                        throw new Error('Downloaded file is empty.');
+                    }
+                    
+                    // Check if blob is HTML (read first few bytes)
+                    const blobText = await blob.slice(0, 100).text();
+                    if (blobText.trim().startsWith('<!DOCTYPE') || blobText.trim().startsWith('<html')) {
+                        throw new Error('Server returned HTML page instead of file. Please check authentication.');
+                    }
+                    
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = 'Result_Summary.xlsx';
+                    a.style.display = 'none';
                     document.body.appendChild(a);
                     a.click();
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
+                    
+                    // Clean up after a short delay
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 100);
+                    
+                    // Show success message
+                    showResultModal('success', 'Summary downloaded successfully!');
                 } catch (err) {
-                    showResultModal('error', err.message || 'Download failed');
+                    console.error('Download error:', err);
+                    const errorMsg = err.message || 'Download failed. Please try again.';
+                    showResultModal('error', errorMsg);
+                    
+                    // If it's an auth error, don't auto-redirect here - let the user see the error
+                    if (errorMsg.includes('Authentication') || errorMsg.includes('login')) {
+                        // authFetch already handles logout, so just show the error
+                    }
+                } finally {
+                    // Re-enable button
+                    downloadSummaryBtn.disabled = false;
+                    downloadSummaryBtn.innerHTML = originalText;
                 }
             });
 
