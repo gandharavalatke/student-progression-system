@@ -1534,6 +1534,12 @@ def forgot_password():
 # Block all direct .html file access - redirect to 404
 @app.route('/<path:filename>')
 def serve_static(filename):
+    # IMPORTANT: Don't match API routes - they should be handled by their specific routes
+    if filename.startswith('api/'):
+        # Let Flask's 404 handler deal with unmatched API routes
+        from flask import abort
+        abort(404)
+    
     # If someone tries to access .html files directly, redirect to 404
     if filename.endswith('.html'):
         return app.send_static_file('404.html'), 404
