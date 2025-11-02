@@ -1490,6 +1490,191 @@ def delete_result_file(file_id):
     except Exception as e:
         return jsonify({"message": f"Error deleting file: {str(e)}"}), 500
 
+# ===== EXTRACURRICULAR API ENDPOINTS =====
+
+@app.route('/api/upload-extracurricular-file', methods=['POST', 'OPTIONS'])
+@require_auth
+def upload_extracurricular_file():
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    if 'file' not in request.files:
+        return jsonify({"message": "No file part"}), 400
+    
+    file = request.files['file']
+    category = request.form.get('category')
+    
+    if not category:
+        return jsonify({"message": "Category is required"}), 400
+    
+    valid_categories = ['sports', 'technical', 'cultural', 'student_activities', 'other']
+    if category not in valid_categories:
+        return jsonify({"message": f"Invalid category. Must be one of: {', '.join(valid_categories)}"}), 400
+    
+    if file.filename == '':
+        return jsonify({"message": "No file selected"}), 400
+    
+    try:
+        fs = GridFS(db)
+        
+        # Read file content for size calculation
+        file_content = file.read()
+        file_size = len(file_content)
+        
+        # Reset file pointer
+        file.seek(0)
+        
+        # Generate unique filename
+        import uuid
+        unique_id = str(uuid.uuid4())
+        filename = f"{category}_{unique_id}_{file.filename}"
+        
+        # Store file in GridFS
+        file_id = fs.put(file, filename=filename, category=category, uploaded_at=datetime.now(timezone.utc))
+        
+        # Store metadata in collection
+        db.extracurricular_files.insert_one({
+            "file_id": file_id,
+            "filename": file.filename,
+            "category": category,
+            "uploaded_at": datetime.now(timezone.utc),
+            "file_size": file_size
+        })
+        
+        return jsonify({"message": f"File uploaded successfully for {category.replace('_', ' ').title()}"}), 200
+        
+    except Exception as e:
+        return jsonify({"message": f"Error uploading file: {str(e)}"}), 500
+
+@app.route('/api/get-extracurricular-files', methods=['GET', 'OPTIONS'])
+@require_auth
+def get_extracurricular_files():
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    category = request.args.get('category', '')
+    
+    try:
+        query = {}
+        if category:
+            query['category'] = category
+        
+        files = list(db.extracurricular_files.find(query).sort('uploaded_at', -1))
+        
+        # Convert ObjectId to string for JSON serialization
+        for file in files:
+            file['_id'] = str(file['_id'])
+            file['file_id'] = str(file['file_id'])
+            file['uploaded_at'] = file['uploaded_at'].isoformat()
+        
+        return jsonify(files), 200
+        
+    except Exception as e:
+        return jsonify({"message": f"Error retrieving files: {str(e)}"}), 500
+
+@app.route('/api/download-extracurricular-file/<file_id>', methods=['GET', 'OPTIONS'])
+@require_auth
+def download_extracurricular_file(file_id):
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        fs = GridFS(db)
+        
+        file_doc = db.extracurricular_files.find_one({"_id": ObjectId(file_id)})
+        if not file_doc:
+            return jsonify({"message": "File not found"}), 404
+        
+        gridfs_file_id = file_doc['file_id']
+        file_data = fs.get(gridfs_file_id)
+        if not file_data:
+            return jsonify({"message": "File data not found"}), 404
+        
+        # Determine content type based on file extension
+        filename = file_doc['filename'].lower()
+        if filename.endswith('.pdf'):
+            mimetype = 'application/pdf'
+        elif filename.endswith('.xlsx'):
+            mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        elif filename.endswith('.xls'):
+            mimetype = 'application/vnd.ms-excel'
+        elif filename.endswith('.doc') or filename.endswith('.docx'):
+            mimetype = 'application/msword'
+        else:
+            mimetype = 'application/octet-stream'
+        
+        # Return file data for download
+        from flask import Response
+        return Response(
+            file_data.read(),
+            mimetype=mimetype,
+            headers={
+                'Content-Disposition': f'attachment; filename="{file_doc["filename"]}"'
+            }
+        )
+        
+    except Exception as e:
+        return jsonify({"message": f"Error downloading file: {str(e)}"}), 500
+
+@app.route('/api/delete-extracurricular-file/<file_id>', methods=['DELETE', 'OPTIONS'])
+@require_auth
+def delete_extracurricular_file(file_id):
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        fs = GridFS(db)
+        
+        # Check if file exists in metadata
+        file_doc = db.extracurricular_files.find_one({"_id": ObjectId(file_id)})
+        if not file_doc:
+            return jsonify({"message": "File not found"}), 404
+        
+        # Delete from GridFS
+        fs.delete(file_doc['file_id'])
+        
+        # Delete metadata
+        db.extracurricular_files.delete_one({"_id": ObjectId(file_id)})
+        
+        return jsonify({"message": "File deleted successfully"}), 200
+        
+    except Exception as e:
+        return jsonify({"message": f"Error deleting file: {str(e)}"}), 500
+
+@app.route('/api/get-extracurricular-stats', methods=['GET', 'OPTIONS'])
+@require_auth
+def get_extracurricular_stats():
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        # Get statistics by category
+        categories = ['sports', 'technical', 'cultural', 'student_activities', 'other']
+        stats = {}
+        
+        for category in categories:
+            count = db.extracurricular_files.count_documents({"category": category})
+            stats[category] = count
+        
+        # Get total files
+        total_files = db.extracurricular_files.count_documents({})
+        
+        # Get recent uploads (last 30 days)
+        from datetime import timedelta
+        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+        recent_uploads = db.extracurricular_files.count_documents({
+            "uploaded_at": {"$gte": thirty_days_ago}
+        })
+        
+        return jsonify({
+            "by_category": stats,
+            "total_files": total_files,
+            "recent_uploads": recent_uploads
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"message": f"Error retrieving statistics: {str(e)}"}), 500
+
 # Serve HTML files - Block direct .html access
 @app.route('/')
 def index():
