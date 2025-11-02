@@ -1736,7 +1736,9 @@ def upload_placement_file():
             
             # Extract statistics if this looks like a student database
             if any(col in ['username', 'branch', 'college email address', 'area of interest'] for col in df.columns):
-                parsed_data = extract_placement_statistics(df)
+                # Get branch filter from request if provided
+                filter_branch = request.form.get('filter_branch')
+                parsed_data = extract_placement_statistics(df, filter_branch=filter_branch)
         
         except Exception as parse_error:
             print(f"Warning: Could not parse file for statistics: {parse_error}")
@@ -1767,9 +1769,38 @@ def upload_placement_file():
         print(f"Error uploading placement file: {traceback.format_exc()}")
         return jsonify({"message": f"Error uploading file: {str(e)}"}), 500
 
-def extract_placement_statistics(df):
-    """Extract useful statistics from student placement database CSV."""
+def extract_placement_statistics(df, filter_branch=None):
+    """Extract useful statistics from student placement database CSV.
+    
+    Args:
+        df: DataFrame containing student data
+        filter_branch: Optional branch name to filter data (e.g., 'CSE (AIML)', 'Computer', 'Civil')
+    """
     try:
+        # Branch distribution
+        branch_col = None
+        for col in ['branch', 'branch name', 'department']:
+            if col in df.columns:
+                branch_col = col
+                break
+        
+        # Filter by branch if specified
+        if filter_branch and branch_col:
+            # Normalize branch names for matching (case-insensitive, handle variations)
+            filter_branch_upper = str(filter_branch).upper().strip()
+            # Try exact match first
+            filtered_df = df[df[branch_col].astype(str).str.upper().str.strip() == filter_branch_upper]
+            # If no exact match, try partial match (e.g., "CSE (AIML)" matches "CSE(AIML)")
+            if len(filtered_df) == 0:
+                # Try matching without spaces/parentheses
+                filter_clean = filter_branch_upper.replace(' ', '').replace('(', '').replace(')', '')
+                df_clean = df[branch_col].astype(str).str.upper().str.strip().str.replace(' ', '').str.replace('(', '').str.replace(')', '')
+                filtered_df = df[df_clean == filter_clean]
+            # If still no match, try contains match
+            if len(filtered_df) == 0:
+                filtered_df = df[df[branch_col].astype(str).str.upper().str.strip().str.contains(filter_branch_upper, na=False)]
+            df = filtered_df
+        
         stats = {
             "total_students": len(df),
             "by_branch": {},
@@ -1783,14 +1814,7 @@ def extract_placement_statistics(df):
             "by_area_of_interest": {}
         }
         
-        # Branch distribution
-        branch_col = None
-        for col in ['branch', 'branch name', 'department']:
-            if col in df.columns:
-                branch_col = col
-                break
-        
-        if branch_col:
+        if branch_col and len(df) > 0:
             branch_counts = df[branch_col].value_counts().to_dict()
             stats["by_branch"] = {str(k): int(v) for k, v in branch_counts.items()}
         
@@ -1984,6 +2008,9 @@ def get_placement_stats():
         return jsonify(status='ok'), 200
     
     try:
+        # Get branch filter from query parameter
+        filter_branch = request.args.get('branch', '').strip()
+        
         # Get statistics by category (file counts)
         categories = ['placement', 'higher_education', 'internship', 'entrepreneurship']
         file_stats = {}
@@ -2013,43 +2040,108 @@ def get_placement_stats():
             "ready_to_relocate": 0,
             "certifications_count": 0,
             "avg_engineering_third_year": None,
-            "by_area_of_interest": {}
+            "by_area_of_interest": {},
+            "filtered_branch": filter_branch if filter_branch else None
         }
         
-        # Get all files with parsed data
-        files_with_data = db.placement_files.find({"parsed_data": {"$exists": True}})
-        
-        total_cgpa_values = []
-        total_cgpa_count = 0
-        
-        for file_doc in files_with_data:
-            if "parsed_data" in file_doc:
-                data = file_doc["parsed_data"]
-                
-                # Aggregate student counts (take max to avoid double counting)
-                if data.get("total_students", 0) > parsed_stats["total_students"]:
-                    parsed_stats["total_students"] = data.get("total_students", 0)
-                
-                # Aggregate branch distribution
-                for branch, count in data.get("by_branch", {}).items():
-                    parsed_stats["by_branch"][branch] = parsed_stats["by_branch"].get(branch, 0) + count
-                
-                # Aggregate interests (use max to avoid double counting)
-                parsed_stats["placement_interest"] = max(parsed_stats["placement_interest"], data.get("placement_interest", 0))
-                parsed_stats["higher_education_interest"] = max(parsed_stats["higher_education_interest"], data.get("higher_education_interest", 0))
-                parsed_stats["entrepreneurship_interest"] = max(parsed_stats["entrepreneurship_interest"], data.get("entrepreneurship_interest", 0))
-                parsed_stats["internship_count"] = max(parsed_stats["internship_count"], data.get("internship_count", 0))
-                parsed_stats["ready_to_relocate"] = max(parsed_stats["ready_to_relocate"], data.get("ready_to_relocate", 0))
-                parsed_stats["certifications_count"] = max(parsed_stats["certifications_count"], data.get("certifications_count", 0))
-                
-                # Collect CGPA values for averaging
-                if data.get("avg_engineering_third_year") is not None:
-                    total_cgpa_values.append(data["avg_engineering_third_year"])
-                    total_cgpa_count += 1
-                
-                # Aggregate area of interest
-                for interest, count in data.get("by_area_of_interest", {}).items():
-                    parsed_stats["by_area_of_interest"][interest] = parsed_stats["by_area_of_interest"].get(interest, 0) + count
+        # If branch filter is specified, re-parse files with branch filter
+        # Otherwise, use existing aggregated data
+        if filter_branch:
+            # Re-parse files with branch filter
+            fs = GridFS(db)
+            files_with_data = db.placement_files.find({})
+            
+            for file_doc in files_with_data:
+                try:
+                    # Try to read the file from GridFS
+                    gridfs_file_id = file_doc.get("file_id")
+                    if not gridfs_file_id:
+                        continue
+                    
+                    file_data = fs.get(gridfs_file_id)
+                    if not file_data:
+                        continue
+                    
+                    # Read file content
+                    file_content = file_data.read()
+                    
+                    # Parse CSV/Excel
+                    try:
+                        df = pd.read_csv(BytesIO(file_content), encoding='utf-8')
+                    except:
+                        try:
+                            df = pd.read_csv(BytesIO(file_content), encoding='latin-1')
+                        except:
+                            try:
+                                df = pd.read_excel(BytesIO(file_content))
+                            except:
+                                continue
+                    
+                    # Normalize column names
+                    df.columns = [str(col).strip().lower() for col in df.columns]
+                    
+                    # Extract statistics with branch filter
+                    if any(col in ['username', 'branch', 'college email address', 'area of interest'] for col in df.columns):
+                        data = extract_placement_statistics(df, filter_branch=filter_branch)
+                        
+                        if data and data.get("total_students", 0) > 0:
+                            # Aggregate filtered data
+                            if data.get("total_students", 0) > parsed_stats["total_students"]:
+                                parsed_stats["total_students"] = data.get("total_students", 0)
+                            
+                            # Only show the filtered branch
+                            for branch, count in data.get("by_branch", {}).items():
+                                parsed_stats["by_branch"][branch] = parsed_stats["by_branch"].get(branch, 0) + count
+                            
+                            # Aggregate interests
+                            parsed_stats["placement_interest"] = max(parsed_stats["placement_interest"], data.get("placement_interest", 0))
+                            parsed_stats["higher_education_interest"] = max(parsed_stats["higher_education_interest"], data.get("higher_education_interest", 0))
+                            parsed_stats["entrepreneurship_interest"] = max(parsed_stats["entrepreneurship_interest"], data.get("entrepreneurship_interest", 0))
+                            parsed_stats["internship_count"] = max(parsed_stats["internship_count"], data.get("internship_count", 0))
+                            parsed_stats["ready_to_relocate"] = max(parsed_stats["ready_to_relocate"], data.get("ready_to_relocate", 0))
+                            parsed_stats["certifications_count"] = max(parsed_stats["certifications_count"], data.get("certifications_count", 0))
+                            
+                            # Collect CGPA values
+                            if data.get("avg_engineering_third_year") is not None:
+                                total_cgpa_values.append(data["avg_engineering_third_year"])
+                            
+                            # Aggregate area of interest
+                            for interest, count in data.get("by_area_of_interest", {}).items():
+                                parsed_stats["by_area_of_interest"][interest] = parsed_stats["by_area_of_interest"].get(interest, 0) + count
+                except Exception as e:
+                    print(f"Error re-parsing file {file_doc.get('_id')} with branch filter: {str(e)}")
+                    continue
+        else:
+            # Use existing aggregated data (no filter)
+            files_with_data = db.placement_files.find({"parsed_data": {"$exists": True}})
+            
+            for file_doc in files_with_data:
+                if "parsed_data" in file_doc:
+                    data = file_doc["parsed_data"]
+                    
+                    # Aggregate student counts (take max to avoid double counting)
+                    if data.get("total_students", 0) > parsed_stats["total_students"]:
+                        parsed_stats["total_students"] = data.get("total_students", 0)
+                    
+                    # Aggregate branch distribution
+                    for branch, count in data.get("by_branch", {}).items():
+                        parsed_stats["by_branch"][branch] = parsed_stats["by_branch"].get(branch, 0) + count
+                    
+                    # Aggregate interests (use max to avoid double counting)
+                    parsed_stats["placement_interest"] = max(parsed_stats["placement_interest"], data.get("placement_interest", 0))
+                    parsed_stats["higher_education_interest"] = max(parsed_stats["higher_education_interest"], data.get("higher_education_interest", 0))
+                    parsed_stats["entrepreneurship_interest"] = max(parsed_stats["entrepreneurship_interest"], data.get("entrepreneurship_interest", 0))
+                    parsed_stats["internship_count"] = max(parsed_stats["internship_count"], data.get("internship_count", 0))
+                    parsed_stats["ready_to_relocate"] = max(parsed_stats["ready_to_relocate"], data.get("ready_to_relocate", 0))
+                    parsed_stats["certifications_count"] = max(parsed_stats["certifications_count"], data.get("certifications_count", 0))
+                    
+                    # Collect CGPA values for averaging
+                    if data.get("avg_engineering_third_year") is not None:
+                        total_cgpa_values.append(data["avg_engineering_third_year"])
+                    
+                    # Aggregate area of interest
+                    for interest, count in data.get("by_area_of_interest", {}).items():
+                        parsed_stats["by_area_of_interest"][interest] = parsed_stats["by_area_of_interest"].get(interest, 0) + count
         
         # Calculate average CGPA
         if total_cgpa_values:
