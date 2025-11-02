@@ -1717,19 +1717,170 @@ def upload_placement_file():
         # Store file in GridFS
         file_id = fs.put(file, filename=filename, category=category, uploaded_at=datetime.now(timezone.utc))
         
+        # Parse CSV/Excel file and extract statistics if it's a placement database file
+        parsed_data = None
+        try:
+            file.seek(0)
+            # Try to read as CSV first
+            try:
+                df = pd.read_csv(BytesIO(file_content), encoding='utf-8')
+            except:
+                try:
+                    df = pd.read_csv(BytesIO(file_content), encoding='latin-1')
+                except:
+                    # Try Excel
+                    df = pd.read_excel(BytesIO(file_content))
+            
+            # Normalize column names (case-insensitive, strip whitespace)
+            df.columns = [str(col).strip().lower() for col in df.columns]
+            
+            # Extract statistics if this looks like a student database
+            if any(col in ['username', 'branch', 'college email address', 'area of interest'] for col in df.columns):
+                parsed_data = extract_placement_statistics(df)
+        
+        except Exception as parse_error:
+            print(f"Warning: Could not parse file for statistics: {parse_error}")
+            # Continue with upload even if parsing fails
+        
         # Store metadata in collection
-        db.placement_files.insert_one({
+        file_metadata = {
             "file_id": file_id,
             "filename": file.filename,
             "category": category,
             "uploaded_at": datetime.now(timezone.utc),
             "file_size": file_size
-        })
+        }
         
-        return jsonify({"message": f"File uploaded successfully for {category.replace('_', ' ').title()}"}), 200
+        if parsed_data:
+            file_metadata["parsed_data"] = parsed_data
+            file_metadata["parsed_at"] = datetime.now(timezone.utc)
+        
+        db.placement_files.insert_one(file_metadata)
+        
+        return jsonify({
+            "message": f"File uploaded successfully for {category.replace('_', ' ').title()}",
+            "parsed": parsed_data is not None
+        }), 200
         
     except Exception as e:
+        import traceback
+        print(f"Error uploading placement file: {traceback.format_exc()}")
         return jsonify({"message": f"Error uploading file: {str(e)}"}), 500
+
+def extract_placement_statistics(df):
+    """Extract useful statistics from student placement database CSV."""
+    try:
+        stats = {
+            "total_students": len(df),
+            "by_branch": {},
+            "placement_interest": 0,
+            "higher_education_interest": 0,
+            "entrepreneurship_interest": 0,
+            "internship_count": 0,
+            "ready_to_relocate": 0,
+            "certifications_count": 0,
+            "avg_engineering_third_year": None,
+            "by_area_of_interest": {}
+        }
+        
+        # Branch distribution
+        branch_col = None
+        for col in ['branch', 'branch name', 'department']:
+            if col in df.columns:
+                branch_col = col
+                break
+        
+        if branch_col:
+            branch_counts = df[branch_col].value_counts().to_dict()
+            stats["by_branch"] = {str(k): int(v) for k, v in branch_counts.items()}
+        
+        # Placement interest
+        placement_col = None
+        for col in ['interested in attending placement opportunities provided by git?', 'placement interest', 'placement']:
+            if col in df.columns:
+                placement_col = col
+                break
+        
+        if placement_col:
+            stats["placement_interest"] = int(df[placement_col].astype(str).str.upper().isin(['YES', 'Y', 'TRUE', '1']).sum())
+        
+        # Higher Education interest (from Area of interest or specific column)
+        higher_ed_col = None
+        for col in ['area of interest ', 'area of interest', 'higher studies interest']:
+            if col in df.columns:
+                higher_ed_col = col
+                break
+        
+        if higher_ed_col:
+            higher_ed_values = df[higher_ed_col].astype(str).str.upper()
+            stats["higher_education_interest"] = int(higher_ed_values.str.contains('HIGHER|STUDIES|EDUCATION|PG|M.TECH|MS|MBA', case=False, na=False).sum())
+            stats["entrepreneurship_interest"] = int(higher_ed_values.str.contains('ENTREPRENEUR|STARTUP|BUSINESS', case=False, na=False).sum())
+            
+            # Area of interest distribution
+            interest_counts = higher_ed_values.value_counts().head(10).to_dict()
+            stats["by_area_of_interest"] = {str(k).strip(): int(v) for k, v in interest_counts.items() if str(k).strip().upper() != 'NAN'}
+        
+        # Internship data
+        internship_col = None
+        for col in ['internship letter ', 'internship letter', 'total duration of internship(in days)', 'internship']:
+            if col in df.columns:
+                internship_col = col
+                break
+        
+        if internship_col:
+            # Count students with internship (non-empty values)
+            stats["internship_count"] = int(df[internship_col].astype(str).str.strip().isin(['', 'NA', 'N/A', 'NO', 'NONE']).sum() == False)
+            # If above logic is inverted, fix it
+            non_empty = df[internship_col].astype(str).str.strip()
+            stats["internship_count"] = int((~non_empty.isin(['', 'NA', 'N/A', 'NO', 'NONE', 'NaN'])).sum())
+        
+        # Ready to relocate
+        relocate_col = None
+        for col in ['are you ready to relocate anywhere as per need of a company and join?', 'ready to relocate', 'relocate']:
+            if col in df.columns:
+                relocate_col = col
+                break
+        
+        if relocate_col:
+            stats["ready_to_relocate"] = int(df[relocate_col].astype(str).str.upper().isin(['YES', 'Y', 'TRUE', '1']).sum())
+        
+        # Certifications
+        cert_col = None
+        for col in ['certifications done (nptel/swayam/courseera/any other) ', 'certifications', 'certifications done']:
+            if col in df.columns:
+                cert_col = col
+                break
+        
+        if cert_col:
+            # Count students with certifications (non-empty)
+            non_empty_cert = df[cert_col].astype(str).str.strip()
+            stats["certifications_count"] = int((~non_empty_cert.isin(['', 'NA', 'N/A', 'NO', 'NONE', 'NaN'])).sum())
+        
+        # Average Engineering Third Year CGPA
+        third_year_col = None
+        for col in ['engineering third year aggregate ', 'engineering third year', 'third year aggregate', 'third year cgpa']:
+            if col in df.columns:
+                third_year_col = col
+                break
+        
+        if third_year_col:
+            try:
+                # Extract numeric values, handle various formats
+                values = df[third_year_col].astype(str).str.replace('%', '').str.replace('CGPA', '').str.replace('CGPI', '').str.strip()
+                numeric_values = pd.to_numeric(values, errors='coerce')
+                avg_cgpa = numeric_values.dropna().mean()
+                if pd.notna(avg_cgpa):
+                    stats["avg_engineering_third_year"] = round(float(avg_cgpa), 2)
+            except:
+                pass
+        
+        return stats
+    
+    except Exception as e:
+        print(f"Error extracting placement statistics: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
+        return None
 
 @app.route('/api/get-placement-files', methods=['GET', 'OPTIONS'])
 @require_auth
@@ -1833,13 +1984,13 @@ def get_placement_stats():
         return jsonify(status='ok'), 200
     
     try:
-        # Get statistics by category
+        # Get statistics by category (file counts)
         categories = ['placement', 'higher_education', 'internship', 'entrepreneurship']
-        stats = {}
+        file_stats = {}
         
         for category in categories:
             count = db.placement_files.count_documents({"category": category})
-            stats[category] = count
+            file_stats[category] = count
         
         # Get total files
         total_files = db.placement_files.count_documents({})
@@ -1851,13 +2002,76 @@ def get_placement_stats():
             "uploaded_at": {"$gte": thirty_days_ago}
         })
         
+        # Aggregate parsed data from all uploaded files
+        parsed_stats = {
+            "total_students": 0,
+            "by_branch": {},
+            "placement_interest": 0,
+            "higher_education_interest": 0,
+            "entrepreneurship_interest": 0,
+            "internship_count": 0,
+            "ready_to_relocate": 0,
+            "certifications_count": 0,
+            "avg_engineering_third_year": None,
+            "by_area_of_interest": {}
+        }
+        
+        # Get all files with parsed data
+        files_with_data = db.placement_files.find({"parsed_data": {"$exists": True}})
+        
+        total_cgpa_values = []
+        total_cgpa_count = 0
+        
+        for file_doc in files_with_data:
+            if "parsed_data" in file_doc:
+                data = file_doc["parsed_data"]
+                
+                # Aggregate student counts (take max to avoid double counting)
+                if data.get("total_students", 0) > parsed_stats["total_students"]:
+                    parsed_stats["total_students"] = data.get("total_students", 0)
+                
+                # Aggregate branch distribution
+                for branch, count in data.get("by_branch", {}).items():
+                    parsed_stats["by_branch"][branch] = parsed_stats["by_branch"].get(branch, 0) + count
+                
+                # Aggregate interests (use max to avoid double counting)
+                parsed_stats["placement_interest"] = max(parsed_stats["placement_interest"], data.get("placement_interest", 0))
+                parsed_stats["higher_education_interest"] = max(parsed_stats["higher_education_interest"], data.get("higher_education_interest", 0))
+                parsed_stats["entrepreneurship_interest"] = max(parsed_stats["entrepreneurship_interest"], data.get("entrepreneurship_interest", 0))
+                parsed_stats["internship_count"] = max(parsed_stats["internship_count"], data.get("internship_count", 0))
+                parsed_stats["ready_to_relocate"] = max(parsed_stats["ready_to_relocate"], data.get("ready_to_relocate", 0))
+                parsed_stats["certifications_count"] = max(parsed_stats["certifications_count"], data.get("certifications_count", 0))
+                
+                # Collect CGPA values for averaging
+                if data.get("avg_engineering_third_year") is not None:
+                    total_cgpa_values.append(data["avg_engineering_third_year"])
+                    total_cgpa_count += 1
+                
+                # Aggregate area of interest
+                for interest, count in data.get("by_area_of_interest", {}).items():
+                    parsed_stats["by_area_of_interest"][interest] = parsed_stats["by_area_of_interest"].get(interest, 0) + count
+        
+        # Calculate average CGPA
+        if total_cgpa_values:
+            parsed_stats["avg_engineering_third_year"] = round(sum(total_cgpa_values) / len(total_cgpa_values), 2)
+        
+        # Sort area of interest by count
+        parsed_stats["by_area_of_interest"] = dict(sorted(
+            parsed_stats["by_area_of_interest"].items(),
+            key=lambda x: x[1],
+            reverse=True
+        )[:10])  # Top 10
+        
         return jsonify({
-            "by_category": stats,
+            "by_category": file_stats,
             "total_files": total_files,
-            "recent_uploads": recent_uploads
+            "recent_uploads": recent_uploads,
+            "student_data": parsed_stats
         }), 200
         
     except Exception as e:
+        import traceback
+        print(f"Error retrieving placement statistics: {traceback.format_exc()}")
         return jsonify({"message": f"Error retrieving statistics: {str(e)}"}), 500
 
 # Serve HTML files - Block direct .html access

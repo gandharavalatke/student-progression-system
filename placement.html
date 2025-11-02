@@ -291,13 +291,26 @@
                 <h2 class="text-lg font-semibold text-white mobile-title-center">Placement & Higher Education</h2>
             </header>
             <div class="p-8 space-y-6">
-                <!-- Statistics Cards -->
+                <!-- Primary Statistics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <div class="glass-card p-4 rounded-lg">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-slate-400 text-sm">Placement</p>
-                                <p class="text-2xl font-bold text-white" id="placement-count">0</p>
+                                <p class="text-slate-400 text-sm">Total Students</p>
+                                <p class="text-2xl font-bold text-white" id="total-students-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">in database</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-indigo-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-users text-indigo-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Placement Interest</p>
+                                <p class="text-2xl font-bold text-white" id="placement-interest-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">students</p>
                             </div>
                             <div class="h-12 w-12 rounded-full bg-blue-600/20 flex items-center justify-center">
                                 <i class="fa-solid fa-briefcase text-blue-400"></i>
@@ -308,7 +321,8 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-slate-400 text-sm">Higher Education</p>
-                                <p class="text-2xl font-bold text-white" id="higher-education-count">0</p>
+                                <p class="text-2xl font-bold text-white" id="higher-education-interest-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">interested</p>
                             </div>
                             <div class="h-12 w-12 rounded-full bg-green-600/20 flex items-center justify-center">
                                 <i class="fa-solid fa-graduation-cap text-green-400"></i>
@@ -318,22 +332,64 @@
                     <div class="glass-card p-4 rounded-lg">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-slate-400 text-sm">Internship</p>
-                                <p class="text-2xl font-bold text-white" id="internship-count">0</p>
+                                <p class="text-slate-400 text-sm">Internships</p>
+                                <p class="text-2xl font-bold text-white" id="internship-student-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">completed</p>
                             </div>
                             <div class="h-12 w-12 rounded-full bg-purple-600/20 flex items-center justify-center">
                                 <i class="fa-solid fa-building text-purple-400"></i>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Secondary Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <div class="glass-card p-4 rounded-lg">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-slate-400 text-sm">Entrepreneurship</p>
-                                <p class="text-2xl font-bold text-white" id="entrepreneurship-count">0</p>
+                                <p class="text-2xl font-bold text-white" id="entrepreneurship-interest-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">interested</p>
                             </div>
                             <div class="h-12 w-12 rounded-full bg-orange-600/20 flex items-center justify-center">
                                 <i class="fa-solid fa-lightbulb text-orange-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Ready to Relocate</p>
+                                <p class="text-2xl font-bold text-white" id="relocate-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">students</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-cyan-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-map-marker-alt text-cyan-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Certifications</p>
+                                <p class="text-2xl font-bold text-white" id="certifications-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">students have</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-yellow-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-certificate text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Avg 3rd Year CGPA</p>
+                                <p class="text-2xl font-bold text-white" id="avg-cgpa">0.00</p>
+                                <p class="text-xs text-slate-500 mt-1">CGPA</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-pink-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-star text-pink-400"></i>
                             </div>
                         </div>
                     </div>
@@ -363,8 +419,8 @@
                             <div id="upload-area" class="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer bg-slate-800/30">
                                 <i class="fa-solid fa-cloud-arrow-up text-4xl text-blue-400 mb-3"></i>
                                 <p class="text-slate-300 mb-1">Click to upload or drag and drop</p>
-                                <p class="text-sm text-slate-400">Excel, PDF, Word documents supported</p>
-                                <input type="file" id="file-input" class="hidden" accept=".xlsx,.xls,.pdf,.doc,.docx">
+                                <p class="text-sm text-slate-400">CSV, Excel, PDF, Word documents supported</p>
+                                <input type="file" id="file-input" class="hidden" accept=".csv,.xlsx,.xls,.pdf,.doc,.docx">
                                 <p id="selected-file" class="text-sm text-blue-400 mt-2 hidden"></p>
                             </div>
                         </div>
@@ -403,14 +459,50 @@
                     </div>
                 </div>
 
-                <!-- Statistics Chart -->
-                <div class="glass-card p-6 rounded-xl shadow-lg">
-                    <h3 class="text-xl font-semibold mb-4 flex items-center">
-                        <i class="fa-solid fa-chart-bar mr-2 text-blue-400"></i>
-                        Category Statistics
-                    </h3>
-                    <div class="h-64">
-                        <canvas id="stats-chart"></canvas>
+                <!-- Statistics Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Category Statistics Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-chart-bar mr-2 text-blue-400"></i>
+                            Category Statistics
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="stats-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Branch Distribution Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-building-columns mr-2 text-green-400"></i>
+                            Branch Distribution
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="branch-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Area of Interest Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-heart mr-2 text-purple-400"></i>
+                            Top Areas of Interest
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="interest-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Interest Comparison Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-chart-pie mr-2 text-orange-400"></i>
+                            Career Interest Distribution
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="career-chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -911,7 +1003,11 @@
                     throw new Error(data.message || 'Upload failed');
                 }
                 
-                showResultModal('success', data.message, 'Upload Successful');
+                let message = data.message;
+                if (data.parsed) {
+                    message += ' Statistics have been extracted and will be displayed below.';
+                }
+                showResultModal('success', message, 'Upload Successful');
                 
                 // Reset form
                 fileInput.value = '';
@@ -1118,6 +1214,10 @@
             }
         });
         
+        let branchChart = null;
+        let interestChart = null;
+        let careerChart = null;
+
         // Load statistics
         async function loadStats() {
             try {
@@ -1137,20 +1237,25 @@
                 }
                 
                 const stats = await response.json();
+                const studentData = stats.student_data || {};
                 
-                // Update count cards
-                document.getElementById('placement-count').textContent = stats.by_category.placement || 0;
-                document.getElementById('higher-education-count').textContent = stats.by_category.higher_education || 0;
-                document.getElementById('internship-count').textContent = stats.by_category.internship || 0;
-                document.getElementById('entrepreneurship-count').textContent = stats.by_category.entrepreneurship || 0;
+                // Update primary statistics cards
+                document.getElementById('total-students-count').textContent = studentData.total_students || 0;
+                document.getElementById('placement-interest-count').textContent = studentData.placement_interest || 0;
+                document.getElementById('higher-education-interest-count').textContent = studentData.higher_education_interest || 0;
+                document.getElementById('internship-student-count').textContent = studentData.internship_count || 0;
                 
-                // Update chart
+                // Update secondary statistics cards
+                document.getElementById('entrepreneurship-interest-count').textContent = studentData.entrepreneurship_interest || 0;
+                document.getElementById('relocate-count').textContent = studentData.ready_to_relocate || 0;
+                document.getElementById('certifications-count').textContent = studentData.certifications_count || 0;
+                document.getElementById('avg-cgpa').textContent = (studentData.avg_engineering_third_year || 0).toFixed(2);
+                
+                // Update Category Files Chart
                 const ctx = document.getElementById('stats-chart').getContext('2d');
-                
                 if (statsChart) {
                     statsChart.destroy();
                 }
-                
                 statsChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -1215,6 +1320,205 @@
                         }
                     }
                 });
+                
+                // Update Branch Distribution Chart
+                const branchCtx = document.getElementById('branch-chart').getContext('2d');
+                if (branchChart) {
+                    branchChart.destroy();
+                }
+                
+                const branches = Object.keys(studentData.by_branch || {});
+                const branchCounts = Object.values(studentData.by_branch || {});
+                
+                if (branches.length > 0) {
+                    branchChart = new Chart(branchCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: branches,
+                            datasets: [{
+                                data: branchCounts,
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(168, 85, 247, 0.8)',
+                                    'rgba(249, 115, 22, 0.8)',
+                                    'rgba(236, 72, 153, 0.8)',
+                                    'rgba(20, 184, 166, 0.8)',
+                                    'rgba(251, 146, 60, 0.8)',
+                                    'rgba(139, 92, 246, 0.8)'
+                                ],
+                                borderWidth: 2,
+                                borderColor: 'rgba(30, 41, 59, 0.8)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#94a3b8',
+                                        padding: 10,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#fff',
+                                    borderColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderWidth: 1
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    branchCtx.fillStyle = '#94a3b8';
+                    branchCtx.font = '14px Inter';
+                    branchCtx.textAlign = 'center';
+                    branchCtx.fillText('No branch data available', branchCtx.canvas.width / 2, branchCtx.canvas.height / 2);
+                }
+                
+                // Update Area of Interest Chart
+                const interestCtx = document.getElementById('interest-chart').getContext('2d');
+                if (interestChart) {
+                    interestChart.destroy();
+                }
+                
+                const interests = Object.keys(studentData.by_area_of_interest || {}).slice(0, 8);
+                const interestCounts = interests.map(i => studentData.by_area_of_interest[i]);
+                
+                if (interests.length > 0) {
+                    interestChart = new Chart(interestCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: interests.map(i => i.length > 20 ? i.substring(0, 20) + '...' : i),
+                            datasets: [{
+                                label: 'Students',
+                                data: interestCounts,
+                                backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                                borderColor: 'rgba(168, 85, 247, 1)',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#fff',
+                                    borderColor: 'rgba(168, 85, 247, 0.5)',
+                                    borderWidth: 1
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#94a3b8',
+                                        stepSize: 1
+                                    },
+                                    grid: {
+                                        color: 'rgba(148, 163, 184, 0.1)'
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        color: '#94a3b8'
+                                    },
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    interestCtx.fillStyle = '#94a3b8';
+                    interestCtx.font = '14px Inter';
+                    interestCtx.textAlign = 'center';
+                    interestCtx.fillText('No interest data available', interestCtx.canvas.width / 2, interestCtx.canvas.height / 2);
+                }
+                
+                // Update Career Interest Distribution Chart
+                const careerCtx = document.getElementById('career-chart').getContext('2d');
+                if (careerChart) {
+                    careerChart.destroy();
+                }
+                
+                const placementInterest = studentData.placement_interest || 0;
+                const higherEdInterest = studentData.higher_education_interest || 0;
+                const entrepreneurshipInterest = studentData.entrepreneurship_interest || 0;
+                const totalInterests = placementInterest + higherEdInterest + entrepreneurshipInterest;
+                
+                if (totalInterests > 0) {
+                    careerChart = new Chart(careerCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Placement', 'Higher Education', 'Entrepreneurship'],
+                            datasets: [{
+                                data: [placementInterest, higherEdInterest, entrepreneurshipInterest],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(249, 115, 22, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(59, 130, 246, 1)',
+                                    'rgba(16, 185, 129, 1)',
+                                    'rgba(249, 115, 22, 1)'
+                                ],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#94a3b8',
+                                        padding: 10,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#fff',
+                                    borderColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderWidth: 1,
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.parsed || 0;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    careerCtx.fillStyle = '#94a3b8';
+                    careerCtx.font = '14px Inter';
+                    careerCtx.textAlign = 'center';
+                    careerCtx.fillText('No career interest data available', careerCtx.canvas.width / 2, careerCtx.canvas.height / 2);
+                }
                 
             } catch (error) {
                 console.error('Load stats error:', error);
