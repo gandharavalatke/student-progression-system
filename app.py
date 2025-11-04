@@ -2080,6 +2080,10 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
 AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai').lower()  # 'openai' or 'anthropic'
 
+# Ensure OPENAI_API_KEY is set in environment if we have it (for OpenAI SDK auto-detection)
+if OPENAI_API_KEY and 'OPENAI_API_KEY' not in os.environ:
+    os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+
 def get_ai_client():
     """Get AI client based on configured provider."""
     if AI_PROVIDER == 'anthropic' and ANTHROPIC_API_KEY:
@@ -2088,13 +2092,23 @@ def get_ai_client():
             return Anthropic(api_key=ANTHROPIC_API_KEY), 'anthropic'
         except ImportError:
             print("Warning: Anthropic SDK not installed. Falling back to OpenAI.")
+        except Exception as e:
+            print(f"Error initializing Anthropic client: {e}")
     
     if OPENAI_API_KEY:
         try:
             from openai import OpenAI
-            return OpenAI(api_key=OPENAI_API_KEY), 'openai'
+            # Create client without arguments - OpenAI SDK will use OPENAI_API_KEY from environment
+            # This avoids issues with proxy arguments that might be passed from environment
+            # The API key is already in os.environ from os.getenv() above
+            client = OpenAI()
+            return client, 'openai'
         except ImportError:
             print("Warning: OpenAI SDK not installed.")
+        except Exception as e:
+            print(f"Error initializing OpenAI client: {e}")
+            import traceback
+            print(traceback.format_exc())
     
     return None, None
 
