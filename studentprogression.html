@@ -2156,7 +2156,7 @@
             <div class="text-center p-6">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-600 mb-4">
                     <i class="fa-solid fa-check text-white text-xl"></i>
-                </div>
+            </div>
                 <h3 class="text-xl font-semibold mb-2">Logout Successful</h3>
                 <p class="text-slate-400 text-sm">You have been successfully logged out.</p>
             </div>
@@ -2250,8 +2250,8 @@
                 document.getElementById('logout-success-overlay').classList.add('flex');
                 // Auto-close after 1.5 seconds and redirect
                 setTimeout(() => {
-                    localStorage.removeItem('loggedInUser');
-                    sessionStorage.removeItem('sps_user');
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('sps_user');
                     window.location.href = '/';
                 }, 1500);
             });
@@ -2504,19 +2504,19 @@
                     // Use a more reliable download method
                     try {
                         // Trigger download
-                        a.click();
+                    a.click();
                         
                         // Wait a bit to ensure download started, then clean up
                         setTimeout(() => {
                             try {
                                 if (document.body.contains(a)) {
-                                    document.body.removeChild(a);
+                    document.body.removeChild(a);
                                 }
                             } catch (e) {
                                 // Ignore cleanup errors
                             }
                             try {
-                                window.URL.revokeObjectURL(url);
+                    window.URL.revokeObjectURL(url);
                             } catch (e) {
                                 // Ignore revoke errors
                             }
@@ -2590,9 +2590,9 @@
                         localStorage.removeItem('access_token');
                         localStorage.removeItem('refresh_token');
                         localStorage.removeItem('token_expires_at');
-                        localStorage.removeItem('loggedInUser');
+                localStorage.removeItem('loggedInUser');
                         localStorage.removeItem('user_role');
-                        sessionStorage.removeItem('sps_user');
+                sessionStorage.removeItem('sps_user');
                         window.location.href = '/';
                     }
                 }, 1500);

@@ -373,9 +373,9 @@
                     // Use authFetch for authenticated request
                     if (window.authFetch) {
                         res = await window.authFetch('/api/upload-faculty', {
-                            method: 'POST',
-                            body: formData
-                        });
+                        method: 'POST',
+                        body: formData
+                    });
                     } else {
                         // Fallback if authFetch not available (shouldn't happen)
                         const token = localStorage.getItem('access_token');

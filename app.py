@@ -2074,6 +2074,334 @@ def get_placement_stats():
         print(f"Error retrieving placement statistics: {traceback.format_exc()}")
         return jsonify({"message": f"Error retrieving statistics: {str(e)}"}), 500
 
+# ===== AI/LLM INTEGRATION =====
+# AI Configuration - Support multiple providers
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
+AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai').lower()  # 'openai' or 'anthropic'
+
+def get_ai_client():
+    """Get AI client based on configured provider."""
+    if AI_PROVIDER == 'anthropic' and ANTHROPIC_API_KEY:
+        try:
+            from anthropic import Anthropic
+            return Anthropic(api_key=ANTHROPIC_API_KEY), 'anthropic'
+        except ImportError:
+            print("Warning: Anthropic SDK not installed. Falling back to OpenAI.")
+    
+    if OPENAI_API_KEY:
+        try:
+            from openai import OpenAI
+            return OpenAI(api_key=OPENAI_API_KEY), 'openai'
+        except ImportError:
+            print("Warning: OpenAI SDK not installed.")
+    
+    return None, None
+
+def get_dashboard_statistics():
+    """Collect dashboard statistics for AI context."""
+    try:
+        stats = {}
+        
+        # File counts
+        stats['total_files'] = db.student_files.count_documents({})
+        stats['placement_files'] = db.placement_files.count_documents({})
+        stats['extracurricular_files'] = db.extracurricular_files.count_documents({})
+        
+        # User counts
+        stats['total_users'] = db.users.count_documents({})
+        stats['admin_users'] = db.users.count_documents({"role": "admin"})
+        stats['faculty_users'] = db.users.count_documents({"role": "faculty"})
+        
+        # Recent activity (last 7 days)
+        from datetime import timedelta
+        seven_days_ago = datetime.now(timezone.utc) - timedelta(days=7)
+        stats['recent_files'] = db.student_files.count_documents({
+            "uploaded_at": {"$gte": seven_days_ago}
+        })
+        
+        return stats
+    except Exception as e:
+        print(f"Error getting dashboard stats: {e}")
+        return {}
+
+@app.route('/api/ai/chat', methods=['POST', 'OPTIONS'])
+@require_auth
+def ai_chat():
+    """AI Assistant chat endpoint."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '').strip()
+        conversation_history = data.get('history', [])
+        
+        if not user_message:
+            return jsonify({"message": "Message is required"}), 400
+        
+        # Get AI client
+        ai_client, provider = get_ai_client()
+        if not ai_client:
+            return jsonify({
+                "message": "AI service not configured. Please set OPENAI_API_KEY or ANTHROPIC_API_KEY environment variable.",
+                "response": "I'm sorry, AI features are not currently available. Please configure your AI API key in the environment variables."
+            }), 503
+        
+        # Build system prompt
+        dashboard_stats = get_dashboard_statistics()
+        system_prompt = f"""You are an AI assistant for the Student Progression System (SPS) at GIT (Gandhi Institute of Technology).
+
+Your role is to help users navigate the system, answer questions about student data, and provide insights.
+
+Current System Statistics:
+- Total Files: {dashboard_stats.get('total_files', 0)}
+- Placement Files: {dashboard_stats.get('placement_files', 0)}
+- Extracurricular Files: {dashboard_stats.get('extracurricular_files', 0)}
+- Total Users: {dashboard_stats.get('total_users', 0)}
+- Recent Files (last 7 days): {dashboard_stats.get('recent_files', 0)}
+
+Available Features:
+1. Dashboard - View KPIs and statistics
+2. Academic Records - Upload and manage student academic files
+3. Placement & Higher Ed - Track placement, internships, higher education
+4. Extracurricular - Manage sports, technical activities, cultural programs
+5. Reports - Generate and view reports
+6. Settings - Manage profile and account settings
+
+Be helpful, concise, and accurate. If you don't know something, say so. Always provide actionable advice when possible."""
+        
+        # Build messages
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        # Add conversation history (last 10 messages to avoid token limits)
+        for msg in conversation_history[-10:]:
+            if msg.get('role') in ['user', 'assistant']:
+                messages.append({"role": msg['role'], "content": msg['content']})
+        
+        # Add current message
+        messages.append({"role": "user", "content": user_message})
+        
+        # Call AI API
+        if provider == 'openai':
+            response = ai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                temperature=0.7,
+                max_tokens=500
+            )
+            ai_response = response.choices[0].message.content
+        else:  # anthropic
+            # Convert messages format for Anthropic
+            anthropic_messages = []
+            for msg in messages[1:]:  # Skip system message
+                if msg['role'] == 'user':
+                    anthropic_messages.append({"role": "user", "content": msg['content']})
+                elif msg['role'] == 'assistant':
+                    anthropic_messages.append({"role": "assistant", "content": msg['content']})
+            
+            response = ai_client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=500,
+                system=system_prompt,
+                messages=anthropic_messages
+            )
+            ai_response = response.content[0].text
+        
+        return jsonify({
+            "response": ai_response,
+            "provider": provider
+        }), 200
+        
+    except Exception as e:
+        import traceback
+        print(f"Error in AI chat: {traceback.format_exc()}")
+        return jsonify({
+            "message": f"Error processing request: {str(e)}",
+            "response": "I apologize, but I encountered an error. Please try again or contact support."
+        }), 500
+
+@app.route('/api/ai/query', methods=['POST', 'OPTIONS'])
+@require_auth
+def ai_natural_language_query():
+    """Natural language query endpoint for student data."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        data = request.get_json()
+        query = data.get('query', '').strip()
+        
+        if not query:
+            return jsonify({"message": "Query is required"}), 400
+        
+        # Collect relevant data
+        context_data = {}
+        
+        # Get file statistics
+        context_data['files'] = {
+            'total_student_files': db.student_files.count_documents({}),
+            'total_placement_files': db.placement_files.count_documents({}),
+            'total_extracurricular_files': db.extracurricular_files.count_documents({})
+        }
+        
+        # Get placement stats if available
+        try:
+            placement_stats = db.placement_files.find_one({"parsed_data": {"$exists": True}})
+            if placement_stats and "parsed_data" in placement_stats:
+                context_data['placement_data'] = placement_stats["parsed_data"]
+        except:
+            pass
+        
+        # Get AI client
+        ai_client, provider = get_ai_client()
+        if not ai_client:
+            return jsonify({
+                "message": "AI service not configured",
+                "answer": "AI service is not available. Please configure your API key."
+            }), 503
+        
+        # Build prompt
+        system_prompt = f"""You are a data analyst for the Student Progression System. Answer questions about student data based on the provided context.
+
+Available Data:
+{str(context_data)[:2000]}
+
+Answer the user's question concisely and accurately. If the data doesn't contain the answer, say so."""
+        
+        # Call AI API
+        if provider == 'openai':
+            response = ai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": query}
+                ],
+                temperature=0.3,
+                max_tokens=300
+            )
+            answer = response.choices[0].message.content
+        else:  # anthropic
+            response = ai_client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=300,
+                system=system_prompt,
+                messages=[{"role": "user", "content": query}]
+            )
+            answer = response.content[0].text
+        
+        return jsonify({
+            "answer": answer,
+            "query": query,
+            "provider": provider
+        }), 200
+        
+    except Exception as e:
+        import traceback
+        print(f"Error in AI query: {traceback.format_exc()}")
+        return jsonify({
+            "message": f"Error processing query: {str(e)}",
+            "answer": "I couldn't process your query. Please try rephrasing or check back later."
+        }), 500
+
+@app.route('/api/ai/insights', methods=['GET', 'OPTIONS'])
+@require_auth
+def ai_insights():
+    """Generate AI-powered insights from student data."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        # Collect comprehensive data
+        insights_data = {}
+        
+        # File statistics
+        insights_data['files'] = {
+            'total_student': db.student_files.count_documents({}),
+            'total_placement': db.placement_files.count_documents({}),
+            'total_extracurricular': db.extracurricular_files.count_documents({})
+        }
+        
+        # Recent activity
+        from datetime import timedelta
+        seven_days_ago = datetime.now(timezone.utc) - timedelta(days=7)
+        insights_data['recent_activity'] = {
+            'student_files': db.student_files.count_documents({"uploaded_at": {"$gte": seven_days_ago}}),
+            'placement_files': db.placement_files.count_documents({"uploaded_at": {"$gte": seven_days_ago}}),
+            'extracurricular_files': db.extracurricular_files.count_documents({"uploaded_at": {"$gte": seven_days_ago}})
+        }
+        
+        # Get placement statistics
+        try:
+            placement_file = db.placement_files.find_one({"parsed_data": {"$exists": True}})
+            if placement_file and "parsed_data" in placement_file:
+                insights_data['placement_stats'] = placement_file["parsed_data"]
+        except:
+            pass
+        
+        # Get AI client
+        ai_client, provider = get_ai_client()
+        if not ai_client:
+            return jsonify({
+                "message": "AI service not configured",
+                "insights": ["AI insights are not available. Please configure your AI API key to enable this feature."]
+            }), 503
+        
+        # Build prompt
+        prompt = f"""Analyze the following student progression data and provide 3-5 actionable insights or recommendations:
+
+Data Summary:
+{str(insights_data)[:3000]}
+
+Provide insights in a clear, concise format. Focus on:
+1. Trends and patterns
+2. Areas needing attention
+3. Recommendations for improvement
+4. Notable achievements
+
+Format as a numbered list of insights."""
+        
+        # Call AI API
+        if provider == 'openai':
+            response = ai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a data analyst providing insights about student progression data."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=500
+            )
+            insights_text = response.choices[0].message.content
+        else:  # anthropic
+            response = ai_client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=500,
+                system="You are a data analyst providing insights about student progression data.",
+                messages=[{"role": "user", "content": prompt}]
+            )
+            insights_text = response.content[0].text
+        
+        # Parse insights into list
+        insights_list = [line.strip() for line in insights_text.split('\n') if line.strip() and (line.strip()[0].isdigit() or line.strip().startswith('-') or line.strip().startswith('•'))]
+        
+        if not insights_list:
+            insights_list = [insights_text]
+        
+        return jsonify({
+            "insights": insights_list[:5],  # Limit to 5 insights
+            "raw_text": insights_text,
+            "provider": provider
+        }), 200
+        
+    except Exception as e:
+        import traceback
+        print(f"Error generating insights: {traceback.format_exc()}")
+        return jsonify({
+            "message": f"Error generating insights: {str(e)}",
+            "insights": ["Unable to generate insights at this time. Please try again later."]
+        }), 500
+
 # Serve HTML files - Block direct .html access
 @app.route('/')
 def index():
