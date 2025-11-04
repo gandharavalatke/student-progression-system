@@ -2102,12 +2102,17 @@
                 if (!response.ok) {
                     const data = await response.json();
                     if (response.status === 503) {
+                        let errorDetails = data.insights?.[0] || data.message || 'AI service is not configured';
+                        if (data.debug) {
+                            errorDetails += `<br><span class="text-xs text-slate-400 mt-2 block">Debug: API Key Present: ${data.debug.has_api_key}, Length: ${data.debug.api_key_length}, Provider: ${data.debug.provider}</span>`;
+                        }
                         container.innerHTML = `
                             <div class="flex items-start p-4 bg-yellow-900/20 rounded-lg border border-yellow-600/30">
                                 <i class="fa-solid fa-info-circle text-yellow-400 mr-3 mt-1"></i>
-                                <div>
-                                    <p class="text-slate-300 font-semibold mb-1">AI Service Not Configured</p>
-                                    <p class="text-slate-400 text-sm">${data.insights[0] || 'Please configure OPENAI_API_KEY or ANTHROPIC_API_KEY in environment variables.'}</p>
+                                <div class="flex-1">
+                                    <p class="text-slate-300 font-semibold mb-1">AI Service Not Available</p>
+                                    <p class="text-slate-400 text-sm">${errorDetails}</p>
+                                    <p class="text-slate-500 text-xs mt-2">Check Railway logs for detailed error messages.</p>
                                 </div>
                             </div>
                         `;

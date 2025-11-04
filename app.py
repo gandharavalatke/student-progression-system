@@ -2105,20 +2105,51 @@ def get_ai_client():
     
     # Check if OpenAI API key is available
     if OPENAI_API_KEY:
-        print(f"DEBUG: OPENAI_API_KEY found (length: {len(OPENAI_API_KEY)}, starts with: {OPENAI_API_KEY[:10]}...)")
+        print(f"DEBUG [get_ai_client]: OPENAI_API_KEY found (length: {len(OPENAI_API_KEY)}, starts with: {OPENAI_API_KEY[:10]}...)")
         try:
             from openai import OpenAI
+            print("DEBUG [get_ai_client]: OpenAI SDK imported successfully")
+            
+            # Ensure the API key is in os.environ for the SDK to pick up
+            if 'OPENAI_API_KEY' not in os.environ or os.environ.get('OPENAI_API_KEY') != OPENAI_API_KEY:
+                os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+                print("DEBUG [get_ai_client]: Set OPENAI_API_KEY in os.environ")
+            else:
+                print("DEBUG [get_ai_client]: OPENAI_API_KEY already in os.environ")
+            
             # Create client without arguments - OpenAI SDK will use OPENAI_API_KEY from environment
             # This avoids issues with proxy arguments that might be passed from environment
-            # The API key is already in os.environ from os.getenv() above
-            client = OpenAI()
-            print("DEBUG: OpenAI client initialized successfully")
-            return client, 'openai'
-        except ImportError:
-            print("ERROR: OpenAI SDK not installed. Run: pip install openai")
+            print("DEBUG [get_ai_client]: Attempting to initialize OpenAI client...")
+            try:
+                client = OpenAI()
+                print("DEBUG [get_ai_client]: OpenAI client initialized successfully")
+                
+                # Verify the client has the API key
+                if hasattr(client, '_client') and hasattr(client._client, 'api_key'):
+                    print(f"DEBUG [get_ai_client]: Client has api_key in _client: {bool(client._client.api_key)}")
+                elif hasattr(client, 'api_key'):
+                    print(f"DEBUG [get_ai_client]: Client has api_key attribute: {bool(client.api_key)}")
+                
+                # Try a simple test to verify the client works (optional - comment out if causing issues)
+                # Just verify the client object is valid
+                if client is None:
+                    raise Exception("Client is None after initialization")
+                
+                print("DEBUG [get_ai_client]: Returning client successfully")
+                return client, 'openai'
+            except Exception as init_error:
+                print(f"ERROR [get_ai_client]: Client initialization failed: {type(init_error).__name__}: {init_error}")
+                import traceback
+                print("FULL TRACEBACK:")
+                print(traceback.format_exc())
+                raise  # Re-raise to be caught by outer except
+        except ImportError as e:
+            print(f"ERROR [get_ai_client]: OpenAI SDK not installed. Run: pip install openai. Error: {e}")
+            print(f"ERROR [get_ai_client]: Import error details: {type(e).__name__}: {e}")
         except Exception as e:
-            print(f"ERROR: Failed to initialize OpenAI client: {e}")
+            print(f"ERROR [get_ai_client]: Failed to initialize OpenAI client: {type(e).__name__}: {e}")
             import traceback
+            print("FULL TRACEBACK:")
             print(traceback.format_exc())
     else:
         print("ERROR: OPENAI_API_KEY is not set or is empty")
@@ -2126,6 +2157,7 @@ def get_ai_client():
         if 'OPENAI_API_KEY' in os.environ:
             print(f"DEBUG: os.environ['OPENAI_API_KEY'] value (first 10 chars): {os.environ['OPENAI_API_KEY'][:10]}...")
     
+    print("ERROR: Returning None from get_ai_client()")
     return None, None
 
 def get_dashboard_statistics():
@@ -2372,9 +2404,21 @@ def ai_insights():
         # Get AI client
         ai_client, provider = get_ai_client()
         if not ai_client:
+            # Provide detailed error message
+            error_msg = "AI service not configured"
+            if not OPENAI_API_KEY:
+                error_msg = "OPENAI_API_KEY environment variable is not set. Please add it to Railway environment variables."
+            else:
+                error_msg = f"Failed to initialize AI client. API key present (length: {len(OPENAI_API_KEY)}), but client initialization failed. Check server logs for details."
+            
             return jsonify({
-                "message": "AI service not configured",
-                "insights": ["AI insights are not available. Please configure your AI API key to enable this feature."]
+                "message": error_msg,
+                "insights": [f"AI insights are not available. {error_msg}"],
+                "debug": {
+                    "has_api_key": bool(OPENAI_API_KEY),
+                    "api_key_length": len(OPENAI_API_KEY) if OPENAI_API_KEY else 0,
+                    "provider": AI_PROVIDER
+                }
             }), 503
         
         # Build prompt
@@ -2426,10 +2470,58 @@ Format as a numbered list of insights."""
         
     except Exception as e:
         import traceback
-        print(f"Error generating insights: {traceback.format_exc()}")
+        error_trace = traceback.format_exc()
+        print(f"Error generating insights: {error_trace}")
         return jsonify({
             "message": f"Error generating insights: {str(e)}",
-            "insights": ["Unable to generate insights at this time. Please try again later."]
+            "insights": ["Unable to generate insights at this time. Please try again later."],
+            "error": str(e)
+        }), 500
+
+@app.route('/api/ai/test-config', methods=['GET', 'OPTIONS'])
+@require_auth
+def ai_test_config():
+    """Test endpoint to check AI configuration without making API calls."""
+    if request.method == 'OPTIONS':
+        return jsonify(status='ok'), 200
+    
+    try:
+        # Check configuration
+        config_status = {
+            "openai_api_key_set": bool(OPENAI_API_KEY),
+            "openai_api_key_length": len(OPENAI_API_KEY) if OPENAI_API_KEY else 0,
+            "openai_api_key_prefix": OPENAI_API_KEY[:20] + "..." if OPENAI_API_KEY and len(OPENAI_API_KEY) > 20 else OPENAI_API_KEY,
+            "anthropic_api_key_set": bool(ANTHROPIC_API_KEY),
+            "provider": AI_PROVIDER,
+            "env_var_in_os": 'OPENAI_API_KEY' in os.environ,
+            "sdk_available": False
+        }
+        
+        # Test if SDK can be imported
+        try:
+            from openai import OpenAI
+            config_status["sdk_available"] = True
+            
+            # Try to initialize client
+            try:
+                client = OpenAI()
+                config_status["client_init_success"] = True
+                config_status["status"] = "ready"
+            except Exception as e:
+                config_status["client_init_success"] = False
+                config_status["client_init_error"] = str(e)
+                config_status["status"] = "client_init_failed"
+        except ImportError:
+            config_status["sdk_available"] = False
+            config_status["status"] = "sdk_not_installed"
+        
+        return jsonify(config_status), 200
+        
+    except Exception as e:
+        import traceback
+        return jsonify({
+            "error": str(e),
+            "traceback": traceback.format_exc()
         }), 500
 
 # Serve HTML files - Block direct .html access
