@@ -2080,9 +2080,17 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
 AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai').lower()  # 'openai' or 'anthropic'
 
+# Debug logging for API key loading
+if OPENAI_API_KEY:
+    print(f"✓ OPENAI_API_KEY loaded successfully (length: {len(OPENAI_API_KEY)}, starts with: {OPENAI_API_KEY[:15]}...)")
+else:
+    print("⚠ WARNING: OPENAI_API_KEY not found in environment variables")
+    print(f"  Available env vars containing 'OPENAI': {[k for k in os.environ.keys() if 'OPENAI' in k.upper()]}")
+
 # Ensure OPENAI_API_KEY is set in environment if we have it (for OpenAI SDK auto-detection)
 if OPENAI_API_KEY and 'OPENAI_API_KEY' not in os.environ:
     os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+    print("✓ OPENAI_API_KEY set in os.environ for SDK auto-detection")
 
 def get_ai_client():
     """Get AI client based on configured provider."""
@@ -2095,20 +2103,28 @@ def get_ai_client():
         except Exception as e:
             print(f"Error initializing Anthropic client: {e}")
     
+    # Check if OpenAI API key is available
     if OPENAI_API_KEY:
+        print(f"DEBUG: OPENAI_API_KEY found (length: {len(OPENAI_API_KEY)}, starts with: {OPENAI_API_KEY[:10]}...)")
         try:
             from openai import OpenAI
             # Create client without arguments - OpenAI SDK will use OPENAI_API_KEY from environment
             # This avoids issues with proxy arguments that might be passed from environment
             # The API key is already in os.environ from os.getenv() above
             client = OpenAI()
+            print("DEBUG: OpenAI client initialized successfully")
             return client, 'openai'
         except ImportError:
-            print("Warning: OpenAI SDK not installed.")
+            print("ERROR: OpenAI SDK not installed. Run: pip install openai")
         except Exception as e:
-            print(f"Error initializing OpenAI client: {e}")
+            print(f"ERROR: Failed to initialize OpenAI client: {e}")
             import traceback
             print(traceback.format_exc())
+    else:
+        print("ERROR: OPENAI_API_KEY is not set or is empty")
+        print(f"DEBUG: Environment check - OPENAI_API_KEY in os.environ: {'OPENAI_API_KEY' in os.environ}")
+        if 'OPENAI_API_KEY' in os.environ:
+            print(f"DEBUG: os.environ['OPENAI_API_KEY'] value (first 10 chars): {os.environ['OPENAI_API_KEY'][:10]}...")
     
     return None, None
 
