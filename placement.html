@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement & Higher Ed - Student Progression System</title>
+    <link rel="icon" type="image/png" href="git-logo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#334155 100%); background-attachment: fixed; }
+        .sidebar-glass { background: rgba(15,23,42,0.9); backdrop-filter: blur(20px); border-right: 1px solid rgba(59,130,246,0.2); }
+        .glass-card { background: rgba(30,41,59,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); }
+        /* Mobile bottom nav button */
+        .mobile-nav-buttons{display:none}
+        .mobile-nav-btn{width:40px;height:40px;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);border:none;border-radius:50%;color:#fff;box-shadow:0 4px 12px rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center}
+        .mobile-nav-popup{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border-radius:20px 20px 0 0;padding:20px;box-shadow:0 -10px 40px rgba(0,0,0,.3);border:1px solid rgba(59,130,246,.2);backdrop-filter:blur(20px);z-index:1000;max-width:90vw;width:300px}
+        .mobile-nav-content{display:flex;flex-direction:column;gap:15px;max-width:280px}
+        .mobile-nav-row{display:grid;gap:15px}
+        .mobile-nav-row:first-child{grid-template-columns:repeat(4,1fr)}
+        .mobile-nav-row:last-child{grid-template-columns:repeat(3,1fr)}
+        .mobile-nav-item{width:50px;height:50px;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:18px;box-shadow:0 4px 12px rgba(59,130,246,.3)}
+        @media (max-width:768px){aside{display:none!important}main{width:100%!important;margin-left:0!important}.mobile-nav-buttons{display:block!important}.mobile-title-center{text-align:center!important;width:100%!important;font-size:16px!important}}
+        
+        /* Light theme styles */
+        .light body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%) !important;
+        }
+        .light .sidebar-glass {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-right: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-slate-300 {
+            color: #475569 !important;
+        }
+        .light .text-slate-400 {
+            color: #64748b !important;
+        }
+        .light .text-slate-500 {
+            color: #64748b !important;
+        }
+        .light .text-slate-600 {
+            color: #475569 !important;
+        }
+        .light .text-slate-700 {
+            color: #334155 !important;
+        }
+        .light .nav-link {
+            color: #475569 !important;
+        }
+        .light .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            color: #1e293b !important;
+        }
+        .light .nav-link.active {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            color: #1e293b !important;
+        }
+        
+        /* Mobile Navigation System */
+        @media (max-width: 768px) {
+            aside {
+                display: none !important;
+            }
+            main {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+        }
+        
+        /* Mobile Navigation Button */
+        .mobile-nav-button {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 45px;
+            height: 45px;
+            background: rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+        
+        .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateX(-50%) scale(1.1);
+        }
+        
+        .mobile-nav-button i {
+            font-size: 14px;
+            color: #3b82f6;
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-nav-button.rotated i {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Navigation Menu */
+        .mobile-nav-menu {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            z-index: 999;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px;
+            max-width: 90vw;
+        }
+        
+        .mobile-nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+        
+        .mobile-nav-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .mobile-nav-row {
+            display: grid;
+            gap: 12px;
+            justify-items: center;
+        }
+        
+        .mobile-nav-row:first-child {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .mobile-nav-row:last-child {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            min-height: 60px;
+            width: 50px;
+        }
+        
+        .mobile-nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .mobile-nav-item[data-page="logout"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .mobile-nav-item[data-page="logout"]:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+        
+        .mobile-nav-item span {
+            display: none;
+        }
+        
+        /* Light theme mobile navigation */
+        .light .mobile-nav-menu {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+    </style>
+    </head>
+<body class="text-white">
+    <div class="flex h-screen overflow-hidden">
+        <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
+            <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
+                <img src="gitlogosite.jpg" alt="GIT Logo" class="h-full w-auto">
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a href="dashboard" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard</a>
+                <a href="studentprogression" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records</a>
+                <a href="placement" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30"><i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed</a>
+                <a href="extracurricular" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular</a>
+                <a href="reports" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports</a>
+            </nav>
+            <div class="p-4 border-t border-slate-600">
+                <a href="settings" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings</a>
+                <a id="logout-link" href="index" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white"><i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout</a>
+            </div>
+        </aside>
+
+        <!-- Mobile Navigation Button -->
+        <button id="mobile-nav-button" class="mobile-nav-button hidden">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav-menu" class="mobile-nav-menu">
+            <div class="mobile-nav-grid">
+                <div class="mobile-nav-row">
+                    <a href="dashboard" class="mobile-nav-item" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="studentprogression" class="mobile-nav-item" data-page="academic">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>Academic</span>
+                    </a>
+                    <a href="placement" class="mobile-nav-item active" data-page="placement">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Placement</span>
+                    </a>
+                    <a href="extracurricular" class="mobile-nav-item" data-page="extracurricular">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Extracurricular</span>
+                    </a>
+                </div>
+                <div class="mobile-nav-row">
+                    <a href="reports" class="mobile-nav-item" data-page="reports">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="settings" class="mobile-nav-item" data-page="settings">
+                        <i class="fa-solid fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <a href="index" class="mobile-nav-item" data-page="logout">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <main class="flex-1 overflow-y-auto">
+            <header class="h-16 glass-card shadow-md flex items-center justify-between px-6 sticky top-0 z-10 border-b border-slate-600">
+                <h2 class="text-lg font-semibold text-white mobile-title-center">Placement & Higher Education</h2>
+            </header>
+            <div class="p-8 space-y-6">
+                <!-- Branch & Batch Filters -->
+                <div class="glass-card p-6 rounded-xl shadow-lg">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-semibold flex items-center">
+                                <i class="fa-solid fa-filter text-blue-400 mr-2"></i>
+                                Branch & Batch Filters
+                            </h3>
+                            <p class="text-slate-400 text-sm mt-1">Choose a branch and batch to focus the statistics below.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full md:w-auto">
+                            <select id="stats-branch-filter" class="px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="all">All Branches</option>
+                            </select>
+                            <select id="stats-batch-filter" class="px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="all">All Batches</option>
+                            </select>
+                            <button id="reset-stats-filters" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-white flex items-center justify-center">
+                                <i class="fa-solid fa-rotate mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div id="stats-status-banner" class="hidden mt-4 px-4 py-3 rounded-lg border border-yellow-600/30 bg-yellow-900/20 text-yellow-100 text-sm">
+                        No records found for the selected branch & batch.
+                    </div>
+                </div>
+                
+                <!-- Primary Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Total Students</p>
+                                <p class="text-2xl font-bold text-white" id="total-students-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">in database</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-indigo-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-users text-indigo-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Placement Interest</p>
+                                <p class="text-2xl font-bold text-white" id="placement-interest-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">students</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-blue-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-briefcase text-blue-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Higher Education</p>
+                                <p class="text-2xl font-bold text-white" id="higher-education-interest-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">interested</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-green-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-graduation-cap text-green-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Internships</p>
+                                <p class="text-2xl font-bold text-white" id="internship-student-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">completed</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-purple-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-building text-purple-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Entrepreneurship</p>
+                                <p class="text-2xl font-bold text-white" id="entrepreneurship-interest-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">interested</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-orange-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-lightbulb text-orange-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Ready to Relocate</p>
+                                <p class="text-2xl font-bold text-white" id="relocate-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">students</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-cyan-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-map-marker-alt text-cyan-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Certifications</p>
+                                <p class="text-2xl font-bold text-white" id="certifications-count">0</p>
+                                <p class="text-xs text-slate-500 mt-1">students have</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-yellow-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-certificate text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm">Avg 3rd Year CGPA</p>
+                                <p class="text-2xl font-bold text-white" id="avg-cgpa">0.00</p>
+                                <p class="text-xs text-slate-500 mt-1">CGPA</p>
+                            </div>
+                            <div class="h-12 w-12 rounded-full bg-pink-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-star text-pink-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="glass-card p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="fa-solid fa-upload mr-2 text-blue-400"></i>
+                        Upload Placement File
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">
+                                Select Category <span class="text-red-400">*</span>
+                            </label>
+                            <select id="category-select" class="w-full px-4 py-2.5 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">-- Select Category --</option>
+                                <option value="placement">Placement</option>
+                                <option value="higher_education">Higher Education</option>
+                                <option value="internship">Internship</option>
+                                <option value="entrepreneurship">Entrepreneurship</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">
+                                    Select Branch <span class="text-red-400">*</span>
+                                </label>
+                                <select id="branch-select" class="w-full px-4 py-2.5 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">-- Select Branch --</option>
+                                    <option value="__create_branch">+ Create New Branch</option>
+                                </select>
+                                <p class="text-xs text-slate-500 mt-1">Options include CSE(AIML), Computer, EXTC, Mech, Civil, Chem, MMS, MCA.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">
+                                    Select Batch (4-year) <span class="text-red-400">*</span>
+                                </label>
+                                <select id="batch-select" class="w-full px-4 py-2.5 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">-- Select Batch --</option>
+                                    <option value="__create_batch">+ Create New Batch</option>
+                                </select>
+                                <p class="text-xs text-slate-500 mt-1">Example: 2022-2026, 2023-2027, etc.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Select File</label>
+                            <div id="upload-area" class="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer bg-slate-800/30">
+                                <i class="fa-solid fa-cloud-arrow-up text-4xl text-blue-400 mb-3"></i>
+                                <p class="text-slate-300 mb-1">Click to upload or drag and drop</p>
+                                <p class="text-sm text-slate-400">CSV, Excel, PDF, Word documents supported</p>
+                                <input type="file" id="file-input" class="hidden" accept=".csv,.xlsx,.xls,.pdf,.doc,.docx">
+                                <p id="selected-file" class="text-sm text-blue-400 mt-2 hidden"></p>
+                            </div>
+                        </div>
+                        <button id="upload-btn" class="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors font-medium flex items-center justify-center">
+                            <i class="fa-solid fa-upload mr-2"></i>
+                            <span>Upload File</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Filter and File List -->
+                <div class="glass-card p-6 rounded-xl shadow-lg">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                        <h3 class="text-xl font-semibold mb-4 md:mb-0 flex items-center">
+                            <i class="fa-solid fa-folder-open mr-2 text-blue-400"></i>
+                            Uploaded Files
+                        </h3>
+                        <div class="flex items-center gap-3">
+                            <select id="filter-category" class="px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Categories</option>
+                                <option value="placement">Placement</option>
+                                <option value="higher_education">Higher Education</option>
+                                <option value="internship">Internship</option>
+                                <option value="entrepreneurship">Entrepreneurship</option>
+                            </select>
+                            <button id="refresh-files-btn" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-white">
+                                <i class="fa-solid fa-refresh"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="files-list" class="space-y-3">
+                        <div class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>Loading files...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Category Statistics Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-chart-bar mr-2 text-blue-400"></i>
+                            Category Statistics
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="stats-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Branch Distribution Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-building-columns mr-2 text-green-400"></i>
+                            Branch Distribution
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="branch-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Area of Interest Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-heart mr-2 text-purple-400"></i>
+                            Top Areas of Interest
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="interest-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Interest Comparison Chart -->
+                    <div class="glass-card p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fa-solid fa-chart-pie mr-2 text-orange-400"></i>
+                            Career Interest Distribution
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="career-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Standardized Logout Confirmation Modal -->
+    <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9998]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-sign-out-alt text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Logout</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to logout?</p>
+            <div class="space-x-3">
+                <button id="logout-cancel" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">
+                    <i class="fa-solid fa-times mr-2"></i>Cancel
+                </button>
+                <button id="logout-confirm" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                    <i class="fa-solid fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alert-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-yellow-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-clock text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Session Expired</h3>
+            <p id="alert-message" class="text-slate-300 mb-5">Your session has expired due to inactivity. Please login again.</p>
+            <button id="alert-ok" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <!-- Logout Success Modal -->
+    <div id="logout-success-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-card rounded-2xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="text-center p-6">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-600 mb-4">
+                    <i class="fa-solid fa-check text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Logout Successful</h3>
+                <p class="text-slate-400 text-sm">You have been successfully logged out.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ===== JWT AUTHENTICATION UTILITY =====
+    (function() {
+        function getAccessToken() { return localStorage.getItem('access_token'); }
+        function getRefreshToken() { return localStorage.getItem('refresh_token'); }
+        function isTokenExpired() {
+            const expiresAt = localStorage.getItem('token_expires_at');
+            return !expiresAt || Date.now() >= parseInt(expiresAt);
+        }
+        async function refreshAccessToken() {
+            const refreshToken = getRefreshToken();
+            if (!refreshToken) { logout(); return null; }
+            try {
+                const res = await fetch('/api/refresh-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const data = await res.json();
+                if (!res.ok) { logout(); return null; }
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                return data.access_token;
+            } catch (err) {
+                console.error('Token refresh failed:', err);
+                logout();
+                return null;
+            }
+        }
+        async function getValidToken() {
+            if (isTokenExpired()) return await refreshAccessToken();
+            return getAccessToken();
+        }
+        window.authFetch = async function(url, options = {}) {
+            const token = await getValidToken();
+            if (!token) throw new Error('Authentication required');
+            const headers = { 'Authorization': `Bearer ${token}`, ...options.headers };
+            const response = await fetch(url, { ...options, headers });
+            if (response.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    headers['Authorization'] = `Bearer ${newToken}`;
+                    return fetch(url, { ...options, headers });
+                }
+                logout();
+            }
+            return response;
+        };
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('token_expires_at');
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('user_role');
+            sessionStorage.removeItem('sps_user');
+            window.location.href = '/?id=' + generateQuickId();
+        }
+        async function checkAuth() {
+            const token = getAccessToken();
+            if (!token) { logout(); return false; }
+            try {
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const res = await fetch('/api/verify-token', { headers });
+                if (!res.ok) { logout(); return false; }
+                return true;
+            } catch (err) { logout(); return false; }
+        }
+        setTimeout(() => { checkAuth(); }, 100);
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                showInactivityAlert();
+            }, INACTIVITY_TIMEOUT);
+        }
+        
+        function showInactivityAlert() {
+            const overlay = document.getElementById('alert-overlay');
+            const msg = document.getElementById('alert-message');
+            const ok = document.getElementById('alert-ok');
+            msg.textContent = 'Your session has expired due to inactivity. Please login again.';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            const close = () => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                ok.removeEventListener('click', close);
+                logout();
+            };
+            ok.addEventListener('click', close);
+            // Auto logout after 3 seconds
+            setTimeout(() => {
+                if (!overlay.classList.contains('hidden')) {
+                    logout();
+                }
+            }, 3000);
+        }
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+        resetInactivityTimer();
+        function generateQuickId() {
+            const values = new Uint8Array(120);
+            window.crypto.getRandomValues(values);
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            return base64.slice(0, 152);
+        }
+        window.logoutUser = async function() {
+            try {
+                await authFetch('/api/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            logout();
+        };
+        
+        // Expose auth functions globally for use in placement functionality
+        window.getAccessToken = getAccessToken;
+        window.getRefreshToken = getRefreshToken;
+        window.isTokenExpired = isTokenExpired;
+        window.refreshAccessToken = refreshAccessToken;
+        window.getValidToken = getValidToken;
+    })();
+    </script>
+
+    <script>
+        function genId(){
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+
+        // Always generate a new id for this visit and replace the URL
+        try{
+            const id = genId();
+            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
+            history.replaceState({}, '', newUrl);
+        }catch(e){ /* ignore */ }
+
+        // Intercept clicks to html pages and navigate with a fresh id
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
+        document.addEventListener('click', function(e){
+            const a = e.target.closest('a');
+            if(!a) return;
+            if (e.defaultPrevented) return;
+            if (a.hasAttribute('data-no-nav') || a.hasAttribute('data-action') || a.id === 'logout-link' || a.dataset.page === 'logout') return;
+            const href = a.getAttribute('href');
+            if(!href) return;
+            if(/\.html($|[?#])/.test(href)){
+                e.preventDefault();
+                const target = href.split('?')[0].split('#')[0].replace('.html', '');
+                const id = genId();
+                window.location.href = target + '?id=' + id;
+            }
+        });
+        
+        // Initialize theme from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
+            if (!loggedInUser) {
+                window.location.href = `/?id=${genId()}`;
+                return;
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const html = document.documentElement;
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            }
+            
+            // Mobile Navigation System
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            function checkMobileView() {
+                if (window.innerWidth <= 768) {
+                    mobileNavButton.classList.remove('hidden');
+                } else {
+                    mobileNavButton.classList.add('hidden');
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            }
+            
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+            
+            mobileNavButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileNavMenu.classList.toggle('show');
+                mobileNavButton.classList.toggle('rotated');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            });
+            
+            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+            mobileNavItems.forEach(item => {
+                const pageName = item.getAttribute('data-page');
+                if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Logout handling
+            function showLogoutConfirmation(e) {
+                if (e) e.preventDefault();
+                const logoutOverlay = document.getElementById('logout-overlay');
+                logoutOverlay.classList.remove('hidden');
+                logoutOverlay.classList.add('flex');
+                
+                // If mobile menu is open, close it
+                mobileNavMenu.classList.remove('show');
+                mobileNavButton.classList.remove('rotated');
+            }
+
+            // Attach logout handlers
+            document.getElementById('logout-link').addEventListener('click', showLogoutConfirmation);
+            document.querySelector('.mobile-nav-item[data-page="logout"]').addEventListener('click', showLogoutConfirmation);
+
+            // Handle cancel logout
+            document.getElementById('logout-cancel').addEventListener('click', () => {
+                const logoutOverlay = document.getElementById('logout-overlay');
+                logoutOverlay.classList.add('hidden');
+                logoutOverlay.classList.remove('flex');
+            });
+
+            // Handle confirm logout
+            document.getElementById('logout-confirm').addEventListener('click', () => {
+                document.getElementById('logout-overlay').classList.add('hidden');
+                document.getElementById('logout-success-overlay').classList.remove('hidden');
+                document.getElementById('logout-success-overlay').classList.add('flex');
+                // Auto-close after 1.5 seconds and redirect
+                setTimeout(() => {
+                    localStorage.removeItem('loggedInUser');
+                    sessionStorage.removeItem('sps_user');
+                    window.location.href = `/?id=${genId()}`;
+                }, 1500);
+            });
+        });
+
+    </script>
+
+    <!-- Result Modal (Success/Error) -->
+    <div id="result-modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border" id="result-modal-border">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-3" id="result-modal-icon">
+                <i class="text-xl" id="result-modal-icon-class"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2" id="result-modal-title">Success</h3>
+            <p id="result-modal-message" class="text-slate-300 mb-5">Operation completed successfully.</p>
+            <button id="result-modal-ok" class="px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-red-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900 mb-3">
+                <i class="fa-solid fa-exclamation-triangle text-red-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Delete</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to delete this file? This action cannot be undone.</p>
+            <div class="flex gap-3 justify-center">
+                <button id="delete-cancel-btn" class="px-5 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
+                    Cancel
+                </button>
+                <button id="delete-confirm-btn" class="px-5 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-colors">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ===== PLACEMENT FUNCTIONALITY =====
+    (function() {
+        let statsChart = null;
+        let fileToDelete = null;
+        
+        // DOM Elements
+        const categorySelect = document.getElementById('category-select');
+        const branchSelect = document.getElementById('branch-select');
+        const batchSelect = document.getElementById('batch-select');
+        const statsBranchFilter = document.getElementById('stats-branch-filter');
+        const statsBatchFilter = document.getElementById('stats-batch-filter');
+        const statsStatusBanner = document.getElementById('stats-status-banner');
+        const resetStatsFiltersBtn = document.getElementById('reset-stats-filters');
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+        const selectedFile = document.getElementById('selected-file');
+        const uploadBtn = document.getElementById('upload-btn');
+        const filesList = document.getElementById('files-list');
+        const filterCategory = document.getElementById('filter-category');
+        const refreshFilesBtn = document.getElementById('refresh-files-btn');
+        
+        // Modal elements
+        const resultModalOverlay = document.getElementById('result-modal-overlay');
+        const resultModalOk = document.getElementById('result-modal-ok');
+        const deleteModalOverlay = document.getElementById('delete-modal-overlay');
+        const deleteCancelBtn = document.getElementById('delete-cancel-btn');
+        const deleteConfirmBtn = document.getElementById('delete-confirm-btn');
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text ?? '';
+            return div.innerHTML;
+        }
+        
+        function updateBranchSelect(previousValue = '') {
+            if (!branchSelect) return;
+            const safePrevious = previousValue && previousValue.startsWith('__create') ? '' : previousValue;
+            branchSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Select Branch --';
+            branchSelect.appendChild(placeholder);
+            (placementConfig.branches || []).forEach(branch => {
+                const option = document.createElement('option');
+                option.value = branch.name;
+                option.textContent = branch.name;
+                branchSelect.appendChild(option);
+            });
+            const createOption = document.createElement('option');
+            createOption.value = '__create_branch';
+            createOption.textContent = '+ Create New Branch';
+            branchSelect.appendChild(createOption);
+            if (safePrevious && placementConfig.branches.some(b => b.name === safePrevious)) {
+                branchSelect.value = safePrevious;
+            } else {
+                branchSelect.value = '';
+            }
+        }
+        
+        function updateBatchSelect(previousValue = '') {
+            if (!batchSelect) return;
+            const safePrevious = previousValue && previousValue.startsWith('__create') ? '' : previousValue;
+            batchSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Select Batch --';
+            batchSelect.appendChild(placeholder);
+            (placementConfig.batches || []).forEach(batch => {
+                const option = document.createElement('option');
+                option.value = batch.label;
+                option.textContent = batch.label;
+                batchSelect.appendChild(option);
+            });
+            const createOption = document.createElement('option');
+            createOption.value = '__create_batch';
+            createOption.textContent = '+ Create New Batch';
+            batchSelect.appendChild(createOption);
+            if (safePrevious && placementConfig.batches.some(b => b.label === safePrevious)) {
+                batchSelect.value = safePrevious;
+            } else {
+                batchSelect.value = '';
+            }
+        }
+        
+        function updateStatsFilterOptions() {
+            if (statsBranchFilter) {
+                const previous = selectedBranchFilter;
+                statsBranchFilter.innerHTML = '';
+                const allOption = document.createElement('option');
+                allOption.value = 'all';
+                allOption.textContent = 'All Branches';
+                statsBranchFilter.appendChild(allOption);
+                (placementConfig.branches || []).forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.name;
+                    option.textContent = branch.name;
+                    statsBranchFilter.appendChild(option);
+                });
+                if (previous && previous !== 'all' && placementConfig.branches.some(b => b.name === previous)) {
+                    statsBranchFilter.value = previous;
+                    selectedBranchFilter = previous;
+                } else {
+                    statsBranchFilter.value = 'all';
+                    selectedBranchFilter = 'all';
+                }
+            }
+            
+            if (statsBatchFilter) {
+                const previousBatch = selectedBatchFilter;
+                statsBatchFilter.innerHTML = '';
+                const allBatchOption = document.createElement('option');
+                allBatchOption.value = 'all';
+                allBatchOption.textContent = 'All Batches';
+                statsBatchFilter.appendChild(allBatchOption);
+                (placementConfig.batches || []).forEach(batch => {
+                    const option = document.createElement('option');
+                    option.value = batch.label;
+                    option.textContent = batch.label;
+                    statsBatchFilter.appendChild(option);
+                });
+                if (previousBatch && previousBatch !== 'all' && placementConfig.batches.some(b => b.label === previousBatch)) {
+                    statsBatchFilter.value = previousBatch;
+                    selectedBatchFilter = previousBatch;
+                } else {
+                    statsBatchFilter.value = 'all';
+                    selectedBatchFilter = 'all';
+                }
+            }
+        }
+        
+        async function loadPlacementConfig(preserveSelections = true) {
+            const previousBranch = preserveSelections && branchSelect ? branchSelect.value : '';
+            const previousBatch = preserveSelections && batchSelect ? batchSelect.value : '';
+            try {
+                const token = await window.getValidToken();
+                if (!token) throw new Error('Authentication required');
+                const response = await fetch('/api/placement/config', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to load placement configuration');
+                }
+                const data = await response.json();
+                placementConfig = {
+                    branches: data.branches || [],
+                    batches: data.batches || []
+                };
+                updateBranchSelect(previousBranch || '');
+                updateBatchSelect(previousBatch || '');
+                updateStatsFilterOptions();
+            } catch (error) {
+                console.error('Placement config error:', error);
+                showResultModal('error', error.message || 'Failed to load branch/batch options', 'Configuration Error');
+            }
+        }
+        
+        async function createBranchOption(name) {
+            const token = await window.getValidToken();
+            if (!token) throw new Error('Authentication required');
+            const response = await fetch('/api/placement/branches', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ name })
+            });
+            const data = await response.json();
+            if (!response.ok && response.status !== 409) {
+                throw new Error(data.message || 'Failed to create branch');
+            }
+            if (data.branch) {
+                return data.branch;
+            }
+            throw new Error(data.message || 'Failed to create branch');
+        }
+        
+        async function createBatchOption(startYear) {
+            const token = await window.getValidToken();
+            if (!token) throw new Error('Authentication required');
+            const response = await fetch('/api/placement/batches', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ start_year: startYear })
+            });
+            const data = await response.json();
+            if (!response.ok && response.status !== 409) {
+                throw new Error(data.message || 'Failed to create batch');
+            }
+            if (data.batch) {
+                return data.batch;
+            }
+            throw new Error(data.message || 'Failed to create batch');
+        }
+        
+        async function promptForNewBranch() {
+            const branchName = prompt('Enter the branch name (e.g., CSE(AIML))');
+            if (!branchName) {
+                if (branchSelect) branchSelect.value = '';
+                return;
+            }
+            try {
+                const branch = await createBranchOption(branchName.trim());
+                showResultModal('success', `"${branch.name}" is ready to use.`, 'Branch Added');
+                await loadPlacementConfig(false);
+                if (branchSelect) branchSelect.value = branch.name;
+            } catch (error) {
+                if (branchSelect) branchSelect.value = '';
+                showResultModal('error', error.message || 'Failed to create branch', 'Branch Error');
+            }
+        }
+        
+        async function promptForNewBatch() {
+            const startYearInput = prompt('Enter the batch start year (e.g., 2022)');
+            if (!startYearInput) {
+                if (batchSelect) batchSelect.value = '';
+                return;
+            }
+            const startYear = parseInt(startYearInput, 10);
+            if (Number.isNaN(startYear) || startYear < 1990) {
+                showResultModal('error', 'Please provide a valid 4-digit start year (e.g., 2022)', 'Invalid Batch');
+                if (batchSelect) batchSelect.value = '';
+                return;
+            }
+            try {
+                const batch = await createBatchOption(startYear);
+                showResultModal('success', `Batch ${batch.label} is ready to use.`, 'Batch Added');
+                await loadPlacementConfig(false);
+                if (batchSelect) batchSelect.value = batch.label;
+            } catch (error) {
+                if (batchSelect) batchSelect.value = '';
+                showResultModal('error', error.message || 'Failed to create batch', 'Batch Error');
+            }
+        }
+        
+        // Show result modal
+        function showResultModal(type, message, title = null) {
+            const border = document.getElementById('result-modal-border');
+            const icon = document.getElementById('result-modal-icon');
+            const iconClass = document.getElementById('result-modal-icon-class');
+            const modalTitle = document.getElementById('result-modal-title');
+            const modalMessage = document.getElementById('result-modal-message');
+            
+            if (type === 'success') {
+                border.classList.remove('border-red-600');
+                border.classList.add('border-green-600');
+                icon.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-900 mb-3';
+                iconClass.className = 'fa-solid fa-check text-green-400 text-xl';
+                modalTitle.textContent = title || 'Success';
+            } else {
+                border.classList.remove('border-green-600');
+                border.classList.add('border-red-600');
+                icon.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900 mb-3';
+                iconClass.className = 'fa-solid fa-exclamation-triangle text-red-400 text-xl';
+                modalTitle.textContent = title || 'Error';
+            }
+            modalMessage.textContent = message;
+            resultModalOverlay.classList.remove('hidden');
+            resultModalOverlay.classList.add('flex');
+        }
+        
+        // Close result modal
+        resultModalOk.addEventListener('click', () => {
+            resultModalOverlay.classList.add('hidden');
+            resultModalOverlay.classList.remove('flex');
+        });
+        
+        if (branchSelect) {
+            branchSelect.addEventListener('change', async (e) => {
+                if (e.target.value === '__create_branch') {
+                    await promptForNewBranch();
+                }
+            });
+        }
+        
+        if (batchSelect) {
+            batchSelect.addEventListener('change', async (e) => {
+                if (e.target.value === '__create_batch') {
+                    await promptForNewBatch();
+                }
+            });
+        }
+        
+        if (statsBranchFilter) {
+            statsBranchFilter.addEventListener('change', (e) => {
+                selectedBranchFilter = e.target.value || 'all';
+                loadStats();
+            });
+        }
+        
+        if (statsBatchFilter) {
+            statsBatchFilter.addEventListener('change', (e) => {
+                selectedBatchFilter = e.target.value || 'all';
+                loadStats();
+            });
+        }
+        
+        if (resetStatsFiltersBtn) {
+            resetStatsFiltersBtn.addEventListener('click', () => {
+                selectedBranchFilter = 'all';
+                selectedBatchFilter = 'all';
+                if (statsBranchFilter) statsBranchFilter.value = 'all';
+                if (statsBatchFilter) statsBatchFilter.value = 'all';
+                loadStats();
+            });
+        }
+        
+        // File upload area click handler
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // File input change handler
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile.textContent = `Selected: ${file.name}`;
+                selectedFile.classList.remove('hidden');
+            }
+        });
+        
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('border-blue-500', 'bg-blue-900/20');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('border-blue-500', 'bg-blue-900/20');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('border-blue-500', 'bg-blue-900/20');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                fileInput.files = e.dataTransfer.files;
+                selectedFile.textContent = `Selected: ${file.name}`;
+                selectedFile.classList.remove('hidden');
+            }
+        });
+        
+        // Upload button handler
+        uploadBtn.addEventListener('click', async () => {
+            const category = categorySelect.value;
+            const branchValue = branchSelect ? branchSelect.value : '';
+            const batchValue = batchSelect ? batchSelect.value : '';
+            const file = fileInput.files[0];
+            
+            if (!category) {
+                showResultModal('error', 'Please select a category');
+                return;
+            }
+            
+            if (!branchValue || branchValue === '__create_branch') {
+                showResultModal('error', 'Please select a branch');
+                return;
+            }
+            
+            if (!batchValue || batchValue === '__create_batch') {
+                showResultModal('error', 'Please select a batch');
+                return;
+            }
+            
+            if (!file) {
+                showResultModal('error', 'Please select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('category', category);
+            formData.append('branch', branchValue);
+            formData.append('batch', batchValue);
+            
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i><span>Uploading...</span>';
+            
+            try {
+                const token = await window.getValidToken();
+                if (!token) {
+                    throw new Error('Authentication required');
+                }
+                
+                const response = await fetch('/api/upload-placement-file', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Upload failed');
+                }
+                
+                let message = data.message;
+                if (data.parsed) {
+                    message += ' Statistics have been extracted and will be displayed below.';
+                }
+                showResultModal('success', message, 'Upload Successful');
+                
+                // Reset form
+                fileInput.value = '';
+                categorySelect.value = '';
+                selectedFile.classList.add('hidden');
+                
+                // Reload files and stats
+                await Promise.all([loadFiles(), loadStats()]);
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                showResultModal('error', error.message || 'Failed to upload file');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fa-solid fa-upload mr-2"></i><span>Upload File</span>';
+            }
+        });
+        
+        // Load files
+        async function loadFiles() {
+            try {
+                const category = filterCategory.value;
+                const token = await window.getValidToken();
+                if (!token) {
+                    throw new Error('Authentication required');
+                }
+                
+                const url = category ? `/api/get-placement-files?category=${category}` : '/api/get-placement-files';
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load files');
+                }
+                
+                const files = await response.json();
+                
+                if (files.length === 0) {
+                    filesList.innerHTML = `
+                        <div class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+                            <p>No files uploaded yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                filesList.innerHTML = files.map(file => {
+                    const date = new Date(file.uploaded_at);
+                    const formattedDate = date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const categoryLabels = {
+                        'placement': 'Placement',
+                        'higher_education': 'Higher Education',
+                        'internship': 'Internship',
+                        'entrepreneurship': 'Entrepreneurship'
+                    };
+                    
+                    const categoryBadgeClasses = {
+                        'placement': 'bg-blue-600/20 text-blue-400',
+                        'higher_education': 'bg-green-600/20 text-green-400',
+                        'internship': 'bg-purple-600/20 text-purple-400',
+                        'entrepreneurship': 'bg-orange-600/20 text-orange-400'
+                    };
+                    
+                    const fileSizeKB = (file.file_size / 1024).toFixed(2);
+                    const cat = file.category || 'placement';
+                    const badgeClass = categoryBadgeClasses[cat] || categoryBadgeClasses['placement'];
+                    
+                    const branchInfo = file.branch || 'Not tagged';
+                    const batchInfo = file.batch || 'Not tagged';
+                    return `
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-4 hover:bg-slate-700/50 transition-colors">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <i class="fa-solid fa-file text-blue-400"></i>
+                                        <h5 class="text-white font-medium">${file.filename}</h5>
+                                        <span class="px-2 py-1 text-xs rounded-full ${badgeClass}">
+                                            ${categoryLabels[cat]}
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-slate-400 ml-8">${formattedDate} • ${fileSizeKB} KB</p>
+                                    <p class="text-xs text-slate-500 ml-8 mt-1">Branch: ${branchInfo} • Batch: ${batchInfo}</p>
+                                </div>
+                                <div class="flex gap-2 ml-8 md:ml-0">
+                                    <button onclick="downloadFile('${file._id}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm">
+                                        <i class="fa-solid fa-download mr-1"></i>Download
+                                    </button>
+                                    <button onclick="deleteFile('${file._id}')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm">
+                                        <i class="fa-solid fa-trash mr-1"></i>Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Load files error:', error);
+                filesList.innerHTML = `
+                    <div class="text-center py-8 text-red-400">
+                        <i class="fa-solid fa-exclamation-triangle text-2xl mb-2"></i>
+                        <p>Error loading files: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Download file
+        window.downloadFile = async function(fileId) {
+            try {
+                const token = await window.getValidToken();
+                if (!token) {
+                    throw new Error('Authentication required');
+                }
+                
+                const response = await fetch(`/api/download-placement-file/${fileId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Download failed');
+                }
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = response.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'file';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                showResultModal('success', 'File downloaded successfully', 'Download Successful');
+            } catch (error) {
+                console.error('Download error:', error);
+                showResultModal('error', error.message || 'Failed to download file');
+            }
+        };
+        
+        // Delete file
+        window.deleteFile = function(fileId) {
+            fileToDelete = fileId;
+            deleteModalOverlay.classList.remove('hidden');
+            deleteModalOverlay.classList.add('flex');
+        };
+        
+        deleteCancelBtn.addEventListener('click', () => {
+            fileToDelete = null;
+            deleteModalOverlay.classList.add('hidden');
+            deleteModalOverlay.classList.remove('flex');
+        });
+        
+        deleteConfirmBtn.addEventListener('click', async () => {
+            if (!fileToDelete) return;
+            
+            deleteConfirmBtn.disabled = true;
+            deleteConfirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Deleting...';
+            
+            try {
+                const token = await window.getValidToken();
+                if (!token) {
+                    throw new Error('Authentication required');
+                }
+                
+                const response = await fetch(`/api/delete-placement-file/${fileToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Delete failed');
+                }
+                
+                deleteModalOverlay.classList.add('hidden');
+                deleteModalOverlay.classList.remove('flex');
+                fileToDelete = null;
+                
+                showResultModal('success', data.message, 'Delete Successful');
+                
+                // Reload files and stats
+                await Promise.all([loadFiles(), loadStats()]);
+                
+            } catch (error) {
+                console.error('Delete error:', error);
+                showResultModal('error', error.message || 'Failed to delete file');
+            } finally {
+                deleteConfirmBtn.disabled = false;
+                deleteConfirmBtn.innerHTML = 'Delete';
+            }
+        });
+        
+        let branchChart = null;
+        let interestChart = null;
+        let careerChart = null;
+        let placementConfig = { branches: [], batches: [] };
+        let selectedBranchFilter = 'all';
+        let selectedBatchFilter = 'all';
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const token = await window.getValidToken();
+                if (!token) {
+                    throw new Error('Authentication required');
+                }
+                
+                const params = new URLSearchParams();
+                if (selectedBranchFilter && selectedBranchFilter !== 'all') {
+                    params.append('branch', selectedBranchFilter);
+                }
+                if (selectedBatchFilter && selectedBatchFilter !== 'all') {
+                    params.append('batch', selectedBatchFilter);
+                }
+                const statsUrl = `/api/get-placement-stats${params.toString() ? `?${params.toString()}` : ''}`;
+                
+                const response = await fetch(statsUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load statistics');
+                }
+                
+                const stats = await response.json();
+                const studentData = stats.student_data || {};
+                const categoryStats = stats.by_category || {};
+                const hasRecords = ((stats.total_files || 0) > 0) || ((studentData.total_students || 0) > 0);
+                
+                if (statsStatusBanner) {
+                    if (!hasRecords && (selectedBranchFilter !== 'all' || selectedBatchFilter !== 'all')) {
+                        const branchLabel = selectedBranchFilter !== 'all' ? escapeHtml(selectedBranchFilter) : 'any branch';
+                        const batchLabel = selectedBatchFilter !== 'all' ? escapeHtml(selectedBatchFilter) : 'any batch';
+                        statsStatusBanner.innerHTML = `No records found for <span class="font-semibold">${branchLabel}</span> • <span class="font-semibold">${batchLabel}</span>.`;
+                        statsStatusBanner.classList.remove('hidden');
+                    } else {
+                        statsStatusBanner.classList.add('hidden');
+                    }
+                }
+                
+                // Update primary statistics cards
+                document.getElementById('total-students-count').textContent = studentData.total_students || 0;
+                document.getElementById('placement-interest-count').textContent = studentData.placement_interest || 0;
+                document.getElementById('higher-education-interest-count').textContent = studentData.higher_education_interest || 0;
+                document.getElementById('internship-student-count').textContent = studentData.internship_count || 0;
+                
+                // Update secondary statistics cards
+                document.getElementById('entrepreneurship-interest-count').textContent = studentData.entrepreneurship_interest || 0;
+                document.getElementById('relocate-count').textContent = studentData.ready_to_relocate || 0;
+                document.getElementById('certifications-count').textContent = studentData.certifications_count || 0;
+                document.getElementById('avg-cgpa').textContent = (studentData.avg_engineering_third_year || 0).toFixed(2);
+                
+                // Update Category Files Chart
+                const ctx = document.getElementById('stats-chart').getContext('2d');
+                if (statsChart) {
+                    statsChart.destroy();
+                }
+                statsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Placement', 'Higher Education', 'Internship', 'Entrepreneurship'],
+                        datasets: [{
+                            label: 'Number of Files',
+                            data: [
+                                categoryStats.placement || 0,
+                                categoryStats.higher_education || 0,
+                                categoryStats.internship || 0,
+                                categoryStats.entrepreneurship || 0
+                            ],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(168, 85, 247, 0.8)',
+                                'rgba(249, 115, 22, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(16, 185, 129, 1)',
+                                'rgba(168, 85, 247, 1)',
+                                'rgba(249, 115, 22, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: 'rgba(59, 130, 246, 0.5)',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#94a3b8',
+                                    stepSize: 1
+                                },
+                                grid: {
+                                    color: 'rgba(148, 163, 184, 0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#94a3b8'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Update Branch Distribution Chart
+                const branchCtx = document.getElementById('branch-chart').getContext('2d');
+                if (branchChart) {
+                    branchChart.destroy();
+                }
+                
+                const branches = Object.keys(studentData.by_branch || {});
+                const branchCounts = Object.values(studentData.by_branch || {});
+                
+                if (branches.length > 0) {
+                    branchChart = new Chart(branchCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: branches,
+                            datasets: [{
+                                data: branchCounts,
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(168, 85, 247, 0.8)',
+                                    'rgba(249, 115, 22, 0.8)',
+                                    'rgba(236, 72, 153, 0.8)',
+                                    'rgba(20, 184, 166, 0.8)',
+                                    'rgba(251, 146, 60, 0.8)',
+                                    'rgba(139, 92, 246, 0.8)'
+                                ],
+                                borderWidth: 2,
+                                borderColor: 'rgba(30, 41, 59, 0.8)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#94a3b8',
+                                        padding: 10,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#fff',
+                                    borderColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderWidth: 1
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    branchCtx.fillStyle = '#94a3b8';
+                    branchCtx.font = '14px Inter';
+                    branchCtx.textAlign = 'center';
+                    branchCtx.fillText('No branch data available', branchCtx.canvas.width / 2, branchCtx.canvas.height / 2);
+                }
+                
+                // Update Area of Interest Chart
+                const interestCtx = document.getElementById('interest-chart').getContext('2d');
+                if (interestChart) {
+                    interestChart.destroy();
+                }
+                
+                const interests = Object.keys(studentData.by_area_of_interest || {}).slice(0, 8);
+                const interestCounts = interests.map(i => studentData.by_area_of_interest[i]);
+                
+                if (interests.length > 0) {
+                    interestChart = new Chart(interestCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: interests.map(i => i.length > 20 ? i.substring(0, 20) + '...' : i),
+                            datasets: [{
+                                label: 'Students',
+                                data: interestCounts,
+                                backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                                borderColor: 'rgba(168, 85, 247, 1)',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#fff',
+                                    borderColor: 'rgba(168, 85, 247, 0.5)',
+                                    borderWidth: 1
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#94a3b8',
+                                        stepSize: 1
+                                    },
+                                    grid: {
+                                        color: 'rgba(148, 163, 184, 0.1)'
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        color: '#94a3b8'
+                                    },
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    interestCtx.fillStyle = '#94a3b8';
+                    interestCtx.font = '14px Inter';
+                    interestCtx.textAlign = 'center';
+                    interestCtx.fillText('No interest data available', interestCtx.canvas.width / 2, interestCtx.canvas.height / 2);
+                }
+                
+                // Update Career Interest Distribution Chart
+                const careerCtx = document.getElementById('career-chart').getContext('2d');
+                if (careerChart) {
+                    careerChart.destroy();
+                }
+                
+                const placementInterest = studentData.placement_interest || 0;
+                const higherEdInterest = studentData.higher_education_interest || 0;
+                const entrepreneurshipInterest = studentData.entrepreneurship_interest || 0;
+                const totalInterests = placementInterest + higherEdInterest + entrepreneurshipInterest;
+                
+                if (totalInterests > 0) {
+                    careerChart = new Chart(careerCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Placement', 'Higher Education', 'Entrepreneurship'],
+                            datasets: [{
+                                data: [placementInterest, higherEdInterest, entrepreneurshipInterest],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(249, 115, 22, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(59, 130, 246, 1)',
+                                    'rgba(16, 185, 129, 1)',
+                                    'rgba(249, 115, 22, 1)'
+                                ],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#94a3b8',
+                                        padding: 10,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#fff',
+                                    borderColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderWidth: 1,
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.parsed || 0;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    careerCtx.fillStyle = '#94a3b8';
+                    careerCtx.font = '14px Inter';
+                    careerCtx.textAlign = 'center';
+                    careerCtx.fillText('No career interest data available', careerCtx.canvas.width / 2, careerCtx.canvas.height / 2);
+                }
+                
+            } catch (error) {
+                console.error('Load stats error:', error);
+                if (statsStatusBanner) {
+                    statsStatusBanner.classList.remove('hidden');
+                    statsStatusBanner.textContent = error.message || 'Failed to load statistics';
+                }
+            }
+        }
+        
+        // Filter change handler
+        filterCategory.addEventListener('change', () => {
+            loadFiles();
+        });
+        
+        // Refresh button handler
+        refreshFilesBtn.addEventListener('click', async () => {
+            refreshFilesBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            await Promise.all([loadFiles(), loadStats()]);
+            refreshFilesBtn.innerHTML = '<i class="fa-solid fa-refresh"></i>';
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadPlacementConfig();
+            await Promise.all([loadFiles(), loadStats()]);
+        });
+    })();
+    </script>
+</body>
+</html>
+
+

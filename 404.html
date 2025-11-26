@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found - Student Progression System</title>
+    <link rel="icon" type="image/jpeg" href="git-logo.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="git-logo.jpg">
+    <link rel="apple-touch-icon" href="git-logo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#334155 100%); 
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .glass-card { 
+            background: rgba(30,41,59,0.8); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Light theme styles */
+        .light body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%) !important;
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-slate-300 {
+            color: #475569 !important;
+        }
+    </style>
+</head>
+<body class="text-white p-4">
+    <div class="glass-card p-8 rounded-xl shadow-lg text-center max-w-lg mx-auto">
+        <div class="mx-auto flex items-center justify-center h-32 w-32 rounded-full bg-blue-900/50 mb-6 floating-icon">
+            <i class="fa-solid fa-compass text-blue-400 text-5xl"></i>
+        </div>
+        <h1 class="text-5xl font-bold mb-4">404</h1>
+        <h2 class="text-2xl font-semibold mb-4">Page Not Found</h2>
+        <p class="text-slate-300 mb-8">Oops! It seems you've wandered into uncharted territory. Let's get you back on track.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="/" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-home"></i>
+                Return Home
+            </a>
+            <button onclick="window.history.back()" class="px-6 py-3 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i>
+                Go Back
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function genId(){
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+
+        // Always generate a new id for this visit and replace the URL
+        try{
+            const id = genId();
+            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
+            history.replaceState({}, '', newUrl);
+        }catch(e){ /* ignore */ }
+
+        // Intercept clicks to html pages and navigate with a fresh id
+        document.addEventListener('click', function(e){
+            const a = e.target.closest('a');
+            if(!a) return;
+            if (e.defaultPrevented) return;
+            if (a.hasAttribute('data-no-nav') || a.hasAttribute('data-action') || a.id === 'logout-link' || a.dataset.page === 'logout') return;
+            const href = a.getAttribute('href');
+            if(!href) return;
+            if(/\.html($|[?#])/.test(href)){
+                e.preventDefault();
+                const target = href.split('?')[0].split('#')[0].replace('.html', '');
+                const id = genId();
+                window.location.href = target + '?id=' + id;
+            }
+        });
+        
+        // Initialize theme from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const html = document.documentElement;
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            }
+        });
+    </script>
+</body>
+</html>

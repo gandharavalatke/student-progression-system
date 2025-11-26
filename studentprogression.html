@@ -1,0 +1,3037 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Data - Student Progression System</title>
+    <link rel="icon" type="image/jpeg" href="git-logo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); 
+            background-attachment: fixed;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Smooth page transitions */
+        * {
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Page load animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-content {
+            animation: fadeInUp 0.5s ease-out !important;
+        }
+        
+        /* Navigation transitions */
+        .nav-link {
+            transition: all 0.3s ease !important;
+        }
+        
+        .nav-link:hover {
+            transform: translateX(4px) !important;
+        }
+        
+        /* Card transitions */
+        .section-card, .file-item {
+            transition: all 0.3s ease !important;
+        }
+        
+        .section-card:hover, .file-item:hover {
+            transform: translateY(-2px) !important;
+        }
+        
+        /* Upload area transitions */
+        .upload-area {
+            transition: all 0.3s ease !important;
+        }
+        
+        .upload-area:hover {
+            transform: scale(1.02) !important;
+        }
+        
+        /* Light mode styles */
+        .light body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%) !important;
+        }
+        .light .sidebar-glass {
+            background: rgba(255, 255, 255, 0.95);
+            border-right: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-slate-300 {
+            color: #475569 !important;
+        }
+        .light .text-slate-400 {
+            color: #64748b !important;
+        }
+        .light .text-slate-500 {
+            color: #64748b !important;
+        }
+        .light .text-slate-600 {
+            color: #475569 !important;
+        }
+        .light .text-slate-700 {
+            color: #334155 !important;
+        }
+        .light .text-slate-800 {
+            color: #1e293b !important;
+        }
+        .light .text-slate-900 {
+            color: #0f172a !important;
+        }
+        
+        /* Light mode navigation styles */
+        .light .nav-link {
+            color: #475569 !important;
+        }
+        .light .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            color: #1e293b !important;
+        }
+        .light .nav-link.active {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            color: #1e293b !important;
+        }
+        
+        /* Light mode upload area */
+        .light .upload-box {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-color: rgba(59, 130, 246, 0.4) !important;
+            color: #1e293b !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .upload-box:hover {
+            border-color: rgba(59, 130, 246, 0.6) !important;
+            background: rgba(255, 255, 255, 1) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        /* Light mode file cards */
+        .light .file-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .file-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+        }
+        
+        /* Light mode buttons */
+        .light .bg-blue-600 {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
+        .light .bg-blue-600:hover {
+            background-color: #2563eb !important;
+        }
+        .light .bg-green-600 {
+            background-color: #059669 !important;
+            color: white !important;
+        }
+        .light .bg-green-600:hover {
+            background-color: #047857 !important;
+        }
+        .light .bg-red-600 {
+            background-color: #dc2626 !important;
+            color: white !important;
+        }
+        .light .bg-red-600:hover {
+            background-color: #b91c1c !important;
+        }
+        
+        /* Light mode dropdowns */
+        .light select {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        /* Light mode section headers */
+        .light .section-header {
+            color: #1e293b !important;
+        }
+        .light .section-subtitle {
+            color: #475569 !important;
+        }
+        
+        /* Light mode file list container */
+        .light .files-container {
+            background: rgba(255, 255, 255, 0.8) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode specific Academic Records elements */
+        .light .bg-slate-800 {
+            background-color: #f8fafc !important;
+        }
+        .light .bg-slate-800\/30 {
+            background-color: rgba(248, 250, 252, 0.8) !important;
+        }
+        .light .bg-slate-800\/50 {
+            background-color: rgba(248, 250, 252, 0.9) !important;
+        }
+        
+        /* Light mode semester selection */
+        .light .semester-select {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        
+        /* Light mode file management section */
+        .light .file-management {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode refresh button */
+        .light .refresh-btn {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            border: 1px solid #2563eb !important;
+        }
+        .light .refresh-btn:hover {
+            background-color: #2563eb !important;
+        }
+        
+        /* Light mode download summary button */
+        .light .download-summary-btn {
+            background-color: #059669 !important;
+            color: white !important;
+            border: 1px solid #047857 !important;
+        }
+        .light .download-summary-btn:hover {
+            background-color: #047857 !important;
+        }
+        
+        /* Light mode file item styling */
+        .light .file-item {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .file-item:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+        }
+        
+        /* Light mode icon colors */
+        .light .fa-solid {
+            color: #475569 !important;
+        }
+        .light .fa-download {
+            color: #3b82f6 !important;
+        }
+        .light .fa-trash {
+            color: #dc2626 !important;
+        }
+        .light .fa-eye {
+            color: #059669 !important;
+        }
+        
+        /* Light mode status indicators */
+        .light .status-indicator {
+            background-color: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+        
+        /* Light mode progress bars */
+        .light .progress-bar {
+            background-color: #e2e8f0 !important;
+        }
+        .light .progress-fill {
+            background-color: #3b82f6 !important;
+        }
+        
+        /* Light mode tooltips */
+        .light .tooltip {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode form validation */
+        .light .error-message {
+            color: #dc2626 !important;
+            background-color: #fef2f2 !important;
+            border: 1px solid #fecaca !important;
+        }
+        .light .success-message {
+            color: #059669 !important;
+            background-color: #f0fdf4 !important;
+            border: 1px solid #bbf7d0 !important;
+        }
+        
+        /* Comprehensive light mode overrides for Academic Records */
+        .light .bg-slate-800 {
+            background-color: #f8fafc !important;
+        }
+        .light .bg-slate-700 {
+            background-color: #e2e8f0 !important;
+        }
+        .light .bg-slate-600 {
+            background-color: #cbd5e1 !important;
+        }
+        .light .bg-slate-900 {
+            background-color: #f1f5f9 !important;
+        }
+        
+        /* Light mode main content area */
+        .light .main-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%) !important;
+        }
+        
+        /* Light mode page headers */
+        .light .page-title {
+            color: #1e293b !important;
+        }
+        .light .page-subtitle {
+            color: #475569 !important;
+        }
+        .light .page-description {
+            color: #64748b !important;
+        }
+        
+        /* Light mode section cards */
+        .light .section-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode form elements */
+        .light .form-label {
+            color: #374151 !important;
+        }
+        .light .form-input {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        .light .form-select {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        
+        /* Light mode upload areas */
+        .light .upload-area {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-color: rgba(59, 130, 246, 0.4) !important;
+            color: #1e293b !important;
+        }
+        .light .upload-area:hover {
+            background: rgba(255, 255, 255, 1) !important;
+            border-color: rgba(59, 130, 246, 0.6) !important;
+        }
+        
+        /* Light mode icons in upload areas */
+        .light .upload-icon {
+            color: #3b82f6 !important;
+        }
+        .light .upload-text {
+            color: #1e293b !important;
+        }
+        .light .upload-subtext {
+            color: #64748b !important;
+        }
+        
+        /* Additional Tailwind class overrides for light mode */
+        .light .text-gray-400 {
+            color: #64748b !important;
+        }
+        .light .text-gray-500 {
+            color: #64748b !important;
+        }
+        .light .text-gray-600 {
+            color: #475569 !important;
+        }
+        .light .text-gray-700 {
+            color: #334155 !important;
+        }
+        .light .text-gray-800 {
+            color: #1e293b !important;
+        }
+        .light .text-gray-900 {
+            color: #0f172a !important;
+        }
+        
+        /* Light mode border colors */
+        .light .border-slate-600 {
+            border-color: #cbd5e1 !important;
+        }
+        .light .border-slate-700 {
+            border-color: #94a3b8 !important;
+        }
+        .light .border-slate-800 {
+            border-color: #64748b !important;
+        }
+        
+        /* Light mode focus states */
+        .light .focus\:border-blue-500:focus {
+            border-color: #3b82f6 !important;
+        }
+        .light .focus\:ring-blue-500:focus {
+            --tw-ring-color: rgba(59, 130, 246, 0.5) !important;
+        }
+        
+        /* Light mode hover states */
+        .light .hover\:border-blue-400:hover {
+            border-color: #60a5fa !important;
+        }
+        .light .hover\:border-blue-500:hover {
+            border-color: #3b82f6 !important;
+        }
+        
+        /* Specific overrides for opacity-based classes */
+        .light .bg-slate-800\/30 {
+            background-color: rgba(248, 250, 252, 0.3) !important;
+        }
+        .light .bg-slate-800\/50 {
+            background-color: rgba(248, 250, 252, 0.5) !important;
+        }
+        .light .bg-slate-800\/90 {
+            background-color: rgba(248, 250, 252, 0.9) !important;
+        }
+        .light .bg-slate-700\/50 {
+            background-color: rgba(226, 232, 240, 0.5) !important;
+        }
+        .light .bg-blue-600\/20 {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+        }
+        .light .border-blue-500\/30 {
+            border-color: rgba(59, 130, 246, 0.3) !important;
+        }
+        .light .border-blue-500\/50 {
+            border-color: rgba(59, 130, 246, 0.5) !important;
+        }
+        
+        /* Light mode upload card */
+        .light .upload-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode header */
+        .light .bg-slate-800\/90 {
+            background-color: rgba(248, 250, 252, 0.9) !important;
+        }
+        
+        /* Light mode upload box specific styling */
+        .light #upload-area {
+            background: rgba(255, 255, 255, 0.8) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+            color: #1e293b !important;
+        }
+        .light #upload-area:hover {
+            border-color: rgba(59, 130, 246, 0.7) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+        
+        /* Light mode for KPI upload area */
+        .light #kpi-upload-area {
+            background: rgba(255, 255, 255, 0.8) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+            color: #1e293b !important;
+        }
+        .light #kpi-upload-area:hover {
+            border-color: rgba(59, 130, 246, 0.7) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+        
+        /* Light mode for semester select dropdown */
+        .light #semester-select {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        .light #semester-select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        /* Light mode for view semester select */
+        .light #view-semester-select {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        .light #view-semester-select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        /* Light mode for file management section */
+        .light .file-management {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode for files list container */
+        .light #files-list {
+            background: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        /* Light mode for file management section */
+        .light .file-management-section {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode for file items */
+        .light .file-item {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .file-item:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+        }
+        
+        /* Light mode for file item text */
+        .light .file-item h5 {
+            color: #1e293b !important;
+        }
+        .light .file-item p {
+            color: #64748b !important;
+        }
+        
+        /* Light mode for file icons */
+        .light .file-item .fa-file-excel {
+            color: #059669 !important;
+        }
+        .light .file-item .fa-file-alt {
+            color: #3b82f6 !important;
+        }
+        
+        /* Light mode for file action buttons */
+        .light .file-item .bg-blue-600 {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
+        .light .file-item .bg-blue-600:hover {
+            background-color: #2563eb !important;
+        }
+        .light .file-item .bg-red-600 {
+            background-color: #dc2626 !important;
+            color: white !important;
+        }
+        .light .file-item .bg-red-600:hover {
+            background-color: #b91c1c !important;
+        }
+        
+        /* Light mode for file management header */
+        .light .file-management-header {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        /* Light mode for dropdown and buttons in file management */
+        .light .file-management-header select {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        .light .file-management-header button {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
+        .light .file-management-header button:hover {
+            background-color: #2563eb !important;
+        }
+        
+        /* Additional overrides for uploaded files section */
+        .light .uploaded-files-section {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        .light .uploaded-files-header {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+        }
+        .light .uploaded-files-list {
+            background: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        /* Light mode for specific file list elements */
+        .light .files-list-container {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        /* Light mode for file list items */
+        .light .file-list-item {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light .file-list-item:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+        }
+        
+        /* Light mode for file list text */
+        .light .file-list-item .file-name {
+            color: #1e293b !important;
+        }
+        .light .file-list-item .file-details {
+            color: #64748b !important;
+        }
+        
+        /* Light mode for file list buttons */
+        .light .file-list-item .download-btn {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
+        .light .file-list-item .delete-btn {
+            background-color: #dc2626 !important;
+            color: white !important;
+        }
+        
+        /* Additional overrides for file list elements */
+        .light .upload-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode for file list container */
+        .light .uploaded-files-container {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        /* Light mode for file list items with specific classes */
+        .light .bg-slate-800\/50 {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+        }
+        .light .bg-slate-800\/30 {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        /* Light mode for file list text elements */
+        .light .file-list-text {
+            color: #1e293b !important;
+        }
+        .light .file-list-details {
+            color: #64748b !important;
+        }
+        
+        /* Light mode for file list buttons */
+        .light .file-list-actions {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        /* Force light mode on all file-related elements */
+        .light [class*="file"] {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        .light [class*="file"] h5 {
+            color: #1e293b !important;
+        }
+        .light [class*="file"] p {
+            color: #64748b !important;
+        }
+        
+        /* Aggressive overrides for uploaded files section */
+        .light .uploaded-files-section {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+        .light .uploaded-files-section * {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #1e293b !important;
+        }
+        .light .uploaded-files-section .text-white {
+            color: #1e293b !important;
+        }
+        .light .uploaded-files-section .text-slate-300 {
+            color: #64748b !important;
+        }
+        .light .uploaded-files-section .text-slate-400 {
+            color: #64748b !important;
+        }
+        .light .uploaded-files-section .text-gray-400 {
+            color: #64748b !important;
+        }
+        
+        /* Force light mode on all elements in uploaded files */
+        .light .uploaded-files-section div {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        .light .uploaded-files-section .bg-slate-800 {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        .light .uploaded-files-section .bg-slate-700 {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        .light .uploaded-files-section .bg-slate-600 {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        /* Force light mode on all elements when light class is present */
+        .light * {
+            color: inherit !important;
+        }
+        
+        /* NUCLEAR OPTION - Force light theme on uploaded files */
+        .light .upload-card,
+        .light .upload-card *,
+        .light .upload-card div,
+        .light .upload-card h4,
+        .light .upload-card h5,
+        .light .upload-card p,
+        .light .upload-card span {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: #1e293b !important;
+        }
+        
+        /* Force light theme on file list items */
+        .light .file-item,
+        .light .file-item *,
+        .light .file-item div,
+        .light .file-item h5,
+        .light .file-item p,
+        .light .file-item span {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: #1e293b !important;
+        }
+        
+        /* Override ALL dark classes in light mode */
+        .light .bg-slate-800,
+        .light .bg-slate-700,
+        .light .bg-slate-600,
+        .light .bg-slate-900 {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+        
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        
+        .light .text-slate-300,
+        .light .text-slate-400,
+        .light .text-gray-400 {
+            color: #64748b !important;
+        }
+        
+        /* Light mode for all text elements */
+        .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+            color: #1e293b !important;
+        }
+        
+        /* ULTIMATE OVERRIDE - Force light theme everywhere */
+        .light .uploaded-files-section,
+        .light .uploaded-files-section *,
+        .light .uploaded-files-section div,
+        .light .uploaded-files-section h4,
+        .light .uploaded-files-section h5,
+        .light .uploaded-files-section p,
+        .light .uploaded-files-section span,
+        .light .uploaded-files-section button {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: #1e293b !important;
+            border-color: rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        /* Force light theme on file management */
+        .light .file-management,
+        .light .file-management *,
+        .light .file-management div,
+        .light .file-management h4,
+        .light .file-management h5,
+        .light .file-management p,
+        .light .file-management span {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: #1e293b !important;
+        }
+        
+        /* Override any remaining dark elements */
+        .light [class*="bg-slate"] {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+        
+        .light [class*="text-white"] {
+            color: #1e293b !important;
+        }
+        
+        .light [class*="text-slate"] {
+            color: #64748b !important;
+        }
+        
+        /* File item containers - proper card styling */
+        .file-item {
+            background: rgba(30, 41, 59, 0.5) !important;
+            border: 1px solid rgba(71, 85, 105, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .file-item:hover {
+            background: rgba(51, 65, 85, 0.5) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        /* Light mode file containers */
+        .light .file-item {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light .file-item:hover {
+            background: rgba(255, 255, 255, 1) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        /* File item text in light mode */
+        .light .file-item h5 {
+            color: #1e293b !important;
+        }
+        
+        .light .file-item p {
+            color: #64748b !important;
+        }
+        
+        /* File item spacing */
+        .file-item {
+            margin-bottom: 0.75rem !important;
+        }
+        
+        /* File item content alignment */
+        .file-item .flex {
+            align-items: center !important;
+        }
+        
+        /* File item buttons */
+        .file-item button {
+            transition: all 0.2s ease !important;
+        }
+        
+        .file-item button:hover {
+            transform: translateY(-1px) !important;
+        }
+        .light p, .light span, .light div {
+            color: inherit !important;
+        }
+        
+        /* Light mode for specific upload area text */
+        .light #upload-area h5 {
+            color: #1e293b !important;
+        }
+        .light #upload-area p {
+            color: #64748b !important;
+        }
+        
+        /* Light mode for KPI upload area text */
+        .light #kpi-upload-area h5 {
+            color: #1e293b !important;
+        }
+        .light #kpi-upload-area p {
+            color: #64748b !important;
+        }
+        
+        /* Light mode for section headers */
+        .light .section-title {
+            color: #1e293b !important;
+        }
+        .light .section-description {
+            color: #64748b !important;
+        }
+        .upload-box {
+            transition: all 0.2s ease-in-out;
+        }
+        .upload-box:hover {
+            border-color: #3b82f6; /* Blue-500 */
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-box {
+            transition: all 0.3s ease;
+            transform: translateY(-50px);
+        }
+        .modal-overlay:not(.hidden) .modal-box {
+            transform: translateY(0);
+        }
+        .sidebar-glass {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .upload-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Fix blurry icons with proper rendering */
+        .fa-solid, .fa-regular, .fa-light, .fa-thin, .fa-duotone {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-display: block;
+        }
+        
+        /* Ensure icons render at native resolution */
+        i[class*="fa-"] {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Ensure logout success modal is always centered when visible */
+        #logout-success-overlay:not(.hidden) {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            z-index: 9999 !important;
+        }
+        /* Mobile Navigation System */
+        @media (max-width: 768px) {
+            aside {
+                display: none !important;
+            }
+            main {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+            
+            /* Mobile file items - VERTICAL STACK with buttons below */
+            .file-item {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+                padding: 1rem !important;
+                margin-bottom: 0.75rem !important;
+                background: rgba(30, 41, 59, 0.5) !important;
+                border-radius: 8px !important;
+                border: 1px solid rgba(59, 130, 246, 0.2) !important;
+            }
+            
+            .file-item .flex.items-center.space-x-4 {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: flex-start !important;
+                gap: 1rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            /* Mobile buttons in row below file info */
+            .file-item .flex.space-x-2 {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
+                margin-top: 0.5rem !important;
+                padding: 0.5rem !important;
+                background: rgba(15, 23, 42, 0.3) !important;
+                border-radius: 6px !important;
+            }
+            
+            .file-item .flex.space-x-2 button {
+                flex: 1 !important;
+                min-width: 0 !important;
+                max-width: 150px !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 0.875rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.5rem !important;
+                border-radius: 6px !important;
+                transition: all 0.2s ease !important;
+            }
+            
+            /* Mobile file icon alignment */
+            .file-item i {
+                align-self: flex-start !important;
+                margin-top: 0 !important;
+                flex-shrink: 0 !important;
+            }
+            
+            /* Mobile file text alignment */
+            .file-item .flex.items-center.space-x-4 > div:last-child {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                flex: 1 !important;
+            }
+            
+            /* Mobile button styling */
+            .file-item button {
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+                color: #ffffff !important;
+                border: none !important;
+                box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important;
+                border-radius: 6px !important;
+                transition: all 0.2s ease !important;
+            }
+            
+            .file-item button[onclick*="delete"] {
+                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+                box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+            }
+            
+            .file-item button:hover {
+                transform: translateY(-1px) !important;
+            }
+            
+            .file-item button[onclick*="download"]:hover {
+                background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+                box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4) !important;
+            }
+            
+            .file-item button[onclick*="delete"]:hover {
+                background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+                box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
+            }
+            
+            /* Mobile file management */
+            .file-management {
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                margin-bottom: 1rem !important;
+                align-items: center !important;
+                flex-wrap: wrap !important;
+            }
+            
+            .file-management select {
+                flex: 1 !important;
+                min-width: 120px !important;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+            }
+            
+            .file-management button {
+                flex: 1 !important;
+                min-width: 120px !important;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.5rem !important;
+            }
+            
+            /* ULTRA AGGRESSIVE - Force buttons side by side */
+            .file-management > div {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                align-items: center !important;
+                width: 100% !important;
+            }
+            
+            .file-management > div button {
+                flex: 1 !important;
+                min-width: 0 !important;
+                max-width: 200px !important;
+                margin: 0 !important;
+            }
+            
+            /* Target specific button containers */
+            .file-management .flex {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                align-items: center !important;
+                width: 100% !important;
+            }
+            
+            .file-management .flex button {
+                flex: 1 !important;
+                min-width: 0 !important;
+                max-width: 200px !important;
+            }
+            
+            /* SIMPLE APPROACH - Force column layout with buttons side-by-side */
+            .upload-card .mb-4 {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+                align-items: stretch !important;
+            }
+            
+            /* Select semester takes full width on top */
+            .upload-card .mb-4 select {
+                width: 100% !important;
+                margin-bottom: 0.75rem !important;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+                order: 1 !important;
+            }
+            
+            /* Buttons side-by-side below select */
+            .upload-card .mb-4 button {
+                display: inline-flex !important;
+                flex: 1 !important;
+                min-width: 120px !important;
+                max-width: 200px !important;
+                margin: 0 !important;
+                margin-right: 0.5rem !important;
+                order: 2 !important;
+            }
+            
+            /* Override ml-3 class */
+            .upload-card .mb-4 button.ml-3 {
+                margin-left: 0 !important;
+            }
+            
+            /* Force buttons to be side by side */
+            .upload-card .mb-4 button:first-of-type {
+                margin-right: 0.5rem !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
+            }
+            
+            /* Create a button row using flexbox */
+            .upload-card .mb-4 {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            /* FORCE buttons to be side by side using CSS Grid */
+            .upload-card .mb-4 {
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                grid-template-rows: auto auto !important;
+                gap: 0.75rem !important;
+            }
+            
+            .upload-card .mb-4 select {
+                grid-row: 1 !important;
+                width: 100% !important;
+            }
+            
+            .upload-card .mb-4 button {
+                display: inline-block !important;
+                width: calc(50% - 0.25rem) !important;
+                margin-right: 0.5rem !important;
+                grid-row: 2 !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
+            }
+            
+            /* ULTRA AGGRESSIVE - Force buttons side by side */
+            .upload-card .mb-4 button {
+                display: inline-block !important;
+                width: 48% !important;
+                margin-right: 2% !important;
+                vertical-align: top !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
+            }
+            
+            /* FINAL NUCLEAR OPTION - Use float to force side-by-side */
+            .upload-card .mb-4 {
+                display: block !important;
+            }
+            
+            .upload-card .mb-4 select {
+                width: 100% !important;
+                display: block !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            .upload-card .mb-4 button {
+                display: inline-block !important;
+                width: 48% !important;
+                float: left !important;
+                margin-right: 2% !important;
+                margin-bottom: 0 !important;
+                box-sizing: border-box !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                margin-right: 0 !important;
+                float: right !important;
+            }
+            
+            /* Clear float after buttons */
+            .upload-card .mb-4::after {
+                content: '';
+                display: table;
+                clear: both;
+            }
+            
+            /* Alternative: Use absolute positioning */
+            .upload-card .mb-4 {
+                position: relative !important;
+                display: block !important;
+            }
+            
+            .upload-card .mb-4 select {
+                width: 100% !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            .upload-card .mb-4 button:first-of-type {
+                position: absolute !important;
+                left: 0 !important;
+                top: auto !important;
+                width: 48% !important;
+                margin: 0 !important;
+            }
+            
+            .upload-card .mb-4 button:last-of-type {
+                position: absolute !important;
+                right: 0 !important;
+                top: auto !important;
+                width: 48% !important;
+                margin: 0 !important;
+            }
+            
+            /* Mobile uploaded files section */
+            .uploaded-files-section {
+                padding: 1rem !important;
+            }
+            
+            .uploaded-files-header h3 {
+                font-size: 1.25rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            /* Mobile file cards - VERTICAL LAYOUT */
+            .upload-card {
+                padding: 1rem !important;
+                margin-bottom: 0.75rem !important;
+                border-radius: 8px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            
+            .upload-card .flex {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            
+            .upload-card .flex-1 {
+                width: 100% !important;
+            }
+            
+            /* Mobile buttons in row below file info */
+            .upload-card .flex-shrink-0 {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                justify-content: center !important;
+                padding: 0.5rem !important;
+                background: rgba(15, 23, 42, 0.3) !important;
+                border-radius: 6px !important;
+                margin-top: 0.5rem !important;
+            }
+            
+            .upload-card button {
+                flex: 1 !important;
+                min-width: 0 !important;
+                max-width: 150px !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 0.875rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.5rem !important;
+                border-radius: 6px !important;
+                transition: all 0.2s ease !important;
+            }
+            
+            /* Mobile file details */
+            .upload-card h4 {
+                font-size: 1rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .upload-card h5 {
+                font-size: 0.875rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .upload-card p {
+                font-size: 0.75rem !important;
+            }
+            
+            /* Mobile file icon and text alignment */
+            .upload-card .flex.items-center {
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
+            }
+            
+            .upload-card .flex.items-center .flex-1 {
+                flex: 1 !important;
+            }
+            
+            .upload-card .flex.items-center .flex-shrink-0 {
+                flex-shrink: 0 !important;
+            }
+        }
+        
+        /* Mobile Navigation Button */
+        .mobile-nav-button {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 45px;
+            height: 45px;
+            background: rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+        
+        .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateX(-50%) scale(1.1);
+        }
+        
+        .mobile-nav-button i {
+            font-size: 14px;
+            color: #3b82f6;
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-nav-button.rotated i {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Navigation Menu */
+        .mobile-nav-menu {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            z-index: 999;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px;
+            max-width: 90vw;
+        }
+        
+        .mobile-nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+        
+        .mobile-nav-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .mobile-nav-row {
+            display: grid;
+            gap: 12px;
+            justify-items: center;
+        }
+        
+        .mobile-nav-row:first-child {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .mobile-nav-row:last-child {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            min-height: 60px;
+            width: 50px;
+        }
+        
+        .mobile-nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Special styling for logout button */
+        .mobile-nav-item[data-page="logout"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+        }
+        
+        .mobile-nav-item[data-page="logout"]:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+        }
+        
+        .mobile-nav-item i {
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+
+        /* Ensure mobile nav icons are white in both themes */
+        .mobile-nav-item i,
+        .mobile-nav-item .fa,
+        .light .mobile-nav-item i,
+        .light .mobile-nav-item .fa,
+        .mobile-nav-item[data-page="reports"] i,
+        .light .mobile-nav-item[data-page="reports"] i,
+        .mobile-nav-item[data-page="reports"] .fa-file-alt,
+        .light .mobile-nav-item[data-page="reports"] .fa-file-alt,
+        /* Extra specific selectors for reports icon */
+        .mobile-nav-menu .mobile-nav-item[data-page="reports"] i,
+        .light .mobile-nav-menu .mobile-nav-item[data-page="reports"] i {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Force reports icon to be visible */
+        .mobile-nav-item[data-page="reports"] {
+            color: #ffffff !important;
+        }
+        
+        .mobile-nav-item[data-page="reports"] i {
+            display: inline-block !important;
+        }
+        
+        .mobile-nav-item span {
+            display: none;
+        }
+        
+        /* Light theme mobile navigation */
+        .light .mobile-nav-menu {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        /* Desktop button container styling - side by side */
+        .btn-container {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 0.75rem !important;
+            width: 100% !important;
+        }
+
+        /* Desktop button styling - side by side */
+        #refresh-files-btn,
+        #download-summary-btn {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+
+        /* Fix: ensure semester select and action buttons stack on small screens
+           and neutralize earlier absolute/float rules that caused overlap. */
+        @media (max-width: 480px) {
+            /* Container styling */
+            .upload-card {
+                padding: 1rem !important;
+            }
+
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+
+            /* Select dropdown styling */
+            #view-semester-select {
+                width: 100% !important;
+                margin-bottom: 0.75rem !important;
+                padding: 0.75rem !important;
+            }
+
+            /* Button container styling */
+            .btn-container {
+                display: flex !important;
+                gap: 0.75rem !important; /* Increased gap between buttons */
+                padding: 0 0.5rem !important; /* Added side padding */
+                margin-bottom: 1rem !important;
+            }
+
+            /* Individual button styling */
+            #refresh-files-btn,
+            #download-summary-btn {
+                flex: none !important;
+                width: calc(50% - 0.375rem) !important;
+                height: 80px !important; /* Increased height */
+                padding: 0.5rem !important;
+                font-size: 0.875rem !important;
+                margin: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }
+
+            /* Make buttons container flex with proper gap */
+            .btn-container {
+                display: flex !important;
+                justify-content: space-between !important;
+                gap: 0.75rem !important;
+                width: 100% !important;
+                position: relative !important;
+                z-index: 10 !important; /* keep buttons above files list */
+                padding-bottom: 0.25rem !important;
+            }
+
+            /* Icon alignment */
+            #refresh-files-btn i,
+            #download-summary-btn i {
+                margin-right: 0.5rem !important;
+            }
+
+            /* Make download icon slightly larger for emphasis */
+            #download-summary-btn i {
+                font-size: 22px !important;
+                line-height: 1 !important;
+            }
+
+            /* Text styling for Refresh button */
+            #refresh-files-btn span {
+                font-size: 0.95rem !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+            }
+
+            /* Special styling for download summary button text */
+            #download-summary-btn span {
+                font-size: 0.95rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                text-align: center !important;
+                gap: 0.125rem !important;
+            }
+
+            /* Fix border overlap with file list */
+            #files-list {
+                margin-top: 2.25rem !important; /* push files down more to avoid overlap */
+                border-top: 1px solid rgba(59, 130, 246, 0.2) !important;
+                padding-top: 1rem !important;
+                position: relative !important;
+                z-index: 1 !important;
+            }
+
+            /* Clear any floats */
+            .clearfix::after {
+                content: "" !important;
+                display: table !important;
+                clear: both !important;
+            }
+        }
+    </style>
+    
+    <script>
+    // ===== JWT AUTHENTICATION UTILITY =====
+    (function() {
+        function getAccessToken() { return localStorage.getItem('access_token'); }
+        function getRefreshToken() { return localStorage.getItem('refresh_token'); }
+        function isTokenExpired() {
+            const expiresAt = localStorage.getItem('token_expires_at');
+            return !expiresAt || Date.now() >= parseInt(expiresAt);
+        }
+        async function refreshAccessToken() {
+            const refreshToken = getRefreshToken();
+            if (!refreshToken) { logout(); return null; }
+            try {
+                const res = await fetch('/api/refresh-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const data = await res.json();
+                if (!res.ok) { logout(); return null; }
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                return data.access_token;
+            } catch (err) {
+                console.error('Token refresh failed:', err);
+                logout();
+                return null;
+            }
+        }
+        async function getValidToken() {
+            if (isTokenExpired()) return await refreshAccessToken();
+            return getAccessToken();
+        }
+        window.authFetch = async function(url, options = {}) {
+            const token = await getValidToken();
+            if (!token) throw new Error('Authentication required');
+            const headers = { 'Authorization': `Bearer ${token}`, ...options.headers };
+            const response = await fetch(url, { ...options, headers });
+            if (response.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    headers['Authorization'] = `Bearer ${newToken}`;
+                    return fetch(url, { ...options, headers });
+                }
+                logout();
+            }
+            return response;
+        };
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('token_expires_at');
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('user_role');
+            sessionStorage.removeItem('sps_user');
+            window.location.href = '/?id=' + generateQuickId();
+        }
+        async function checkAuth() {
+            const token = getAccessToken();
+            if (!token) { logout(); return false; }
+            try {
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const res = await fetch('/api/verify-token', { headers });
+                if (!res.ok) { logout(); return false; }
+                return true;
+            } catch (err) { logout(); return false; }
+        }
+        setTimeout(() => { checkAuth(); }, 100);
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                showInactivityAlert();
+            }, INACTIVITY_TIMEOUT);
+        }
+        
+        function showInactivityAlert() {
+            // Show modal before logout
+            const overlay = document.createElement('div');
+            overlay.id = 'inactivity-alert-overlay';
+            overlay.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[10000]';
+            overlay.innerHTML = `
+                <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-yellow-600">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                        <i class="fa-solid fa-clock text-yellow-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-white text-lg font-semibold mb-2">Session Expired</h3>
+                    <p class="text-slate-300 mb-5">Your session has expired due to inactivity. Please login again.</p>
+                    <button id="inactivity-ok-btn" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                        OK
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            
+            const okBtn = document.getElementById('inactivity-ok-btn');
+            okBtn.addEventListener('click', () => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+                logout();
+            });
+            
+            // Auto logout after 3 seconds even if user doesn't click
+            setTimeout(() => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                    logout();
+                }
+            }, 3000);
+        }
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+        resetInactivityTimer();
+        function generateQuickId() {
+            const values = new Uint8Array(120);
+            window.crypto.getRandomValues(values);
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            return base64.slice(0, 152);
+        }
+        window.logoutUser = async function() {
+            try {
+                await authFetch('/api/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            logout();
+        };
+    })();
+    </script>
+    
+    <script>
+        // Function to generate secure random ID
+        function genId() {
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+
+        // Add ID to URL on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const url = new URL(window.location.href);
+            // Only add ID if not already present
+            if (!url.searchParams.has('id')) {
+                url.searchParams.set('id', genId());
+                const newUrl = url.pathname + '?' + url.searchParams.toString(); 
+                window.history.replaceState({}, '', newUrl);
+            }
+        });
+
+        // Intercept all link clicks
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
+        document.addEventListener('click', e => {
+            const link = e.target.closest('a');
+            if (!link) return;
+            if (e.defaultPrevented) return; // some handlers (modals) may prevent navigation
+            // Skip navigation interception for download links, blob URLs, and marked links
+            if (link.hasAttribute('data-no-nav') || link.hasAttribute('data-action')) return;
+            // Skip blob URLs
+            if (link.href && link.href.startsWith('blob:')) return;
+            
+            // Handle logout separately - redirect to root with new ID
+            if (link.id === 'logout-link' || link.dataset.page === 'logout') {
+                e.preventDefault();
+                window.location.href = '/?id=' + genId();
+                return;
+            }
+            
+            const href = link.getAttribute('href');
+            if (!href) return;
+            
+            // Skip external links and anchors
+            if (href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+                return;
+            }
+            
+            try {
+                // Handle relative paths (pages without .html)
+                if (!href.startsWith('http') && !href.startsWith('/') && href !== '/') {
+                    e.preventDefault();
+                    // Remove .html if present, then add dynamic ID
+                    const cleanPath = href.replace(/\.html$/, '');
+                    const newUrl = '/' + cleanPath + '?id=' + genId();
+                    window.location.href = newUrl;
+                } else if (href.startsWith('/') && href !== '/' && !href.includes('?')) {
+                    // Handle absolute paths (like /dashboard)
+                    e.preventDefault();
+                    window.location.href = href + '?id=' + genId();
+                } else if (/\.html($|[?#])/.test(href)) {
+                    // Legacy support for .html links
+                    e.preventDefault();
+                    const url = new URL(link.href, window.location.origin);
+                    const pathWithoutHtml = url.pathname.replace(/\.html$/, '');
+                    window.location.href = pathWithoutHtml + '?id=' + genId();
+                }
+            } catch (err) {
+                // If URL parsing fails, skip
+                console.error('Navigation error:', err);
+            }
+        });
+    </script>
+</head>
+<body class="text-white">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
+            <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
+                 <img src="GIT Logo.jpg" alt="GIT Logo" class="h-full w-auto">
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a href="dashboard" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
+                </a>
+                <a href="studentprogression" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
+                    <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
+                </a>
+                <a href="placement" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
+                </a>
+                <a href="extracurricular" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
+                </a>
+                  <a href="reports" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                      <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
+                  </a>
+            </nav>
+            <div class="p-4 border-t border-slate-600">
+                 <a href="settings" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
+                </a>
+                 <a id="logout-link" href="/" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Mobile Navigation Button -->
+        <button id="mobile-nav-button" class="mobile-nav-button hidden">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav-menu" class="mobile-nav-menu">
+            <style>
+                .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
+                }
+                .light .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
+                }
+                #mobile-nav-menu .mobile-nav-item[data-page="reports"] i {
+                    color: #ffffff !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                }
+            </style>
+            <div class="mobile-nav-grid">
+                <div class="mobile-nav-row">
+                    <a href="dashboard" class="mobile-nav-item" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="studentprogression" class="mobile-nav-item active" data-page="academic">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>Academic</span>
+                    </a>
+                    <a href="placement" class="mobile-nav-item" data-page="placement">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Placement</span>
+                    </a>
+                    <a href="extracurricular" class="mobile-nav-item" data-page="extracurricular">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Extracurricular</span>
+                    </a>
+                </div>
+                <div class="mobile-nav-row">
+                    <a href="reports" class="mobile-nav-item" data-page="reports">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="settings" class="mobile-nav-item" data-page="settings">
+                        <i class="fa-solid fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <a href="/" class="mobile-nav-item" data-page="logout">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto">
+            <header class="h-16 bg-slate-800/90 backdrop-blur-sm shadow-md flex items-center justify-between px-6 border-b border-slate-600">
+                <h2 class="text-lg font-semibold text-white">Upload Student Progression Data</h2>
+            </header>
+            <div class="p-8">
+                <h3 class="text-2xl font-bold text-white mb-2">Upload Semester Result</h3>
+                <p class="text-slate-300 mb-8">Upload and manage semester-wise student result files.</p>
+                
+                <!-- Semester Selection and Upload Section -->
+                <div class="upload-card p-6 rounded-xl shadow-lg mb-8">
+                    <h4 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-upload mr-3 text-blue-400"></i>
+                        Upload Result Files
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Semester Selection -->
+                        <div>
+                            <label for="semester-select" class="block text-sm font-medium text-slate-300 mb-2">Select Semester</label>
+                            <select id="semester-select" class="w-full px-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                                <option value="">Choose a semester...</option>
+                                <option value="sem1">Semester 1</option>
+                                <option value="sem2">Semester 2</option>
+                                <option value="sem3">Semester 3</option>
+                                <option value="sem4">Semester 4</option>
+                                <option value="sem5">Semester 5</option>
+                                <option value="sem6">Semester 6</option>
+                                <option value="sem7">Semester 7</option>
+                                <option value="sem8">Semester 8</option>
+                            </select>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Upload Area -->
+                    <div class="mt-6">
+                        <div id="upload-area" class="upload-box bg-slate-800/30 p-8 rounded-xl text-center border-2 border-dashed border-blue-500/50 cursor-pointer hover:border-blue-400 transition-colors backdrop-blur-sm">
+                            <i class="fa-solid fa-cloud-upload-alt text-4xl text-blue-400 mx-auto mb-4"></i>
+                            <h5 class="text-lg font-semibold text-white mb-2">Click to Upload Excel File</h5>
+                            <p class="text-slate-300">Select an Excel file (.xlsx, .xls) for the chosen semester</p>
+                            <input type="file" id="file-input" class="hidden" accept=".xlsx,.xls">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admissions Intake Data Upload -->
+                <div class="upload-card p-6 rounded-xl shadow-lg mb-8">
+                    <h4 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-table mr-3 text-cyan-400"></i>
+                        Upload Intake Data File
+                    </h4>
+                    <p class="text-slate-300 mb-4 text-sm">Expected headers (row 1): Sanctioned Intake, Total Admitted, DSE, Successfully passed without backlog</p>
+                    <div id="kpi-upload-area" class="upload-box bg-slate-800/30 p-6 rounded-xl text-center border-2 border-dashed border-cyan-500/50 cursor-pointer hover:border-cyan-400 transition-colors backdrop-blur-sm">
+                        <i class="fa-solid fa-file-excel text-3xl text-cyan-400 mx-auto mb-2"></i>
+                        <p class="text-slate-300 font-medium">Click to Upload Intake Data (.xlsx/.xls)</p>
+                        <input type="file" id="kpi-file-input" class="hidden" accept=".xlsx,.xls">
+                    </div>
+                </div>
+
+                <!-- File Management Section -->
+                <div class="upload-card p-6 rounded-xl shadow-lg">
+                    <h4 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-folder-open mr-3 text-blue-400"></i>
+                        Uploaded Files
+                    </h4>
+                    
+                    <div class="mb-4">
+                        <div class="w-full">
+                            <select id="view-semester-select" class="w-full px-4 py-3 bg-orange-50 text-gray-800 rounded-lg border border-orange-200 focus:outline-none focus:border-orange-400">
+                                <option value="">All Semesters</option>
+                                <option value="sem1">Semester 1</option>
+                                <option value="sem2">Semester 2</option>
+                                <option value="sem3">Semester 3</option>
+                                <option value="sem4">Semester 4</option>
+                                <option value="sem5">Semester 5</option>
+                                <option value="sem6">Semester 6</option>
+                                <option value="sem7">Semester 7</option>
+                                <option value="sem8">Semester 8</option>
+                            </select>
+                        </div>
+                        <div class="btn-container mt-3">
+                            <button id="refresh-files-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600 focus:outline-none shadow-lg flex items-center justify-center">
+                                <i class="fa-solid fa-refresh mr-2"></i>
+                                <span>Refresh</span>
+                            </button>
+                            <button type="button" id="download-summary-btn" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none shadow-lg flex items-center justify-center">
+                                <i class="fa-solid fa-file-excel mr-2"></i>
+                                <span>Download Summary</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="files-list" class="space-y-3">
+                        <!-- Files will be loaded here dynamically -->
+                        <div class="text-center text-gray-600 py-8">
+                            <i class="fa-solid fa-folder-open text-4xl mb-2"></i>
+                            <p>No files uploaded yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden modal-overlay">
+        
+        <!-- Confirmation Modal -->
+        <div id="confirm-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600 hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-orange-900 mb-4">
+                 <i class="fa-solid fa-file-arrow-up text-orange-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white" id="confirm-title">Confirm Upload</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-slate-300">You are about to upload the file:</p>
+                <p class="font-semibold text-white mt-1" id="confirm-filename"></p>
+            </div>
+            <div id="confirm-actions" class="mt-5 sm:mt-6 space-x-4">
+                <button id="cancel-upload-btn" type="button" class="inline-flex justify-center w-24 rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-700 text-base font-medium text-white hover:bg-slate-600 focus:outline-none">
+                    Cancel
+                </button>
+                <button id="confirm-upload-btn" type="button" class="inline-flex justify-center w-36 rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-700 text-base font-medium text-white hover:from-orange-700 hover:to-orange-800 focus:outline-none">
+                    Confirm
+                </button>
+            </div>
+             <div id="upload-spinner" class="mt-6 hidden">
+                <div class="w-8 h-8 border-4 border-t-transparent border-orange-500 rounded-full animate-spin mx-auto"></div>
+                <p class="text-slate-300 mt-2">Uploading, please wait...</p>
+            </div>
+        </div>
+
+        <!-- Result Modal -->
+        <div id="result-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600 hidden">
+            <div id="result-icon-bg" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4">
+                 <i id="result-icon" class="fa-solid text-xl text-white"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white" id="result-title"></h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-slate-300" id="result-message"></p>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button id="result-close-btn" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-700 text-base font-medium text-white hover:from-orange-700 hover:to-orange-800 focus:outline-none">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="delete-confirm-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600 hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900 mb-4">
+                <i class="fa-solid fa-trash-can text-red-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white">Confirm File Deletion</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-slate-300">Are you sure you want to delete this file? This action cannot be undone.</p>
+            </div>
+            <div class="mt-5 sm:mt-6 space-x-4">
+                <button id="cancel-delete-btn" type="button" class="inline-flex justify-center w-24 rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-700 text-base font-medium text-white hover:bg-slate-600 focus:outline-none">
+                    Cancel
+                </button>
+                <button id="confirm-delete-btn" type="button" class="inline-flex justify-center w-36 rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-base font-medium text-white hover:from-red-700 hover:to-red-800 focus:outline-none">
+                    Yes, Delete
+                </button>
+            </div>
+        </div>
+
+
+
+        <!-- Download Confirmation Modal -->
+        <div id="download-confirm-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600 hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-900 mb-3">
+                <i class="fa-solid fa-download text-blue-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Download</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to download this file?</p>
+            <div class="space-x-3">
+                <button id="cancel-download-btn" type="button" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">
+                    <i class="fa-solid fa-times mr-2"></i>Cancel
+                </button>
+                <button id="confirm-download-btn" type="button" class="px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-colors">
+                    <i class="fa-solid fa-download mr-2"></i>Download
+                </button>
+            </div>
+        </div>
+
+        <!-- Duplicate File Modal -->
+        <div id="duplicate-modal" class="modal-box bg-white rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-orange-200 hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-800">File Already Uploaded</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-600">A file with the same name for the selected semester already exists.</p>
+                <p class="text-sm text-gray-600 mt-1">Do you want to replace the existing file with the new one?</p>
+                <p id="duplicate-filename" class="text-gray-800 font-semibold mt-3"></p>
+            </div>
+            <div class="mt-5 sm:mt-6 space-x-4">
+                <button id="duplicate-cancel-btn" type="button" class="inline-flex justify-center w-24 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-700 hover:bg-gray-300 focus:outline-none">Close</button>
+                <button id="duplicate-replace-btn" type="button" class="inline-flex justify-center w-32 rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-base font-medium text-white hover:from-red-600 hover:to-red-700 focus:outline-none">Replace</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Standardized Logout Confirmation Modal -->
+    <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9998]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-sign-out-alt text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Logout</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to logout?</p>
+            <div class="space-x-3">
+                <button id="logout-cancel" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">
+                    <i class="fa-solid fa-times mr-2"></i>Cancel
+                </button>
+                <button id="logout-confirm" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                    <i class="fa-solid fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Success Modal -->
+    <div id="logout-success-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-card rounded-2xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="text-center p-6">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-600 mb-4">
+                    <i class="fa-solid fa-check text-white text-xl"></i>
+            </div>
+                <h3 class="text-xl font-semibold mb-2">Logout Successful</h3>
+                <p class="text-slate-400 text-sm">You have been successfully logged out.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const html = document.documentElement;
+            console.log('Initializing theme:', savedTheme);
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                console.log('Light theme applied, classes:', html.className);
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                console.log('Dark theme applied, classes:', html.className);
+            }
+            
+            // Mobile Navigation System
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            function checkMobileView() {
+                if (window.innerWidth <= 768) {
+                    mobileNavButton.classList.remove('hidden');
+                } else {
+                    mobileNavButton.classList.add('hidden');
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            }
+            
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+            
+            mobileNavButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileNavMenu.classList.toggle('show');
+                mobileNavButton.classList.toggle('rotated');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            });
+            
+            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+            mobileNavItems.forEach(item => {
+                const pageName = item.getAttribute('data-page');
+                if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+
+                // Add logout handling for mobile nav logout item
+                if (pageName === 'logout') {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('logout-overlay').classList.remove('hidden');
+                        document.getElementById('logout-overlay').classList.add('flex');
+                        mobileNavMenu.classList.remove('show');
+                        mobileNavButton.classList.remove('rotated');
+                    });
+                }
+            });
+
+            // Add event listeners for logout buttons
+            document.getElementById('logout-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('logout-overlay').classList.remove('hidden');
+                document.getElementById('logout-overlay').classList.add('flex');
+            });
+
+            document.getElementById('logout-cancel').addEventListener('click', () => {
+                document.getElementById('logout-overlay').classList.add('hidden');
+                document.getElementById('logout-overlay').classList.remove('flex');
+            });
+
+            document.getElementById('logout-confirm').addEventListener('click', () => {
+                document.getElementById('logout-overlay').classList.add('hidden');
+                document.getElementById('logout-success-overlay').classList.remove('hidden');
+                document.getElementById('logout-success-overlay').classList.add('flex');
+                // Auto-close after 1.5 seconds and redirect
+                setTimeout(() => {
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('sps_user');
+                    window.location.href = '/';
+                }, 1500);
+            });
+            
+            // Element references
+            const semesterSelect = document.getElementById('semester-select');
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const viewSemesterSelect = document.getElementById('view-semester-select');
+            const refreshFilesBtn = document.getElementById('refresh-files-btn');
+            const filesList = document.getElementById('files-list');
+            const logoutLink = document.getElementById('logout-link');
+            
+            const modalOverlay = document.getElementById('modal-overlay');
+            const confirmModal = document.getElementById('confirm-modal');
+            const resultModal = document.getElementById('result-modal');
+
+            const confirmFilename = document.getElementById('confirm-filename');
+            const confirmBtn = document.getElementById('confirm-upload-btn');
+            const cancelBtn = document.getElementById('cancel-upload-btn');
+            const confirmActions = document.getElementById('confirm-actions');
+            const uploadSpinner = document.getElementById('upload-spinner');
+
+            const resultIconBg = document.getElementById('result-icon-bg');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const resultCloseBtn = document.getElementById('result-close-btn');
+            
+            const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            
+            // Drag and drop functionality
+            const kpiUploadArea = document.getElementById('kpi-upload-area');
+            const kpiFileInput = document.getElementById('kpi-file-input');
+            const logoutOverlay = document.getElementById('logout-overlay');
+            const logoutCancel = document.getElementById('logout-cancel');
+            const logoutConfirm = document.getElementById('logout-confirm');
+            const logoutSuccessOverlay = document.getElementById('logout-success-overlay');
+            const downloadConfirmModal = document.getElementById('download-confirm-modal');
+            const cancelDownloadBtn = document.getElementById('cancel-download-btn');
+            const confirmDownloadBtn = document.getElementById('confirm-download-btn');
+            
+            const duplicateModal = document.getElementById('duplicate-modal');
+            const duplicateFilename = document.getElementById('duplicate-filename');
+            const duplicateCancelBtn = document.getElementById('duplicate-cancel-btn');
+            const duplicateReplaceBtn = document.getElementById('duplicate-replace-btn');
+
+            let fileToUpload = null;
+            let uploadEndpoint = '';
+            let fileToDelete = null;
+            let currentViewFileId = null;
+            let currentViewFileUrl = null;
+
+            // Set file input to accept only Excel files
+            fileInput.accept = '.xlsx,.xls';
+
+            // KPI upload handlers
+            const kpiArea = document.getElementById('kpi-upload-area');
+            const kpiInput = document.getElementById('kpi-file-input');
+            if (kpiArea) kpiArea.addEventListener('click', () => kpiInput.click());
+            kpiInput.addEventListener('change', async (e) => {
+                if (!e.target.files.length) return;
+                const file = e.target.files[0];
+                // Reuse confirmation modal UX
+                showConfirmModal(file, '/api/upload-admissions-kpis', 'intake', 'excel');
+                e.target.value = null;
+            });
+            
+
+            uploadArea.addEventListener('click', () => {
+                const selectedSemester = semesterSelect.value;
+                if (!selectedSemester) {
+                    showResultModal('error', 'Please select a semester first.', 'Semester Required');
+                    return;
+                }
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    const selectedSemester = semesterSelect.value;
+                    
+                    if (!selectedSemester) {
+                        showResultModal('error', 'Please select a semester first.', 'Semester Required');
+                        e.target.value = null;
+                        return;
+                    }
+                    
+                    const endpoint = '/api/upload-result-file';
+                    showConfirmModal(e.target.files[0], endpoint, selectedSemester, 'excel');
+                    e.target.value = null;
+                }
+            });
+
+            viewSemesterSelect.addEventListener('change', loadFiles);
+            refreshFilesBtn.addEventListener('click', loadFiles);
+            const downloadSummaryBtn = document.getElementById('download-summary-btn');
+            downloadSummaryBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Disable button to prevent multiple clicks
+                downloadSummaryBtn.disabled = true;
+                const originalText = downloadSummaryBtn.innerHTML;
+                downloadSummaryBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i><span>Downloading...</span>';
+                
+                try {
+                    // Check if authFetch is available
+                    if (!window.authFetch) {
+                        throw new Error('Authentication system not initialized. Please refresh the page.');
+                    }
+                    
+                    // Get token directly to check auth before making request
+                    const token = localStorage.getItem('access_token');
+                    if (!token) {
+                        throw new Error('No authentication token found. Please login again.');
+                    }
+                    
+                    // Make authenticated request directly (bypass authFetch to prevent auto-logout redirect)
+                    let res;
+                    try {
+                        res = await fetch('/api/export-result-summary', {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        
+                        // If 401, try to refresh token once
+                        if (res.status === 401) {
+                            const refreshToken = localStorage.getItem('refresh_token');
+                            if (refreshToken) {
+                                const refreshRes = await fetch('/api/refresh-token', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ refresh_token: refreshToken })
+                                });
+                                if (refreshRes.ok) {
+                                    const refreshData = await refreshRes.json();
+                                    localStorage.setItem('access_token', refreshData.access_token);
+                                    localStorage.setItem('token_expires_at', Date.now() + (refreshData.expires_in * 1000));
+                                    // Retry with new token
+                                    res = await fetch('/api/export-result-summary', {
+                                        method: 'GET',
+                                        headers: {
+                                            'Authorization': `Bearer ${refreshData.access_token}`
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    } catch (fetchErr) {
+                        throw new Error(`Network error: ${fetchErr.message}`);
+                    }
+                    
+                    // Check for authentication errors first
+                    if (res.status === 401) {
+                        // Clear tokens and redirect to login
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                        throw new Error('Authentication failed. Please login again.');
+                    }
+                    
+                    // Check if response is an error page (404)
+                    if (res.status === 404) {
+                        const clonedRes = res.clone();
+                        let errorText = '';
+                        try {
+                            errorText = await clonedRes.text();
+                        } catch (e) {
+                            errorText = '';
+                        }
+                        if (errorText.includes('404') || errorText.includes('Not Found') || errorText.includes('<!DOCTYPE') || errorText.includes('<html')) {
+                            throw new Error('Export endpoint not found (404). The server may be misconfigured. Please contact support.');
+                        }
+                        throw new Error('Request returned 404. Please verify the endpoint is available.');
+                    }
+                    
+                    // Check content type to ensure it's a file, not HTML
+                    const contentType = res.headers.get('content-type') || '';
+                    if (contentType.includes('text/html')) {
+                        const clonedRes = res.clone();
+                        const text = await clonedRes.text();
+                        if (text.includes('404') || text.includes('Not Found')) {
+                            throw new Error('Server returned 404 page instead of file. Please check authentication.');
+                        }
+                        throw new Error('Server returned HTML instead of file. Please check authentication.');
+                    }
+                    
+                    if (!res.ok) {
+                        // Try to get error message - clone response so we can read it
+                        let errorMsg = 'Unable to download';
+                        try {
+                            const clonedRes = res.clone();
+                            const text = await clonedRes.text();
+                            // Check if the response is HTML (likely a 404 page)
+                            if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html') || text.includes('404')) {
+                                errorMsg = 'Server returned an error page (404). Please check authentication and try again.';
+                            } else {
+                                // Try to parse as JSON
+                                try {
+                                    const json = JSON.parse(text);
+                                    if (json && json.message) {
+                                        errorMsg = json.message;
+                                    } else {
+                                        errorMsg = text.substring(0, 100) || `Server error (${res.status})`;
+                                    }
+                                } catch {
+                                    errorMsg = text.substring(0, 100) || `Server error (${res.status})`;
+                                }
+                            }
+                        } catch (parseErr) {
+                            errorMsg = `Server error (${res.status})`;
+                        }
+                        throw new Error(errorMsg);
+                    }
+                    
+                    // Verify it's an Excel file
+                    if (!contentType.includes('excel') && !contentType.includes('spreadsheet') && !contentType.includes('application/vnd')) {
+                        console.warn('Unexpected content type:', contentType);
+                    }
+                    
+                    const blob = await res.blob();
+                    
+                    // Verify blob is not empty and not HTML
+                    if (blob.size === 0) {
+                        throw new Error('Downloaded file is empty.');
+                    }
+                    
+                    // Check if blob is HTML (read first few bytes)
+                    const blobText = await blob.slice(0, 100).text();
+                    if (blobText.trim().startsWith('<!DOCTYPE') || blobText.trim().startsWith('<html')) {
+                        throw new Error('Server returned HTML page instead of file. Please check authentication.');
+                    }
+                    
+                    // Create blob URL and download link
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'Result_Summary.xlsx';
+                    a.style.display = 'none';
+                    // Mark with data attribute to prevent navigation interception
+                    a.setAttribute('data-no-nav', 'true');
+                    a.setAttribute('data-action', 'download');
+                    document.body.appendChild(a);
+                    
+                    // Use a more reliable download method
+                    try {
+                        // Trigger download
+                    a.click();
+                        
+                        // Wait a bit to ensure download started, then clean up
+                        setTimeout(() => {
+                            try {
+                                if (document.body.contains(a)) {
+                    document.body.removeChild(a);
+                                }
+                            } catch (e) {
+                                // Ignore cleanup errors
+                            }
+                            try {
+                    window.URL.revokeObjectURL(url);
+                            } catch (e) {
+                                // Ignore revoke errors
+                            }
+                        }, 500);
+                    } catch (downloadErr) {
+                        // If click() fails, try alternative method
+                        console.warn('Direct click failed, trying alternative download method:', downloadErr);
+                        // Force download by programmatically triggering it
+                        const event = new MouseEvent('click', {
+                            bubbles: true,
+                            cancelable: true,
+                            view: window
+                        });
+                        a.dispatchEvent(event);
+                        setTimeout(() => {
+                            try {
+                                if (document.body.contains(a)) {
+                                    document.body.removeChild(a);
+                                }
+                                window.URL.revokeObjectURL(url);
+                            } catch (e) {}
+                        }, 500);
+                    }
+                    
+                    // Show success message
+                    showResultModal('success', 'Summary downloaded successfully!', 'Downloaded Successfully');
+                } catch (err) {
+                    console.error('Download error:', err);
+                    console.error('Error details:', {
+                        message: err.message,
+                        stack: err.stack,
+                        name: err.name
+                    });
+                    const errorMsg = err.message || 'Download failed. Please try again.';
+                    showResultModal('error', errorMsg);
+                    
+                    // Only redirect if it's an auth error, after showing the error
+                    if (errorMsg.includes('Authentication') || errorMsg.includes('login') || errorMsg.includes('token')) {
+                        // Show error first, then redirect after delay
+                        setTimeout(() => {
+                            window.location.href = '/?id=' + genId();
+                        }, 2000);
+                    }
+                } finally {
+                    // Re-enable button
+                    downloadSummaryBtn.disabled = false;
+                    downloadSummaryBtn.innerHTML = originalText;
+                }
+            });
+
+            // Logout flow
+            logoutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                logoutOverlay.classList.remove('hidden');
+                logoutOverlay.classList.add('flex');
+            });
+            logoutCancel.addEventListener('click', () => {
+                logoutOverlay.classList.add('hidden');
+                logoutOverlay.classList.remove('flex');
+            });
+            logoutConfirm.addEventListener('click', async () => {
+                // Show logout success modal
+                document.getElementById('logout-overlay').classList.add('hidden');
+                document.getElementById('logout-success-overlay').classList.remove('hidden');
+                document.getElementById('logout-success-overlay').classList.add('flex');
+                // Auto-close after 1.5 seconds and call logout
+                setTimeout(async () => {
+                    if (window.logoutUser) {
+                        await window.logoutUser();
+                    } else {
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('user_role');
+                sessionStorage.removeItem('sps_user');
+                        window.location.href = '/';
+                    }
+                }, 1500);
+            });
+            
+            // Duplicate modal events
+            duplicateCancelBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('hidden');
+                duplicateModal.classList.add('hidden');
+                fileToUpload = null;
+            });
+            
+            // Delete confirmation modal event listeners
+            cancelDeleteBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('hidden');
+                deleteConfirmModal.classList.add('hidden');
+                fileToDelete = null;
+                intakeFileToDelete = null;
+                // Reset modal message
+                const confirmMsg = deleteConfirmModal.querySelector('p');
+                if (confirmMsg) {
+                    confirmMsg.textContent = 'Are you sure you want to delete this file? This action cannot be undone.';
+                }
+            });
+            
+            confirmDeleteBtn.addEventListener('click', async () => {
+                // Check if this is an intake file deletion
+                if (intakeFileToDelete && fileToDelete !== intakeFileToDelete) {
+                    const fileId = intakeFileToDelete;
+                    intakeFileToDelete = null;
+                    deleteConfirmModal.classList.add('hidden');
+                    modalOverlay.classList.add('hidden');
+                    // Reset modal message
+                    const confirmMsg = deleteConfirmModal.querySelector('p');
+                    if (confirmMsg) {
+                        confirmMsg.textContent = 'Are you sure you want to delete this file? This action cannot be undone.';
+                    }
+                    
+                    try {
+                        const response = await authFetch(`/api/delete-intake-file/${fileId}`, { method: 'DELETE' });
+                        if (response.ok) {
+                            showResultModal('success', 'Intake file deleted successfully', 'Delete Successful');
+                            loadFiles(); // Refresh files list
+                        } else {
+                            const data = await response.json();
+                            showResultModal('error', data.message || 'Error deleting intake file', 'Delete Failed');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting intake file:', error);
+                        showResultModal('error', 'Error deleting intake file: ' + error.message, 'Delete Failed');
+                    }
+                    return;
+                }
+                
+                // Regular result file deletion
+                if (!fileToDelete) return;
+                // Prevent double clicks
+                confirmDeleteBtn.disabled = true;
+                cancelDeleteBtn.disabled = true;
+                try {
+                    const response = await authFetch(`/api/delete-result-file/${fileToDelete}`, { method: 'DELETE' });
+            const show = (status, msg) => {
+                        // Ensure the confirm modal is hidden before showing result
+                        deleteConfirmModal.classList.add('hidden');
+                        // Small delay to avoid visual overlap
+                setTimeout(() => showResultModal(status, msg, status === 'success' ? 'Delete Successful' : 'Delete Failed'), 50);
+                    };
+                    if (response.ok) {
+                        await loadFiles();
+                        modalOverlay.classList.remove('hidden');
+                        show('success', 'File deleted successfully');
+                    } else {
+                        let message = 'Error deleting file';
+                        try { const data = await response.json(); message = data.message || message; } catch {}
+                        modalOverlay.classList.remove('hidden');
+                        show('error', message);
+                    }
+                } catch (error) {
+                    modalOverlay.classList.remove('hidden');
+                    deleteConfirmModal.classList.add('hidden');
+                    setTimeout(() => showResultModal('error', 'Error deleting file: ' + error.message, 'Delete Failed'), 50);
+                } finally {
+                    fileToDelete = null;
+                    confirmDeleteBtn.disabled = false;
+                    cancelDeleteBtn.disabled = false;
+                }
+            });
+
+            function showConfirmModal(file, endpoint, semester, fileType) {
+                fileToUpload = file;
+                uploadEndpoint = endpoint;
+                confirmFilename.textContent = `${file.name} (${semester.toUpperCase()})`;
+                
+                modalOverlay.classList.remove('hidden');
+                confirmModal.classList.remove('hidden');
+                resultModal.classList.add('hidden');
+                confirmActions.classList.remove('hidden');
+                uploadSpinner.classList.add('hidden');
+            }
+
+            function showResultModal(status, message, titleOverride) {
+                resultMessage.innerHTML = message;
+                if (status === 'success') {
+                    resultTitle.textContent = titleOverride || 'Upload Successful';
+                    resultIcon.className = 'fa-solid fa-check text-white';
+                    resultIconBg.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-blue-500';
+                } else {
+                    resultTitle.textContent = titleOverride || 'Upload Failed';
+                    resultIcon.className = 'fa-solid fa-xmark text-white';
+                    resultIconBg.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-red-500';
+                }
+                
+                confirmModal.classList.add('hidden');
+                resultModal.classList.remove('hidden');
+                modalOverlay.classList.remove('hidden');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.add('hidden');
+            }
+
+            cancelBtn.addEventListener('click', closeModal);
+            resultCloseBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            
+            confirmBtn.addEventListener('click', async () => {
+                if (!fileToUpload) return;
+                // Before upload, check duplicate by semester + filename
+                const selectedSemester = semesterSelect.value;
+                const existing = await findExistingFile(selectedSemester, fileToUpload.name);
+                if (existing) {
+                    // Show duplicate modal
+                    duplicateFilename.textContent = `${fileToUpload.name} (${selectedSemester.toUpperCase()})`;
+                    confirmModal.classList.add('hidden');
+                    duplicateModal.classList.remove('hidden');
+                    return;
+                }
+                    handleUpload(fileToUpload, uploadEndpoint);
+            });
+
+            function handleUpload(file, endpoint) {
+                confirmActions.classList.add('hidden');
+                uploadSpinner.classList.remove('hidden');
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('semester', semesterSelect.value);
+                formData.append('file_type', 'excel');
+                
+                authFetch(`${endpoint}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) return response.text().then(text => { throw new Error(text || 'An unknown error occurred.') });
+                    return response.json();
+                })
+                .then(data => {
+                    showResultModal('success', data.message);
+                    loadFiles(); // Refresh files list
+                })
+                .catch(error => {
+                    console.error('Upload Error:', error);
+                    showResultModal('error', error.message);
+                });
+            }
+
+            // Find existing file for semester+filename
+            async function findExistingFile(semester, filename) {
+                try {
+                    const response = await authFetch(`/api/get-result-files?semester=${semester}`);
+                    const files = await response.json();
+                    return files.find(f => (f.filename || '').toLowerCase() === filename.toLowerCase());
+                } catch (_) { return null; }
+            }
+
+            // Replace flow: delete existing then upload new
+            duplicateReplaceBtn.addEventListener('click', async () => {
+                try {
+                    const existing = await findExistingFile(semesterSelect.value, fileToUpload?.name || '');
+                    if (existing) {
+                        await authFetch(`/api/delete-result-file/${existing._id}`, { method: 'DELETE' });
+                    }
+                    duplicateModal.classList.add('hidden');
+                    handleUpload(fileToUpload, uploadEndpoint);
+                } catch (err) {
+                    duplicateModal.classList.add('hidden');
+                    showResultModal('error', 'Unable to replace file. Please try again.');
+                }
+            });
+
+            // Load and display uploaded files
+            async function loadFiles() {
+                try {
+                    const selectedSemester = viewSemesterSelect.value;
+                    const response = await authFetch(`/api/get-result-files?semester=${selectedSemester || ''}`);
+                    const files = await response.json();
+                    
+                    // Also load intake files
+                    const intakeResponse = await authFetch('/api/get-intake-files');
+                    const intakeFiles = await intakeResponse.json();
+                    
+                    if (files.length === 0 && intakeFiles.length === 0) {
+                        filesList.innerHTML = `
+                            <div class="text-center text-gray-400 py-8">
+                                <i class="fa-solid fa-folder-open text-4xl mb-2"></i>
+                                <p>No files found</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Display result files
+                    let filesHtml = files.map(file => `
+                        <div class="file-item bg-slate-800/50 p-4 rounded-lg flex items-center justify-between mb-3 border border-slate-600/30 hover:bg-slate-700/50 transition-colors">
+                            <div class="flex items-center space-x-4">
+                                <i class="fa-solid fa-${file.file_type === 'excel' ? 'file-excel text-green-500' : 'file-pdf text-red-500'} text-2xl"></i>
+                                <div>
+                                    <h5 class="text-white font-semibold">${file.filename}</h5>
+                                    <p class="text-slate-400 text-sm">${file.semester.toUpperCase()} • ${new Date(file.uploaded_at).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="downloadFile('${file._id}')" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm transition-colors">
+                                    <i class="fa-solid fa-download mr-1"></i>Download
+                                </button>
+                                <button onclick="deleteFile('${file._id}')" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm transition-colors">
+                                    <i class="fa-solid fa-trash mr-1"></i>Delete
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    // Display intake files
+                    if (intakeFiles.length > 0) {
+                        filesHtml += intakeFiles.map(file => `
+                            <div class="file-item bg-slate-800/50 p-4 rounded-lg flex items-center justify-between mb-3 border border-slate-600/30 hover:bg-slate-700/50 transition-colors">
+                                <div class="flex items-center space-x-4">
+                                    <i class="fa-solid fa-table text-blue-500 text-2xl"></i>
+                                    <div>
+                                        <h5 class="text-white font-semibold">${file.filename}</h5>
+                                        <p class="text-slate-400 text-sm">Intake Data • ${new Date(file.uploaded_at).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="downloadIntakeFile('${file._id}')" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm transition-colors">
+                                        <i class="fa-solid fa-download mr-1"></i>Download
+                                    </button>
+                                    <button onclick="deleteIntakeFile('${file._id}')" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm transition-colors">
+                                        <i class="fa-solid fa-trash mr-1"></i>Delete
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                    
+                    filesList.innerHTML = filesHtml;
+                } catch (error) {
+                    console.error('Error loading files:', error);
+                    filesList.innerHTML = `
+                        <div class="text-center text-red-400 py-8">
+                            <i class="fa-solid fa-exclamation-triangle text-4xl mb-2"></i>
+                            <p>Error loading files</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // Global functions for file actions
+
+            let currentDownloadFileId = null;
+            let currentDownloadType = null;
+
+            window.downloadFile = async function(fileId) {
+                currentDownloadFileId = fileId;
+                currentDownloadType = 'result';
+                modalOverlay.classList.remove('hidden');
+                downloadConfirmModal.classList.remove('hidden');
+            };
+
+            window.downloadIntakeFile = function(fileId) {
+                currentDownloadFileId = fileId;
+                currentDownloadType = 'intake';
+                modalOverlay.classList.remove('hidden');
+                downloadConfirmModal.classList.remove('hidden');
+            };
+
+            // Download confirmation handlers
+            cancelDownloadBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('hidden');
+                downloadConfirmModal.classList.add('hidden');
+                currentDownloadFileId = null;
+                currentDownloadType = null;
+            });
+
+            confirmDownloadBtn.addEventListener('click', async () => {
+                if (!currentDownloadFileId || !currentDownloadType) return;
+                
+                modalOverlay.classList.add('hidden');
+                downloadConfirmModal.classList.add('hidden');
+                
+                try {
+                    const endpoint = currentDownloadType === 'result' 
+                        ? `/api/download-result-file/${currentDownloadFileId}`
+                        : `/api/download-intake-file/${currentDownloadFileId}`;
+                    
+                    const response = await authFetch(`${endpoint}`);
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'file';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                        showResultModal('success', 'File downloaded successfully');
+                    } else {
+                        const errorData = await response.json();
+                        showResultModal('error', errorData.message || 'Error downloading file');
+                    }
+                } catch (error) {
+                    console.error('Error downloading file:', error);
+                    showResultModal('error', 'Error downloading file: ' + error.message);
+                }
+                
+                currentDownloadFileId = null;
+                currentDownloadType = null;
+            });
+
+
+            window.deleteFile = function(fileId) {
+                fileToDelete = fileId;
+                modalOverlay.classList.remove('hidden');
+                deleteConfirmModal.classList.remove('hidden');
+            };
+
+            let intakeFileToDelete = null;
+            window.deleteIntakeFile = function(fileId) {
+                intakeFileToDelete = fileId;
+                modalOverlay.classList.remove('hidden');
+                deleteConfirmModal.classList.remove('hidden');
+                // Update modal message for intake file
+                const confirmMsg = deleteConfirmModal.querySelector('p');
+                if (confirmMsg) {
+                    confirmMsg.textContent = 'Are you sure you want to delete this intake file? This action cannot be undone.';
+                }
+            };
+
+            // Helper function to get file info
+            async function getFileInfo(fileId) {
+                try {
+                    const response = await authFetch(`/api/get-result-files`);
+                    const files = await response.json();
+                    return files.find(file => file._id === fileId);
+                } catch (error) {
+                    console.error('Error getting file info:', error);
+                    return null;
+                }
+            }
+
+            // Show Excel view modal
+            function showExcelViewModal(filename) {
+                excelFilename.textContent = filename;
+                modalOverlay.classList.remove('hidden');
+                excelViewModal.classList.remove('hidden');
+            }
+
+            // Close Excel view modal
+            function closeExcelViewModal() {
+                modalOverlay.classList.add('hidden');
+                excelViewModal.classList.add('hidden');
+            }
+
+            // Show file view modal (for PDFs)
+            function showFileViewModal(fileUrl, filename) {
+                currentViewFileUrl = fileUrl;
+                fileViewTitle.textContent = `Viewing: ${filename}`;
+                
+                // Show placeholder while loading
+                fileViewPlaceholder.style.display = 'flex';
+                fileIframe.style.display = 'none';
+                
+                // Show modal
+                modalOverlay.classList.remove('hidden');
+                fileViewModal.classList.remove('hidden');
+                
+                // Load file in iframe
+                fileIframe.src = fileUrl;
+                fileIframe.onload = () => {
+                    fileViewPlaceholder.style.display = 'none';
+                    fileIframe.style.display = 'block';
+                };
+                
+                fileIframe.onerror = () => {
+                    fileViewPlaceholder.innerHTML = `
+                        <div class="text-center text-red-400">
+                            <i class="fa-solid fa-exclamation-triangle text-4xl mb-2"></i>
+                            <p>Error loading file preview</p>
+                            <p class="text-sm mt-2">This file type cannot be previewed. Please download to view.</p>
+                        </div>
+                    `;
+                };
+            }
+
+            // Close file view modal
+            function closeFileViewModal() {
+                modalOverlay.classList.add('hidden');
+                fileViewModal.classList.add('hidden');
+                
+                // Clean up
+                if (currentViewFileUrl) {
+                    window.URL.revokeObjectURL(currentViewFileUrl);
+                    currentViewFileUrl = null;
+                }
+                currentViewFileId = null;
+                fileIframe.src = '';
+            }
+
+            // Listen for theme changes and refresh file list
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        // Re-render file list with new theme
+                        setTimeout(() => {
+                            loadFiles();
+                        }, 100);
+                    }
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+            
+            // Initialize
+            loadFiles();
+        });
+    </script>
+</body>
+</html>
+

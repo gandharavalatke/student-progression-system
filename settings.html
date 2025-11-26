@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Student Progression System</title>
+    <link rel="icon" type="image/png" href="git-logo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); 
+            background-attachment: fixed;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Smooth page transitions */
+        * {
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Page load animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-content {
+            animation: fadeInUp 0.5s ease-out !important;
+        }
+        
+        /* Navigation transitions */
+        .nav-link {
+            transition: all 0.3s ease !important;
+        }
+        
+        .nav-link:hover {
+            transform: translateX(4px) !important;
+        }
+        
+        /* Card transitions */
+        .settings-card {
+            transition: all 0.3s ease !important;
+        }
+        
+        .settings-card:hover {
+            transform: translateY(-2px) !important;
+        }
+        
+        /* Toggle transitions */
+        .theme-toggle {
+            transition: all 0.3s ease !important;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.05) !important;
+        }
+        .sidebar-glass {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .settings-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        .settings-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-box {
+            transition: all 0.3s ease;
+            transform: translateY(-50px);
+        }
+        .modal-overlay:not(.hidden) .modal-box {
+            transform: translateY(0);
+        }
+        
+        /* Light mode styles */
+        .light body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+        }
+        .light .sidebar-glass {
+            background: rgba(255, 255, 255, 0.95);
+            border-right: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .light .settings-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .light .settings-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Light mode text colors */
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-slate-300 {
+            color: #475569 !important;
+        }
+        .light .text-slate-400 {
+            color: #64748b !important;
+        }
+        .light .text-slate-500 {
+            color: #64748b !important;
+        }
+        .light .text-slate-600 {
+            color: #475569 !important;
+        }
+        .light .text-slate-700 {
+            color: #334155 !important;
+        }
+        .light .text-slate-800 {
+            color: #1e293b !important;
+        }
+        .light .text-slate-900 {
+            color: #0f172a !important;
+        }
+        
+        /* Light mode comprehensive optimization */
+        .light .bg-slate-800 {
+            background-color: #f8fafc !important;
+        }
+        .light .bg-slate-700 {
+            background-color: #e2e8f0 !important;
+        }
+        .light .bg-slate-600 {
+            background-color: #cbd5e1 !important;
+        }
+        .light .bg-slate-900 {
+            background-color: #f1f5f9 !important;
+        }
+        .light .bg-slate-500 {
+            background-color: #94a3b8 !important;
+        }
+        .light .bg-slate-400 {
+            background-color: #cbd5e1 !important;
+        }
+        
+        /* Light mode navigation */
+        .light .nav-link {
+            color: #475569 !important;
+        }
+        .light .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            color: #1e293b !important;
+        }
+        .light .nav-link.active {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            color: #1e293b !important;
+        }
+        
+        /* Light mode settings cards */
+        .light .settings-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode input fields */
+        .light input[type="text"],
+        .light input[type="password"],
+        .light input[type="email"] {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        .light input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        /* Light mode buttons */
+        .light .bg-blue-600 {
+            background-color: #3b82f6 !important;
+        }
+        .light .bg-blue-600:hover {
+            background-color: #2563eb !important;
+        }
+        .light .bg-blue-700 {
+            background-color: #2563eb !important;
+        }
+        .light .bg-blue-700:hover {
+            background-color: #1d4ed8 !important;
+        }
+        
+        /* Light mode main content area */
+        .light .main-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%) !important;
+        }
+        
+        /* Light mode page headers */
+        .light .page-title {
+            color: #1e293b !important;
+        }
+        .light .page-subtitle {
+            color: #475569 !important;
+        }
+        .light .page-description {
+            color: #64748b !important;
+        }
+        
+        /* Light mode input styles */
+        .light input[type="text"], .light input[type="email"], .light input[type="password"] {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+        .light input[type="text"]:focus, .light input[type="email"]:focus, .light input[type="password"]:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        /* Light mode button styles */
+        .light .bg-slate-700 {
+            background-color: #e2e8f0 !important;
+            color: #1e293b !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+        .light .bg-slate-700:hover {
+            background-color: #cbd5e1 !important;
+        }
+        
+        /* Light mode navigation styles */
+        .light .nav-link {
+            color: #475569 !important;
+        }
+        .light .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            color: #1e293b !important;
+        }
+        .light .nav-link.active {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            color: #1e293b !important;
+        }
+        
+        /* Fix blurry icons with proper rendering */
+        .fa-solid, .fa-regular, .fa-light, .fa-thin, .fa-duotone {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-display: block;
+        }
+        
+        /* Ensure icons render at native resolution */
+        i[class*="fa-"] {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Ensure logout success modal is always centered when visible */
+        #logout-success-overlay:not(.hidden) {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            z-index: 9999 !important;
+        }
+        
+        /* Mobile Navigation System */
+        @media (max-width: 768px) {
+            aside {
+                display: none !important;
+            }
+            main {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+        }
+        
+        /* Mobile Navigation Button */
+        .mobile-nav-button {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 45px;
+            height: 45px;
+            background: rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+        
+        .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateX(-50%) scale(1.1);
+        }
+        
+        .mobile-nav-button i {
+            font-size: 14px;
+            color: #3b82f6;
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-nav-button.rotated i {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Navigation Menu */
+        .mobile-nav-menu {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            z-index: 999;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px;
+            max-width: 90vw;
+        }
+        
+        .mobile-nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+        
+        .mobile-nav-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .mobile-nav-row {
+            display: grid;
+            gap: 12px;
+            justify-items: center;
+        }
+        
+        .mobile-nav-row:first-child {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .mobile-nav-row:last-child {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            min-height: 60px;
+            width: 50px;
+        }
+        
+        .mobile-nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .mobile-nav-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .mobile-nav-item[data-page="logout"] {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .mobile-nav-item[data-page="logout"]:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+        
+        .mobile-nav-item span {
+            display: none;
+        }
+        
+        /* Light theme mobile navigation */
+        .light .mobile-nav-menu {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .light .mobile-nav-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="flex h-screen overflow-hidden">
+        <aside class="w-64 flex-shrink-0 sidebar-glass shadow-lg flex flex-col">
+            <div class="h-16 flex items-center justify-center p-4 border-b border-slate-600">
+                 <img src="GIT Logo.jpg" alt="GIT Logo" class="h-full w-auto">
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a href="dashboard" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-chart-pie mr-3 text-blue-400 text-lg"></i> Dashboard
+                </a>
+                <a href="studentprogression" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-arrow-trend-up mr-3 text-blue-400 text-lg"></i> Academic Records
+                </a>
+                <a href="placement" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-graduation-cap mr-3 text-blue-400 text-lg"></i> Placement & Higher Ed
+                </a>
+                <a href="extracurricular" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-trophy mr-3 text-blue-400 text-lg"></i> Extracurricular
+                </a>
+                 <a href="reports" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-file-alt mr-3 text-blue-400 text-lg"></i> Reports
+                </a>
+            </nav>
+            <div class="p-4 border-t border-slate-600">
+                 <a href="settings" class="flex items-center p-3 text-white bg-blue-600/20 rounded-lg transition-colors border border-blue-500/30">
+                    <i class="fa-solid fa-cog mr-3 text-blue-400 text-lg"></i> Settings
+                </a>
+                 <a id="logout-link" href="index" class="flex items-center p-3 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-colors hover:text-white">
+                    <i class="fa-solid fa-sign-out-alt mr-3 text-blue-400 text-lg"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Mobile Navigation Button -->
+        <button id="mobile-nav-button" class="mobile-nav-button hidden">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav-menu" class="mobile-nav-menu">
+            <div class="mobile-nav-grid">
+                <div class="mobile-nav-row">
+                    <a href="dashboard" class="mobile-nav-item" data-page="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="studentprogression" class="mobile-nav-item" data-page="academic">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>Academic</span>
+                    </a>
+                    <a href="placement" class="mobile-nav-item" data-page="placement">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Placement</span>
+                    </a>
+                    <a href="extracurricular" class="mobile-nav-item" data-page="extracurricular">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Extracurricular</span>
+                    </a>
+                </div>
+                <div class="mobile-nav-row">
+                    <a href="reports" class="mobile-nav-item" data-page="reports">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="settings" class="mobile-nav-item active" data-page="settings">
+                        <i class="fa-solid fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <a href="#" class="mobile-nav-item" data-page="logout" id="mobile-logout-link">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <main class="flex-1 overflow-y-auto">
+            <header class="h-16 glass-card shadow-md flex items-center justify-between px-6 sticky top-0 z-10 border-b border-slate-600">
+                <h2 class="text-lg font-semibold text-white">Settings</h2>
+            </header>
+
+            <div class="p-8 space-y-8">
+                <!-- Theme Settings -->
+                <div class="settings-card p-6 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-palette mr-3 text-blue-400"></i>
+                        Theme Settings
+                    </h3>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-slate-300 font-medium">Dark/Light Mode</p>
+                            <p class="text-slate-400 text-sm">Choose your preferred theme</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button id="theme-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <span id="theme-toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
+                            </button>
+                            <span id="theme-label" class="text-slate-300 text-sm">Dark</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-user-circle mr-3 text-blue-400"></i>
+                        Profile Information
+                    </h3>
+                    <form id="profile-form" class="space-y-4">
+                        <div>
+                            <label for="username-input" class="block text-sm font-medium text-slate-300">Username</label>
+                            <input type="text" id="username-input" value="" class="mt-1 block w-full px-4 py-2 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        </div>
+                        <div>
+                            <label for="email-input" class="block text-sm font-medium text-slate-300">Email (Cannot be changed)</label>
+                            <input type="email" id="email-input" value="" readonly class="mt-1 block w-full px-4 py-2 bg-slate-700/50 text-slate-400 rounded-lg border border-slate-500 cursor-not-allowed backdrop-blur-sm">
+                        </div>
+                        <div class="flex justify-end pt-2 space-x-3">
+                             <button type="submit" id="profile-save-button" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none flex items-center transition-all shadow-lg">
+                                <span id="profile-save-btn-text">Save Profile</span>
+                                <div id="profile-save-spinner" class="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin ml-2 hidden"></div>
+                            </button>
+                            <button type="button" id="change-password-btn" class="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-bold rounded-lg hover:from-green-700 hover:to-green-800 focus:outline-none transition-all shadow-lg">
+                                Change Password
+                            </button>
+                        </div>
+                        <p id="profile-status" class="text-sm text-center h-5"></p>
+                    </form>
+                </div>
+
+
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden modal-overlay">
+        <div id="delete-confirm-modal" class="modal-box bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900 mb-4">
+                 <i class="fa-solid fa-trash-can text-red-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white">Confirm Account Deletion</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-400">Are you sure? This action is permanent and all your data will be lost.</p>
+            </div>
+            <div class="mt-5 sm:mt-6 space-x-4">
+                <button id="cancel-delete-btn" type="button" class="inline-flex justify-center w-24 rounded-md border border-gray-600 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-white hover:bg-gray-600 focus:outline-none">
+                    Cancel
+                </button>
+                <button id="confirm-delete-btn" type="button" class="inline-flex justify-center w-36 rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none">
+                    Yes, Delete It
+                </button>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div id="change-password-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-900 mb-4">
+                <i class="fa-solid fa-key text-blue-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white">Change Password</h3>
+            <div class="mt-3 px-7 py-2">
+                <p class="text-sm text-slate-300 mb-3">Enter your email to receive OTP for password change.</p>
+                <input id="change-password-email" type="email" placeholder="Enter your email" class="w-full px-4 py-2 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm" />
+                <p id="change-password-error" class="text-xs text-red-400 h-5 mt-2"></p>
+            </div>
+            <div class="mt-5 sm:mt-6 flex justify-center space-x-3">
+                <button id="change-password-cancel-btn" type="button" class="inline-flex justify-center w-28 rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-700 text-base font-medium text-white hover:bg-slate-600 focus:outline-none">Cancel</button>
+                <button id="change-password-send-btn" type="button" class="inline-flex justify-center w-36 rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none">Send OTP</button>
+            </div>
+        </div>
+
+        <!-- OTP Modal -->
+        <div id="otp-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-900 mb-4">
+                <i class="fa-solid fa-shield-keyhole text-blue-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white">Verify Your Identity</h3>
+            <div class="mt-3 px-7 py-2">
+                <p class="text-sm text-slate-300 mb-3">Enter the 6-character code sent to your email to continue.</p>
+                <input id="otp-input" type="text" placeholder="XXXXXX" class="w-full px-4 py-2 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm tracking-widest text-center uppercase" />
+                <p id="otp-error" class="text-xs text-red-400 h-5 mt-2"></p>
+            </div>
+            <div class="mt-5 sm:mt-6 flex justify-center space-x-3">
+                <button id="otp-cancel-btn" type="button" class="inline-flex justify-center w-28 rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-700 text-base font-medium text-white hover:bg-slate-600 focus:outline-none">Cancel</button>
+                <button id="otp-verify-btn" type="button" class="inline-flex justify-center w-36 rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none">Verify Code</button>
+            </div>
+        </div>
+
+        <!-- New Password Modal -->
+        <div id="new-password-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center hidden">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-900 mb-4">
+                <i class="fa-solid fa-lock text-blue-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white">Set New Password</h3>
+            <div class="mt-3 px-7 py-2">
+                <div class="mb-3 relative">
+                    <input id="new-password-input" type="password" placeholder="New Password" class="w-full px-4 py-2 pr-12 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm" />
+                    <button type="button" id="toggle-new-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <div class="mb-3 relative">
+                    <input id="confirm-new-password-input" type="password" placeholder="Confirm New Password" class="w-full px-4 py-2 pr-12 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm" />
+                    <button type="button" id="toggle-confirm-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <p id="new-password-error" class="text-xs text-red-400 h-5 mt-2"></p>
+            </div>
+            <div class="mt-5 sm:mt-6 flex justify-center space-x-3">
+                <button id="new-password-cancel-btn" type="button" class="inline-flex items-center justify-center w-28 rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-700 text-base font-medium text-white hover:bg-slate-600 focus:outline-none transition-colors">Cancel</button>
+                <button id="new-password-save-btn" type="button" class="inline-flex items-center justify-center w-36 rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none transition-colors">Save Password</button>
+            </div>
+        </div>
+
+
+        <div id="result-modal" class="modal-box glass-card rounded-lg shadow-xl p-6 w-full max-w-md text-center hidden">
+            <div id="result-icon-bg" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4">
+                 <i id="result-icon" class="fa-solid text-xl text-white"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white" id="result-title"></h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-slate-300" id="result-message"></p>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button id="result-close-btn" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none">
+                    Close
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Standardized Logout Confirmation Modal -->
+    <div id="logout-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9998]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-slate-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-sign-out-alt text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Confirm Logout</h3>
+            <p class="text-slate-300 mb-5">Are you sure you want to logout?</p>
+            <div class="space-x-3">
+                <button id="logout-cancel" class="px-5 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">
+                    <i class="fa-solid fa-times mr-2"></i>Cancel
+                </button>
+                <button id="logout-confirm" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                    <i class="fa-solid fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Success Modal -->
+    <!-- Alert Modal -->
+    <div id="alert-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div class="glass-card rounded-xl shadow-2xl w-full max-w-md p-6 text-center border border-yellow-600">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900 mb-3">
+                <i class="fa-solid fa-clock text-yellow-400 text-xl"></i>
+            </div>
+            <h3 class="text-white text-lg font-semibold mb-2">Session Expired</h3>
+            <p id="alert-message" class="text-slate-300 mb-5">Your session has expired due to inactivity. Please login again.</p>
+            <button id="alert-ok" class="px-5 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-colors">
+                OK
+                </button>
+        </div>
+    </div>
+
+    <div id="logout-success-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-card rounded-2xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="text-center p-6">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-600 mb-4">
+                    <i class="fa-solid fa-check text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Logout Successful</h3>
+                <p class="text-slate-400 text-sm">You have been successfully logged out.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ===== JWT AUTHENTICATION UTILITY =====
+    (function() {
+        function getAccessToken() { return localStorage.getItem('access_token'); }
+        function getRefreshToken() { return localStorage.getItem('refresh_token'); }
+        function isTokenExpired() {
+            const expiresAt = localStorage.getItem('token_expires_at');
+            return !expiresAt || Date.now() >= parseInt(expiresAt);
+        }
+        async function refreshAccessToken() {
+            const refreshToken = getRefreshToken();
+            if (!refreshToken) { logout(); return null; }
+            try {
+                const res = await fetch('/api/refresh-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const data = await res.json();
+                if (!res.ok) { logout(); return null; }
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                return data.access_token;
+            } catch (err) {
+                console.error('Token refresh failed:', err);
+                logout();
+                return null;
+            }
+        }
+        async function getValidToken() {
+            if (isTokenExpired()) return await refreshAccessToken();
+            return getAccessToken();
+        }
+        window.authFetch = async function(url, options = {}) {
+            const token = await getValidToken();
+            if (!token) throw new Error('Authentication required');
+            const headers = { 'Authorization': `Bearer ${token}`, ...options.headers };
+            const response = await fetch(url, { ...options, headers });
+            if (response.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    headers['Authorization'] = `Bearer ${newToken}`;
+                    return fetch(url, { ...options, headers });
+                }
+                logout();
+            }
+            return response;
+        };
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('token_expires_at');
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('user_role');
+            sessionStorage.removeItem('sps_user');
+            window.location.href = '/?id=' + generateQuickId();
+        }
+        async function checkAuth() {
+            const token = getAccessToken();
+            if (!token) { logout(); return false; }
+            try {
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const res = await fetch('/api/verify-token', { headers });
+                if (!res.ok) { logout(); return false; }
+                return true;
+            } catch (err) { logout(); return false; }
+        }
+        setTimeout(() => { checkAuth(); }, 100);
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                showInactivityAlert();
+            }, INACTIVITY_TIMEOUT);
+        }
+        
+        function showInactivityAlert() {
+            const overlay = document.getElementById('alert-overlay');
+            const msg = document.getElementById('alert-message');
+            const ok = document.getElementById('alert-ok');
+            msg.textContent = 'Your session has expired due to inactivity. Please login again.';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            const close = () => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                ok.removeEventListener('click', close);
+                logout();
+            };
+            ok.addEventListener('click', close);
+            // Auto logout after 3 seconds
+            setTimeout(() => {
+                if (!overlay.classList.contains('hidden')) {
+                    logout();
+                }
+            }, 3000);
+        }
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+        resetInactivityTimer();
+        function generateQuickId() {
+            const values = new Uint8Array(120);
+            window.crypto.getRandomValues(values);
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            return base64.slice(0, 152);
+        }
+        window.logoutUser = async function() {
+            try {
+                await authFetch('/api/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            logout();
+        };
+    })();
+    </script>
+
+    <script>
+        function genId(){
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+
+        // Always generate a new id for this visit and replace the URL
+        try{
+            const id = genId();
+            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
+            history.replaceState({}, '', newUrl);
+        }catch(e){ /* ignore */ }
+
+        // Intercept clicks to html pages and navigate with a fresh id
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
+        document.addEventListener('click', function(e){
+            const a = e.target.closest('a');
+            if(!a) return;
+            if (e.defaultPrevented) return;
+            if (a.hasAttribute('data-no-nav') || a.hasAttribute('data-action') || a.id === 'logout-link' || a.dataset.page === 'logout') return;
+            const href = a.getAttribute('href');
+            if(!href) return;
+            if(/\.html($|[?#])/.test(href)){
+                e.preventDefault();
+                const target = href.split('?')[0].split('#')[0].replace('.html', '');
+                const id = genId();
+                window.location.href = target + '?id=' + id;
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in
+            const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
+                if (!loggedInUser) {
+                    window.location.href = `index?id=${genId()}`;
+                    return;
+                }            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const html = document.documentElement;
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+            } else {
+                html.classList.add('dark');
+            }
+            
+            // --- Element Declarations ---
+            const usernameInput = document.getElementById('username-input');
+            const emailInput = document.getElementById('email-input');
+            const profileForm = document.getElementById('profile-form');
+            const profileSaveButton = document.getElementById('profile-save-button');
+            const profileBtnText = document.getElementById('profile-save-btn-text');
+            const profileSpinner = document.getElementById('profile-save-spinner');
+            const profileStatus = document.getElementById('profile-status');
+            const logoutLink = document.getElementById('logout-link');
+            
+            // Theme toggle elements
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeToggleSlider = document.getElementById('theme-toggle-slider');
+            const themeLabel = document.getElementById('theme-label');
+            
+            const modalOverlay = document.getElementById('modal-overlay');
+            const resultModal = document.getElementById('result-modal');
+            const resultIconBg = document.getElementById('result-icon-bg');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const resultCloseBtn = document.getElementById('result-close-btn');
+            
+            // Change Password Elements
+            const changePasswordBtn = document.getElementById('change-password-btn');
+            const changePasswordModal = document.getElementById('change-password-modal');
+            const changePasswordEmail = document.getElementById('change-password-email');
+            const changePasswordError = document.getElementById('change-password-error');
+            const changePasswordCancelBtn = document.getElementById('change-password-cancel-btn');
+            const changePasswordSendBtn = document.getElementById('change-password-send-btn');
+            
+            // OTP Elements
+            const otpModal = document.getElementById('otp-modal');
+            const otpInput = document.getElementById('otp-input');
+            const otpError = document.getElementById('otp-error');
+            const otpVerifyBtn = document.getElementById('otp-verify-btn');
+            const otpCancelBtn = document.getElementById('otp-cancel-btn');
+            
+            // New Password Elements
+            const newPasswordModal = document.getElementById('new-password-modal');
+            const newPasswordInput = document.getElementById('new-password-input');
+            const confirmNewPasswordInput = document.getElementById('confirm-new-password-input');
+            const newPasswordError = document.getElementById('new-password-error');
+            const newPasswordCancelBtn = document.getElementById('new-password-cancel-btn');
+            const newPasswordSaveBtn = document.getElementById('new-password-save-btn');
+            
+            // Password toggle buttons
+            const toggleNewPasswordBtn = document.getElementById('toggle-new-password');
+            const toggleConfirmPasswordBtn = document.getElementById('toggle-confirm-password');
+            
+            // Password visibility toggle functionality
+            toggleNewPasswordBtn.addEventListener('click', () => {
+                const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                newPasswordInput.setAttribute('type', type);
+                const icon = toggleNewPasswordBtn.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+
+            toggleConfirmPasswordBtn.addEventListener('click', () => {
+                const type = confirmNewPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmNewPasswordInput.setAttribute('type', type);
+                const icon = toggleConfirmPasswordBtn.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+            
+            // Logout Elements
+            const logoutOverlay = document.getElementById('logout-overlay');
+            const logoutCancel = document.getElementById('logout-cancel');
+            const logoutConfirm = document.getElementById('logout-confirm');
+
+            // --- Theme Toggle Functionality ---
+            function initializeTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                applyTheme(savedTheme);
+            }
+
+            function applyTheme(theme) {
+                const html = document.documentElement;
+                console.log('Applying theme:', theme);
+                if (theme === 'light') {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    themeToggleSlider.style.transform = 'translateX(0)';
+                    themeToggle.style.backgroundColor = '#e5e7eb';
+                    themeLabel.textContent = 'Light';
+                    console.log('Light theme applied, classes:', html.className);
+                } else {
+                    html.classList.remove('light');
+                    html.classList.add('dark');
+                    themeToggleSlider.style.transform = 'translateX(1.5rem)';
+                    themeToggle.style.backgroundColor = '#2563eb';
+                    themeLabel.textContent = 'Dark';
+                    console.log('Dark theme applied, classes:', html.className);
+                }
+                localStorage.setItem('theme', theme);
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = localStorage.getItem('theme') || 'dark';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                applyTheme(newTheme);
+            });
+
+            // Initialize theme on page load
+            initializeTheme();
+
+            // --- Load User Profile ---
+            async function loadUserProfile() {
+                // Get logged in user fresh each time
+                const loggedInUser = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
+                
+                if (!loggedInUser) {
+                    // Redirect to login page if not logged in
+                    window.location.href = '/';
+                    return;
+                }
+                try {
+                    const response = await authFetch(`/api/user/${loggedInUser}`);
+                    if (!response.ok) throw new Error('Failed to fetch user data');
+                    const userData = await response.json();
+                    usernameInput.value = userData.username || 'N/A';
+                    emailInput.value = userData.email || 'N/A';
+                } catch (error) {
+                    profileStatus.textContent = `Error: ${error.message}`;
+                    profileStatus.className = 'text-sm text-center h-5 text-red-500';
+                }
+            }
+            loadUserProfile();
+
+            // --- Update Profile Logic ---
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const newUsername = usernameInput.value.trim();
+                const currentUsername = localStorage.getItem('loggedInUser') || sessionStorage.getItem('sps_user');
+
+                if (currentUsername === newUsername) return;
+                
+                profileStatus.textContent = '';
+                profileSaveButton.disabled = true;
+                profileBtnText.classList.add('hidden');
+                profileSpinner.classList.remove('hidden');
+
+                try {
+                    const response = await authFetch(`/api/user/${currentUsername}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ new_username: newUsername })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message);
+                    
+                    localStorage.setItem('loggedInUser', newUsername); // Update local user
+                    showResultModal('success', data.message);
+                } catch (error) {
+                    profileStatus.textContent = `Error: ${error.message}`;
+                    profileStatus.className = 'text-sm text-center h-5 text-red-500';
+                    usernameInput.value = currentUsername; // Revert on failure
+                } finally {
+                    profileSaveButton.disabled = false;
+                    profileBtnText.classList.remove('hidden');
+                    profileSpinner.classList.add('hidden');
+                }
+            });
+
+            // --- Change Password Button Logic ---
+            changePasswordBtn.addEventListener('click', () => {
+                modalOverlay.classList.remove('hidden');
+                changePasswordModal.classList.remove('hidden');
+                changePasswordEmail.focus();
+            });
+            
+            changePasswordCancelBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('hidden');
+                changePasswordModal.classList.add('hidden');
+                changePasswordEmail.value = '';
+                changePasswordError.textContent = '';
+            });
+            
+            changePasswordSendBtn.addEventListener('click', async () => {
+                changePasswordError.textContent = '';
+                const email = changePasswordEmail.value.trim();
+                if (!email) {
+                    changePasswordError.textContent = 'Please enter your email.';
+                    return;
+                }
+                
+                try {
+                    // Check if email exists in admin uploaded file
+                    const response = await authFetch('/api/check-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Email not found in system');
+                    }
+                    
+                    // Send OTP
+                    const otpRes = await authFetch('/api/send-password-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const otpData = await otpRes.json().catch(() => ({ message: 'OTP sent.' }));
+                    if (!otpRes.ok) throw new Error(otpData.message || 'Failed to send OTP');
+
+                    // Ensure only one modal is visible: close email modal before showing success
+                    changePasswordModal.classList.add('hidden');
+                    
+                    const successMsg = otpData.dev_code 
+                        ? `${otpData.message || 'OTP sent.'} (Dev code: ${otpData.dev_code})`
+                        : (otpData.message || 'OTP sent successfully to your email.');
+                    showResultModal('success', successMsg, () => {
+                        // On closing success, open OTP modal cleanly
+                        resultModal.classList.add('hidden');
+                        // Keep overlay visible for OTP entry
+                        modalOverlay.classList.remove('hidden');
+                        // Reset OTP input to avoid autofill artifacts
+                        otpInput.value = '';
+                        otpModal.classList.remove('hidden');
+                        otpInput.focus();
+                    });
+                    
+                } catch (error) {
+                    changePasswordError.textContent = error.message;
+                }
+            });
+            
+            // OTP Verification
+            otpCancelBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('hidden');
+                otpModal.classList.add('hidden');
+                otpInput.value = '';
+                otpError.textContent = '';
+            });
+            
+            otpVerifyBtn.addEventListener('click', async () => {
+                otpError.textContent = '';
+                const code = otpInput.value.trim().toUpperCase();
+                if (!code) {
+                    otpError.textContent = 'Please enter the OTP code.';
+                    return;
+                }
+                
+                try {
+                    const response = await authFetch('/api/verify-password-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            email: changePasswordEmail.value.trim(),
+                            code: code 
+                        })
+                    });
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Invalid OTP code');
+                    }
+                    
+                    showResultModal('success', 'OTP validated successfully.', () => {
+                        resultModal.classList.add('hidden');
+                        modalOverlay.classList.remove('hidden');
+                        newPasswordModal.classList.remove('hidden');
+                        newPasswordInput.focus();
+                    });
+                    
+                } catch (error) {
+                    otpError.textContent = error.message;
+                }
+            });
+            
+            // New Password Save
+            newPasswordCancelBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('hidden');
+                newPasswordModal.classList.add('hidden');
+                newPasswordInput.value = '';
+                confirmNewPasswordInput.value = '';
+                newPasswordError.textContent = '';
+            });
+            
+            newPasswordSaveBtn.addEventListener('click', async () => {
+                newPasswordError.textContent = '';
+                const newPassword = newPasswordInput.value;
+                const confirmPassword = confirmNewPasswordInput.value;
+                
+                if (!newPassword || !confirmPassword) {
+                    newPasswordError.textContent = 'Please fill all fields.';
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    newPasswordError.textContent = 'Passwords do not match.';
+                    return;
+                }
+                
+                try {
+                    const response = await authFetch('/api/reset-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            email: changePasswordEmail.value.trim(),
+                            new_password: newPassword,
+                            code: otpInput.value.trim().toUpperCase()
+                        })
+                    });
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to change password');
+                    }
+                    
+                    showResultModal('success', 'Password changed successfully.', () => {
+                        modalOverlay.classList.add('hidden');
+                        newPasswordModal.classList.add('hidden');
+                        changePasswordModal.classList.add('hidden');
+                        newPasswordInput.value = '';
+                        confirmNewPasswordInput.value = '';
+                        changePasswordEmail.value = '';
+                        otpInput.value = '';
+                    });
+                    
+                } catch (error) {
+                    newPasswordError.textContent = error.message;
+                }
+            });
+
+            // --- Logout handler with confirmation popup ---
+            function showLogoutConfirmation(e) {
+                if (e) e.preventDefault();
+                logoutOverlay.classList.remove('hidden');
+                logoutOverlay.classList.add('flex');
+                
+                // If mobile menu is open, close it
+                mobileNavMenu.classList.remove('show');
+                mobileNavButton.classList.remove('rotated');
+            }
+            
+            // Attach logout handlers to both desktop and mobile logout links
+            logoutLink.addEventListener('click', showLogoutConfirmation);
+            document.getElementById('mobile-logout-link').addEventListener('click', showLogoutConfirmation);
+            
+            logoutCancel.addEventListener('click', () => {
+                logoutOverlay.classList.add('hidden');
+                logoutOverlay.classList.remove('flex');
+            });
+            
+            logoutConfirm.addEventListener('click', async () => {
+                // Show logout success modal
+                document.getElementById('logout-overlay').classList.add('hidden');
+                document.getElementById('logout-success-overlay').classList.remove('hidden');
+                document.getElementById('logout-success-overlay').classList.add('flex');
+                // Auto-close after 1.5 seconds and call logout
+                setTimeout(async () => {
+                    if (window.logoutUser) {
+                        await window.logoutUser();
+                    } else {
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('user_role');
+                sessionStorage.removeItem('sps_user');
+                const id = genId();
+                window.location.href = `/?id=${id}`;
+                    }
+                }, 1500);
+            });
+
+
+            function showResultModal(status, message, onCloseCallback = null) {
+                resultMessage.textContent = message;
+                if (status === 'success') {
+                    resultTitle.textContent = 'Success';
+                    resultIcon.className = 'fa-solid fa-check text-white';
+                    resultIconBg.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-green-500';
+                } else {
+                    resultTitle.textContent = 'Error';
+                    resultIcon.className = 'fa-solid fa-xmark text-white';
+                    resultIconBg.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-red-500';
+                }
+                
+                // Hide ALL other modals first to avoid conflicts
+                [changePasswordModal, otpModal, newPasswordModal, resultModal].forEach(m => m.classList.add('hidden'));
+                
+                // Ensure modal overlay is visible
+                modalOverlay.classList.remove('hidden');
+                
+                // Show result modal
+                resultModal.classList.remove('hidden');
+
+                resultCloseBtn.onclick = () => {
+                    modalOverlay.classList.add('hidden');
+                    resultModal.classList.add('hidden');
+                    if (onCloseCallback) onCloseCallback();
+                };
+            }
+            
+            // Mobile Navigation System
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            function checkMobileView() {
+                if (window.innerWidth <= 768) {
+                    mobileNavButton.classList.remove('hidden');
+                } else {
+                    mobileNavButton.classList.add('hidden');
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            }
+            
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+            
+            mobileNavButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileNavMenu.classList.toggle('show');
+                mobileNavButton.classList.toggle('rotated');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileNavMenu.contains(e.target) && !mobileNavButton.contains(e.target)) {
+                    mobileNavMenu.classList.remove('show');
+                    mobileNavButton.classList.remove('rotated');
+                }
+            });
+            
+            const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+            mobileNavItems.forEach(item => {
+                const pageName = item.getAttribute('data-page');
+                if (pageName === currentPage || (currentPage === 'studentprogression' && pageName === 'academic')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

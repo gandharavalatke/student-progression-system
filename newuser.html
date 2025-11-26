@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Student Progression System</title>
+    <link rel="icon" type="image/png" href="git-logo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); 
+            background-attachment: fixed;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Smooth page transitions */
+        * {
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Page load animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-content {
+            animation: fadeInUp 0.5s ease-out !important;
+        }
+        
+        /* Form transitions */
+        .form-container {
+            transition: all 0.3s ease !important;
+        }
+        
+        .form-container:hover {
+            transform: translateY(-2px) !important;
+        }
+        
+        /* Input transitions */
+        input, button {
+            transition: all 0.3s ease !important;
+        }
+        
+        input:focus {
+            transform: scale(1.02) !important;
+        }
+        
+        /* Fix blurry icons with proper rendering */
+        .fa-solid, .fa-regular, .fa-light, .fa-thin, .fa-duotone {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-display: block;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            font-smooth: always;
+            -webkit-font-smooth: always;
+        }
+        
+        /* Ensure icons render at native resolution */
+        i[class*="fa-"] {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: optimizeLegibility;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            font-smooth: always;
+            -webkit-font-smooth: always;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        /* Fix text blurriness */
+        input, button, span, div, p, h1, h2, h3, h4, h5, h6 {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-smooth: always;
+            -webkit-font-smooth: always;
+        }
+        
+        /* Fix icon container sizing */
+        .icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Fix icons disappearing after auto-fill */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+        
+        /* Fix autofill text color for dark theme */
+        input:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+            background-color: transparent !important;
+        }
+        
+        /* Ensure text is white after autofill */
+        input[type="text"]:-webkit-autofill,
+        input[type="email"]:-webkit-autofill,
+        input[type="password"]:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+        }
+        
+        /* Ensure icons stay visible during auto-fill */
+        .input-group:has(input:-webkit-autofill) i,
+        .input-group:has(input:autofill) i {
+            display: inline-block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            color: #3b82f6 !important;
+            filter: none !important;
+        }
+        
+        /* Force icon visibility after autofill */
+        input:-webkit-autofill + i,
+        input:autofill + i {
+            display: inline-block !important;
+            opacity: 1 !important;
+            color: #3b82f6 !important;
+            filter: none !important;
+        }
+        
+        /* Ensure icons are sharp after autofill */
+        .input-group i {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: optimizeLegibility !important;
+            image-rendering: -webkit-optimize-contrast !important;
+            image-rendering: crisp-edges !important;
+        }
+        
+        /* Prevent icon transitions from interfering with auto-fill */
+        .input-group i {
+            transition: none !important;
+        }
+        
+        /* Force icon visibility after auto-fill */
+        input:autofill + i,
+        input:-webkit-autofill + i {
+            display: inline-block !important;
+            opacity: 1 !important;
+        }
+        
+        /* Light mode styles */
+        .light body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-slate-300 {
+            color: #475569 !important;
+        }
+        .light .text-slate-400 {
+            color: #64748b !important;
+        }
+        .light .text-slate-500 {
+            color: #64748b !important;
+        }
+        .light .text-slate-600 {
+            color: #475569 !important;
+        }
+        .light .text-slate-700 {
+            color: #334155 !important;
+        }
+        .light .text-slate-800 {
+            color: #1e293b !important;
+        }
+        .light .text-slate-900 {
+            color: #0f172a !important;
+        }
+        
+        /* Light mode comprehensive optimization */
+        .light .bg-slate-800 {
+            background-color: #f8fafc !important;
+        }
+        .light .bg-slate-700 {
+            background-color: #e2e8f0 !important;
+        }
+        .light .bg-slate-600 {
+            background-color: #cbd5e1 !important;
+        }
+        .light .bg-slate-900 {
+            background-color: #f1f5f9 !important;
+        }
+        .light .bg-slate-500 {
+            background-color: #94a3b8 !important;
+        }
+        .light .bg-slate-400 {
+            background-color: #cbd5e1 !important;
+        }
+        
+        /* Light mode form containers */
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Light mode input fields */
+        .light input[type="text"],
+        .light input[type="password"],
+        .light input[type="email"] {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        
+        /* Ensure SVG icons are visible and crisp */
+        svg {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 20px !important;
+            height: 20px !important;
+        }
+        
+        .relative svg {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Fix blurry icons - MAXIMUM crisp rendering */
+        i.fa-solid, i.fa-regular, i.fa-brands {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: geometricPrecision !important;
+            font-smooth: never !important;
+            image-rendering: -webkit-optimize-contrast !important;
+            image-rendering: crisp-edges !important;
+        }
+        
+        /* Ensure all icons in inputs are crisp and large */
+        .relative i {
+            font-size: 24px !important;
+            line-height: 1 !important;
+            font-weight: 900 !important;
+        }
+        
+        /* Ensure eye icons are extra crisp */
+        #toggle-password i,
+        #toggle-confirm-password i {
+            font-size: 24px !important;
+            line-height: 1 !important;
+            display: block !important;
+            font-weight: 900 !important;
+        }
+        .light input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        /* Light mode buttons */
+        .light .bg-blue-600 {
+            background-color: #3b82f6 !important;
+        }
+        .light .bg-blue-600:hover {
+            background-color: #2563eb !important;
+        }
+        .light .bg-blue-700 {
+            background-color: #2563eb !important;
+        }
+        .light .bg-blue-700:hover {
+            background-color: #1d4ed8 !important;
+        }
+        
+        /* Light mode links */
+        .light .text-blue-400 {
+            color: #3b82f6 !important;
+        }
+        .light .text-blue-400:hover {
+            color: #2563eb !important;
+        }
+        
+        /* Light mode form container */
+        .light .form-container {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+        }
+        .form-container { 
+            animation: fadeIn 0.5s ease-out forwards; 
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(-20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        /* Fix blurry icons with proper rendering */
+        .fa-solid, .fa-regular, .fa-light, .fa-thin, .fa-duotone {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-display: block;
+        }
+        
+        /* Ensure icons render at native resolution */
+        i[class*="fa-"] {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="flex items-center justify-center min-h-screen py-12 px-4">
+        <div class="form-container w-full max-w-md rounded-2xl shadow-2xl p-8">
+            <img src="GIT Logo.jpg" alt="GIT Logo" class="w-auto h-12 mx-auto mb-6">
+            <h2 class="text-2xl font-bold text-white text-center">Create New Account</h2>
+            <p id="form-description" class="text-slate-300 text-center mb-6">For authorized faculty members only.</p>
+            <form id="register-form" class="space-y-5">
+                <div id="step-1-details" class="space-y-5">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-slate-300 mb-1">Choose a Username</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 pointer-events-none" style="top: 14px; width: 20px; height: 20px; z-index: 10;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#60a5fa"/>
+                            </svg>
+                            <input id="username" type="text" placeholder="user" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-slate-300 mb-1">Your Official College Email</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 pointer-events-none" style="top: 14px; width: 20px; height: 20px; z-index: 10;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#60a5fa"/>
+                            </svg>
+                            <input id="email" type="email" placeholder="user@git-india.edu.in" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        </div>
+                    </div>
+                </div>
+                <div id="step-2-credentials" class="hidden space-y-5">
+                    <div>
+                        <label for="code" class="block text-sm font-medium text-slate-300 mb-1">Verification Code</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 pointer-events-none" style="top: 14px; width: 20px; height: 20px; z-index: 10;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.13 19.415l1.414-1.414L4 14.586 2.586 16 7.13 19.415zm9.74 0L21.414 16 20 14.586l-4.544 4.415 1.414 1.414zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="#60a5fa"/>
+                            </svg>
+                            <input id="code" type="text" placeholder="Check your email" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="registration-key" class="block text-sm font-medium text-slate-300 mb-1">Registration Key</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 pointer-events-none" style="top: 14px; width: 20px; height: 20px; z-index: 10;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 8h-1V6c0-2.76-2.24-5-5-5S6 3.24 6 6v2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill="#60a5fa"/>
+                            </svg>
+                            <input id="registration-key" type="text" placeholder="Also in your email" required class="block w-full pl-12 pr-4 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-slate-300 mb-1">Create a Password</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 pointer-events-none" style="top: 14px; width: 20px; height: 20px; z-index: 10;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill="#60a5fa"/>
+                            </svg>
+                            <input id="password" type="password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors focus:outline-none" style="z-index: 10;">
+                                <svg id="eye-password-icon" style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#60a5fa"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-slate-300 mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 pointer-events-none" style="top: 14px; width: 20px; height: 20px; z-index: 10;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill="#60a5fa"/>
+                            </svg>
+                            <input id="confirm-password" type="password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                            <button type="button" id="toggle-confirm-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors focus:outline-none" style="z-index: 10;">
+                                <svg id="eye-confirm-password-icon" style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#60a5fa"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p id="status-message" class="text-sm text-center h-5 transition-all"></p>
+                <button type="submit" id="submit-button" class="w-full h-12 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 flex items-center justify-center transition-all mt-4 shadow-lg transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-500/20">
+                    <span id="button-text">Send Verification Code</span>
+                    <div id="button-spinner" class="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin hidden"></div>
+                </button>
+            </form>
+            <div class="text-center mt-6">
+                <a href="javascript:void(0);" id="back-to-login" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors cursor-pointer">Already have an account? Login</a>
+            </div>
+        </div>
+    </div>
+    <!-- Success Modal -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div id="result-modal" class="bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600">
+            <div id="result-icon-bg" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-green-600/20 border border-green-500/30">
+                <i id="result-icon" class="fa-solid fa-check text-green-400"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white" id="result-title">Success</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-slate-300" id="result-message">Verification code sent.</p>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button id="result-close-btn" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-base font-medium text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none transition-all">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // ===== AUTHENTICATION CHECK =====
+        // Redirect logged-in users to dashboard (they don't need to register)
+        (function() {
+            const accessToken = localStorage.getItem('access_token');
+            if (accessToken) {
+                // User is already logged in, redirect to dashboard
+                function generateQuickId() {
+                    const values = new Uint8Array(120);
+                    window.crypto.getRandomValues(values);
+                    let base64 = btoa(String.fromCharCode(...values))
+                        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                    while(base64.length < 152) {
+                        const extra = new Uint8Array(16);
+                        window.crypto.getRandomValues(extra);
+                        base64 += btoa(String.fromCharCode(...extra))
+                            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                            .slice(0, 152 - base64.length);
+                    }
+                    return base64.slice(0, 152);
+                }
+                // Verify token is still valid before redirecting
+                fetch('/api/verify-token', {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                }).then(res => {
+                    if (res.ok) {
+                        // Token is valid, redirect to dashboard
+                        window.location.href = `/dashboard?id=${generateQuickId()}`;
+                    } else {
+                        // Token invalid, clear it and allow registration
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        localStorage.removeItem('token_expires_at');
+                    }
+                }).catch(() => {
+                    // Network error, allow registration to proceed
+                });
+            }
+        })();
+
+        function genId(){
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+
+        // Always generate a new id for this visit and replace the URL
+        try{
+            const id = genId();
+            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
+            history.replaceState({}, '', newUrl);
+        }catch(e){ /* ignore */ }
+
+        // Intercept clicks to html pages and navigate with a fresh id
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
+        document.addEventListener('click', function(e){
+            const a = e.target.closest('a');
+            if(!a) return;
+            if (e.defaultPrevented) return;
+            if (a.hasAttribute('data-no-nav') || a.hasAttribute('data-action') || a.id === 'logout-link' || a.dataset.page === 'logout') return;
+            const href = a.getAttribute('href');
+            if(!href) return;
+            if(/\.html($|[?#])/.test(href)){
+                e.preventDefault();
+                const target = href.split('?')[0].split('#')[0].replace('.html', '');
+                const id = genId();
+                window.location.href = target + '?id=' + id;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const html = document.documentElement;
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            }
+            
+            // Modal elements
+            const modalOverlay = document.getElementById('modal-overlay');
+            const resultModal = document.getElementById('result-modal');
+            const resultMessage = document.getElementById('result-message');
+            const resultCloseBtn = document.getElementById('result-close-btn');
+
+            function showSuccessModal(message) {
+                resultMessage.textContent = message;
+                modalOverlay.classList.remove('hidden');
+            }
+
+            resultCloseBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('hidden');
+            });
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) modalOverlay.classList.add('hidden');
+            });
+
+            // Back to login handler
+            document.getElementById('back-to-login').addEventListener('click', () => {
+                // Generate dynamic ID
+                const values = new Uint8Array(120);
+                window.crypto.getRandomValues(values);
+                let id = btoa(String.fromCharCode(...values))
+                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                while(id.length < 152) {
+                    const extra = new Uint8Array(16);
+                    window.crypto.getRandomValues(extra);
+                    id += btoa(String.fromCharCode(...extra))
+                        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                        .slice(0, 152 - id.length);
+                }
+                window.location.href = '/?id=' + id.slice(0, 152);
+            });
+
+            let currentStep = 1;
+            const registerForm = document.getElementById('register-form');
+            const statusMessage = document.getElementById('status-message');
+            const submitButton = document.getElementById('submit-button');
+            const buttonText = document.getElementById('button-text');
+            const buttonSpinner = document.getElementById('button-spinner');
+            const description = document.getElementById('form-description');
+            const step1Div = document.getElementById('step-1-details');
+            const step2Div = document.getElementById('step-2-credentials');
+            // Step 2 inputs
+            const codeInput = document.getElementById('code');
+            const regKeyInput = document.getElementById('registration-key');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+
+            // Password visibility toggles
+            const togglePassword = document.getElementById('toggle-password');
+            const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+            
+            if (togglePassword) {
+                togglePassword.addEventListener('click', () => {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    const icon = document.getElementById('eye-password-icon');
+                    icon.innerHTML = type === 'password' 
+                        ? '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#60a5fa"/>'
+                        : '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46A11.804 11.804 0 0 0 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78 3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="#60a5fa"/>';
+                });
+            }
+            
+            if (toggleConfirmPassword) {
+                toggleConfirmPassword.addEventListener('click', () => {
+                    const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    confirmPasswordInput.setAttribute('type', type);
+                    const icon = document.getElementById('eye-confirm-password-icon');
+                    icon.innerHTML = type === 'password' 
+                        ? '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#60a5fa"/>'
+                        : '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46A11.804 11.804 0 0 0 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78 3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="#60a5fa"/>';
+                });
+            }
+
+            // Prevent HTML5 validation on hidden inputs
+            [codeInput, regKeyInput, passwordInput, confirmPasswordInput].forEach((el) => {
+                el.disabled = true;
+                el.required = false;
+            });
+
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setStatus('', false);
+                try {
+                    if (currentStep === 1) await handleSendCode();
+                    else await handleRegister();
+                } catch (error) {
+                    setStatus(error.message, true);
+                } finally {
+                    setLoading(false);
+                }
+            });
+            
+            async function handleSendCode() {
+                const payload = {
+                    username: document.getElementById('username').value,
+                    email: normalizeEmail(document.getElementById('email').value)
+                };
+                const response = await apiCall('/api/send-registration-code', payload);
+                const extra = response.dev_code ? ` Your code: ${response.dev_code}` : '';
+                setStatus(response.message + extra, false);
+                showSuccessModal('Verification code sent to your email.' + (response.dev_code ? ` Your code: ${response.dev_code}` : ''));
+                step1Div.classList.add('hidden');
+                step2Div.classList.remove('hidden');
+                buttonText.textContent = 'Create Account';
+                description.textContent = "A code and key were sent to your email. Please complete your registration.";
+                // Enable and require step 2 inputs now that they are visible
+                [codeInput, regKeyInput, passwordInput, confirmPasswordInput].forEach((el) => {
+                    el.disabled = false;
+                    el.required = true;
+                });
+                currentStep = 2;
+            }
+
+            async function handleRegister() {
+                const password = document.getElementById('password').value;
+                if (password !== document.getElementById('confirm-password').value) {
+                    throw new Error('Passwords do not match.');
+                }
+                const payload = {
+                    username: document.getElementById('username').value,
+                    email: normalizeEmail(document.getElementById('email').value),
+                    password,
+                    code: document.getElementById('code').value,
+                    registration_key: document.getElementById('registration-key').value
+                };
+                const response = await apiCall('/api/register', payload);
+                setStatus(response.message, false);
+                submitButton.disabled = true;
+                setTimeout(() => window.location.href = `index?id=${genId()}`, 2000);
+            }
+
+            async function apiCall(endpoint, body) {
+                try {
+                    const response = await fetch(`${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Server error (${response.status}): ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                        throw new Error('Cannot connect to server. Please ensure the Flask server is running on port 5001.');
+                    }
+                    throw error;
+                }
+            }
+
+            function setLoading(isLoading) {
+                submitButton.disabled = isLoading;
+                buttonSpinner.classList.toggle('hidden', !isLoading);
+                buttonText.classList.toggle('hidden', isLoading);
+            }
+
+            function setStatus(message, isError) {
+                statusMessage.textContent = message;
+                statusMessage.className = `text-sm text-center h-5 ${isError ? 'text-red-500' : 'text-green-500'}`;
+            }
+
+            function normalizeEmail(value) {
+                const trimmed = value.trim();
+                if (!trimmed) return trimmed;
+                if (trimmed.includes('@')) return trimmed;
+                return `${trimmed}@git-india.edu.in`;
+            }
+        });
+    </script>
+</body>
+</html>

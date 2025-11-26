@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Student Progression System</title>
+    <link rel="icon" type="image/png" href="git-logo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); 
+            background-attachment: fixed; 
+        }
+        .upload-box:hover { 
+            border-color: #3b82f6; 
+            background-color: rgba(59, 130, 246, 0.1); 
+        }
+        .modal-overlay { transition: opacity 0.3s ease; }
+        .modal-box { transition: all 0.3s ease; transform: translateY(-50px); }
+        .modal-overlay:not(.hidden) .modal-box { transform: translateY(0); }
+        .admin-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Fix blurry icons with proper rendering */
+        .fa-solid, .fa-regular, .fa-light, .fa-thin, .fa-duotone {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-display: block;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            font-smooth: always;
+            -webkit-font-smooth: always;
+        }
+        
+        /* Ensure icons render at native resolution */
+        i[class*="fa-"] {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: optimizeLegibility;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            font-smooth: always;
+            -webkit-font-smooth: always;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        /* Fix text blurriness */
+        input, button, span, div, p, h1, h2, h3, h4, h5, h6 {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-smooth: always;
+            -webkit-font-smooth: always;
+        }
+        
+        /* Fix icon container sizing */
+        .icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Fix icons disappearing after auto-fill */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+        
+        /* Fix autofill text color for dark theme */
+        input:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+            background-color: transparent !important;
+        }
+        
+        /* Ensure text is white after autofill */
+        input[type="text"]:-webkit-autofill,
+        input[type="email"]:-webkit-autofill,
+        input[type="password"]:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+        }
+        
+        /* Ensure icons stay visible during auto-fill */
+        .input-group:has(input:-webkit-autofill) i,
+        .input-group:has(input:autofill) i {
+            display: inline-block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            color: #3b82f6 !important;
+            filter: none !important;
+        }
+        
+        /* Force icon visibility after autofill */
+        input:-webkit-autofill + i,
+        input:autofill + i {
+            display: inline-block !important;
+            opacity: 1 !important;
+            color: #3b82f6 !important;
+            filter: none !important;
+        }
+        
+        /* Ensure SVG icons are visible and crisp */
+        svg {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 20px !important;
+            height: 20px !important;
+        }
+        
+        .relative svg {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Fix blurry icons - MAXIMUM crisp rendering */
+        i.fa-solid, i.fa-regular, i.fa-brands {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: geometricPrecision !important;
+            font-smooth: never !important;
+            image-rendering: -webkit-optimize-contrast !important;
+            image-rendering: crisp-edges !important;
+        }
+        
+        /* Ensure all icons in inputs are crisp and large */
+        .relative i {
+            font-size: 24px !important;
+            line-height: 1 !important;
+            font-weight: 900 !important;
+        }
+        
+        /* Ensure eye icon is extra crisp */
+        #toggle-admin-password i {
+            font-size: 24px !important;
+            line-height: 1 !important;
+            display: block !important;
+            font-weight: 900 !important;
+        }
+        
+        /* Ensure icons are sharp after autofill */
+        .input-group i {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: optimizeLegibility !important;
+            image-rendering: -webkit-optimize-contrast !important;
+            image-rendering: crisp-edges !important;
+        }
+        
+        /* Prevent icon transitions from interfering with auto-fill */
+        .input-group i {
+            transition: none !important;
+        }
+        
+        /* Force icon visibility after auto-fill */
+        input:autofill + i,
+        input:-webkit-autofill + i {
+            display: inline-block !important;
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-xl p-8 space-y-6 admin-card rounded-2xl shadow-2xl">
+            <div class="text-center">
+                <img src="GIT Logo.jpg" alt="GIT Logo" class="w-auto h-12 mx-auto mb-4">
+                <h2 class="text-2xl font-bold text-white">Administrator Panel</h2>
+                <p id="subtitle" class="text-slate-300">Enter password to continue.</p>
+            </div>
+            <div id="password-section">
+                <form id="admin-login-form" class="space-y-4">
+                    <div class="relative">
+                        <svg class="absolute left-4 pointer-events-none" style="top: 14px; width: 20px; height: 20px; z-index: 10;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" fill="#60a5fa"/>
+                        </svg>
+                        <input type="password" id="admin-password" placeholder="Admin Password" required class="block w-full pl-12 pr-12 py-3 bg-slate-800/50 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all backdrop-blur-sm">
+                        <button type="button" id="toggle-admin-password" class="absolute inset-y-0 right-0 px-4 flex items-center text-blue-400 hover:text-blue-300 transition-colors focus:outline-none" style="z-index: 10;">
+                            <svg id="eye-admin-password-icon" style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#60a5fa"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <button type="submit" id="admin-login-btn" class="w-full h-12 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 flex items-center justify-center shadow-lg transition-all transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-500/20">
+                        <span id="auth-btn-text">Authenticate</span>
+                        <div id="auth-spinner" class="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin ml-2 hidden"></div>
+                    </button>
+                    <p id="auth-error" class="text-red-400 text-sm text-center h-5"></p>
+                </form>
+            </div>
+            <div id="upload-section" class="hidden">
+                 <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-600 backdrop-blur-sm">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-users-cog mr-3 text-blue-400"></i>Upload Faculty List
+                    </h3>
+                    <div id="upload-box" class="p-6 rounded-xl text-center border-2 border-dashed border-slate-500 cursor-pointer transition-colors duration-200 upload-box bg-slate-800/30">
+                        <i class="fa-solid fa-file-excel text-4xl text-green-400 mx-auto mb-3"></i>
+                        <p id="upload-text" class="text-slate-300">Click to select an Excel file</p>
+                        <input type="file" id="faculty-file-input" class="hidden" accept=".xlsx, .xls">
+                    </div>
+                    <div class="flex justify-end mt-4">
+                        <button id="upload-btn" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 flex items-center disabled:opacity-50 shadow-lg transition-all transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-500/20" disabled>
+                            <span id="upload-btn-text">Upload List</span>
+                            <div id="upload-spinner" class="w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin ml-2 hidden"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="javascript:void(0);" id="back-to-login" class="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors cursor-pointer">Return to Login Page</a>
+            </div>
+        </div>
+    </div>
+    <div id="result-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div id="result-modal" class="modal-box bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center border border-slate-600">
+            <div id="result-icon-bg" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4">
+                <i id="result-icon" class="fa-solid text-xl text-white"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-white" id="result-title"></h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-slate-300" id="result-message"></p>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button id="result-close-btn" class="w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 font-medium text-white hover:from-blue-700 hover:to-blue-800 transition-all">Close</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function(){
+        function genId(){
+            // Generate multiple random values and combine them for 152 characters
+            const values = new Uint8Array(120); // Using 120 bytes for extra randomness
+            window.crypto.getRandomValues(values);
+            
+            // Convert to base64url and ensure we get exactly 152 characters
+            let base64 = btoa(String.fromCharCode(...values))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            
+            // Get more random values if needed to reach exactly 152 chars
+            while(base64.length < 152) {
+                const extra = new Uint8Array(16);
+                window.crypto.getRandomValues(extra);
+                base64 += btoa(String.fromCharCode(...extra))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '')
+                    .slice(0, 152 - base64.length);
+            }
+            
+            return base64.slice(0, 152); // Ensure exactly 152 chars
+        }
+
+        // Always generate a new id for this visit and replace the URL
+        try{
+            const id = genId();
+            const newUrl = window.location.pathname.replace('.html', '') + '?id=' + id;
+            history.replaceState({}, '', newUrl);
+        }catch(e){ /* ignore */ }
+
+        // Intercept clicks to html pages and navigate with a fresh id
+        // NOTE: run in bubble phase and skip anchors meant for in-page actions (logout, data-action, or explicitly marked)
+        document.addEventListener('click', function(e){
+            const a = e.target.closest('a');
+            if(!a) return;
+            if (e.defaultPrevented) return;
+            if (a.hasAttribute('data-no-nav') || a.hasAttribute('data-action') || a.id === 'logout-link' || a.dataset.page === 'logout') return;
+            const href = a.getAttribute('href');
+            if(!href) return;
+            if(/\.html($|[?#])/.test(href)){
+                e.preventDefault();
+                const target = href.split('?')[0].split('#')[0].replace('.html', '');
+                const id = genId();
+                window.location.href = target + '?id=' + id;
+            }
+        });
+    })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('admin-login-form');
+            const pwd = document.getElementById('admin-password');
+            const authErr = document.getElementById('auth-error');
+            const authBtn = document.getElementById('admin-login-btn');
+            const uploadBox = document.getElementById('upload-box');
+            const input = document.getElementById('faculty-file-input');
+            const uploadBtn = document.getElementById('upload-btn');
+            const uploadText = document.getElementById('upload-text');
+            const subtitle = document.getElementById('subtitle');
+            const passwordSection = document.getElementById('password-section');
+            const uploadSection = document.getElementById('upload-section');
+
+            // Password visibility toggle
+            const toggleAdminPassword = document.getElementById('toggle-admin-password');
+            if (toggleAdminPassword) {
+                toggleAdminPassword.addEventListener('click', () => {
+                    const type = pwd.getAttribute('type') === 'password' ? 'text' : 'password';
+                    pwd.setAttribute('type', type);
+                    const icon = document.getElementById('eye-admin-password-icon');
+                    icon.innerHTML = type === 'password' 
+                        ? '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#60a5fa"/>'
+                        : '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46A11.804 11.804 0 0 0 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78 3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="#60a5fa"/>';
+                });
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                authErr.textContent = '';
+                try {
+                    const res = await fetch('/api/admin/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password: pwd.value })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message);
+                    
+                    // Store JWT tokens after admin login
+                    if (data.access_token && data.refresh_token) {
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('refresh_token', data.refresh_token);
+                        localStorage.setItem('token_expires_at', Date.now() + (data.expires_in * 1000));
+                        localStorage.setItem('loggedInUser', 'admin');
+                        localStorage.setItem('user_role', 'admin');
+                    }
+                    
+                    passwordSection.classList.add('hidden');
+                    uploadSection.classList.remove('hidden');
+                    subtitle.textContent = 'Upload an Excel file with faculty details.';
+                } catch (err) {
+                    authErr.textContent = err.message;
+                }
+            });
+
+            uploadBox.addEventListener('click', () => input.click());
+            input.addEventListener('change', () => {
+                if (input.files && input.files[0]) {
+                    uploadText.textContent = input.files[0].name;
+                    uploadBtn.disabled = false;
+                }
+            });
+
+            uploadBtn.addEventListener('click', async () => {
+                if (!input.files || !input.files[0]) return;
+                const confirmUpload = await showConfirm('Are you sure you want to upload this file?');
+                if (!confirmUpload) return;
+                const formData = new FormData();
+                formData.append('file', input.files[0]);
+                try {
+                    let res;
+                    // Use authFetch for authenticated request
+                    if (window.authFetch) {
+                        res = await window.authFetch('/api/upload-faculty', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    } else {
+                        // Fallback if authFetch not available (shouldn't happen)
+                        const token = localStorage.getItem('access_token');
+                        const headers = {};
+                        if (token) headers['Authorization'] = `Bearer ${token}`;
+                        res = await fetch('/api/upload-faculty', {
+                            method: 'POST',
+                            headers: headers,
+                            body: formData
+                        });
+                    }
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message || 'Upload failed');
+                    await showAlert('File uploaded successfully.');
+                    uploadText.textContent = 'Click to select an Excel file';
+                    input.value = '';
+                    uploadBtn.disabled = true;
+                } catch (err) {
+                    await showAlert(`Upload failed: ${err.message}`);
+                }
+            });
+
+            // Back to login handler
+            document.getElementById('back-to-login').addEventListener('click', () => {
+                // Generate dynamic ID
+                const values = new Uint8Array(120);
+                window.crypto.getRandomValues(values);
+                let id = btoa(String.fromCharCode(...values))
+                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                while(id.length < 152) {
+                    const extra = new Uint8Array(16);
+                    window.crypto.getRandomValues(extra);
+                    id += btoa(String.fromCharCode(...extra))
+                        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+                        .slice(0, 152 - id.length);
+                }
+                window.location.href = '/?id=' + id.slice(0, 152);
+            });
+
+            function showAlert(message) {
+                return new Promise((resolve) => {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+                    overlay.innerHTML = `<div class="bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-md p-6 text-center"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 mb-3"><i class=\"fa-solid fa-circle-info text-orange-500 text-xl\"></i></div><h3 class=\"text-gray-800 text-lg font-semibold mb-2\">Notice</h3><p class=\"text-gray-600 mb-5\">${message}</p><button id=\"modal-ok\" class=\"px-5 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600\">OK</button></div>`;
+                    document.body.appendChild(overlay);
+                    overlay.querySelector('#modal-ok').addEventListener('click', () => { document.body.removeChild(overlay); resolve(true); });
+                });
+            }
+            function showConfirm(message) {
+                return new Promise((resolve) => {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+                    overlay.innerHTML = `<div class=\"bg-white rounded-xl shadow-2xl border border-orange-200 w-full max-w-md p-6 text-center\"><div class=\"mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-3\"><i class=\"fa-solid fa-triangle-exclamation text-yellow-600 text-xl\"></i></div><h3 class=\"text-gray-800 text-lg font-semibold mb-2\">Confirm</h3><p class=\"text-gray-600 mb-5\">${message}</p><div class=\"space-x-3\"><button id=\"modal-cancel\" class=\"px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300\">Cancel</button><button id=\"modal-ok\" class=\"px-5 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg hover:from-orange-500 hover:to-orange-600\">OK</button></div></div>`;
+                    document.body.appendChild(overlay);
+                    overlay.querySelector('#modal-cancel').addEventListener('click', () => { document.body.removeChild(overlay); resolve(false); });
+                    overlay.querySelector('#modal-ok').addEventListener('click', () => { document.body.removeChild(overlay); resolve(true); });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+</html>
